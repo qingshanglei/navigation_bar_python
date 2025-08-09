@@ -1,0 +1,985 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <!-- element-plus icons -->
+    <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>管理后台模板 | Element Plus</title>
+  </head>
+  <body>
+    <style>
+      body, html { 
+        height: 100%; 
+        margin: 0; 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .layout { 
+        height: 100vh; 
+        background: #fef7f0;
+      }
+      
+      /* 侧边栏样式 */
+      .aside {
+        background: #001529;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+        border-right: none;
+        transition: width 0.3s ease;
+      }
+      .logo {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        font-weight: 700;
+        font-size: 18px;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .logo-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo i {
+        font-size: 24px;
+        color: #ff6b35;
+      }
+      .sidebar-collapse-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: rgba(255, 107, 53, 0.15);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        color: #ff6b35;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+      .sidebar-collapse-btn:hover {
+        background: rgba(255, 107, 53, 0.25);
+        border-color: rgba(255, 107, 53, 0.5);
+        transform: scale(1.1);
+      }
+      .sidebar-collapse-btn:active {
+        transform: scale(0.95);
+      }
+      /* 收缩状态下的样式 */
+      .aside.collapsed .logo {
+        padding: 0 16px;
+        justify-content: center;
+      }
+      .aside.collapsed .logo-content {
+        justify-content: center;
+      }
+      .sidebar-expand-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: rgba(255, 107, 53, 0.15);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        color: #ff6b35;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        margin: 16px auto;
+      }
+      .sidebar-expand-btn:hover {
+        background: rgba(255, 107, 53, 0.25);
+        border-color: rgba(255, 107, 53, 0.5);
+        transform: scale(1.1);
+      }
+      .sidebar-expand-btn:active {
+        transform: scale(0.95);
+      }
+      
+      /* 顶部栏样式 */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-bottom: none;
+        height: 64px;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      /* 按钮样式优化 */
+      .sidebar-toggle-btn {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
+        background: rgba(255, 107, 53, 0.15) !important;
+        border: 1px solid rgba(255, 107, 53, 0.3) !important;
+        color: #ff6b35 !important;
+        transition: all 0.3s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .sidebar-toggle-btn:hover {
+        background: rgba(255, 107, 53, 0.25) !important;
+        border-color: rgba(255, 107, 53, 0.5) !important;
+        transform: scale(1.1) !important;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important;
+      }
+      .sidebar-toggle-btn:active {
+        transform: scale(0.95) !important;
+      }
+      .fullscreen-btn {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        background: rgba(59, 130, 246, 0.1) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        color: #3b82f6 !important;
+        transition: all 0.3s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .fullscreen-btn:hover {
+        background: rgba(59, 130, 246, 0.2) !important;
+        border-color: rgba(59, 130, 246, 0.5) !important;
+        color: #2563eb !important;
+        transform: scale(1.1) !important;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+      }
+      .fullscreen-btn:active {
+        transform: scale(0.95) !important;
+      }
+      
+      /* 主内容区域 */
+      .main {
+        background: #fef7f0;
+        padding: 24px;
+      }
+      
+      /* 工具栏样式 */
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 16px 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .toolbar .actions { 
+        display: flex; 
+        gap: 12px;
+        margin-left: 0;
+      }
+      
+      /* 卡片样式 */
+      .el-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .content-card { 
+        min-height: 400px;
+        background: #ffffff;
+      }
+      
+      /* 分页样式 */
+      .pagination { 
+        display: flex; 
+        justify-content: center; 
+        margin-top: 24px;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* 面包屑样式 */
+      .el-breadcrumb {
+        font-weight: 500;
+      }
+      
+      /* 菜单样式优化 */
+      .el-menu {
+        border-right: none;
+        background: #001529 !important;
+      }
+      .el-menu-item {
+        margin: 4px 12px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.85) !important;
+        border-left: 3px solid transparent;
+      }
+      .el-menu-item:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-left-color: #ff6b35;
+        color: #ffffff !important;
+      }
+      .el-menu-item.is-active {
+        background: #ff6b35 !important;
+        color: white !important;
+        border-left-color: #f7931e;
+      }
+      .el-sub-menu__title {
+        color: rgba(255, 255, 255, 0.85) !important;
+        margin: 4px 12px;
+        border-radius: 6px;
+        border-left: 3px solid transparent;
+      }
+      .el-sub-menu__title:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-left-color: #ff6b35;
+        color: #ffffff !important;
+      }
+      
+      /* 侧边栏折叠时仅展示图标 */
+      .aside.collapsed .el-menu-item span,
+      .aside.collapsed .el-sub-menu__title span {
+        display: none !important;
+      }
+      .aside.collapsed .el-sub-menu__icon-arrow {
+        display: none !important;
+      }
+      .aside.collapsed .el-menu-item,
+      .aside.collapsed .el-sub-menu__title {
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      .aside.collapsed .el-menu-item .el-icon,
+      .aside.collapsed .el-sub-menu__title .el-icon {
+        margin-right: 0 !important;
+      }
+      .aside.collapsed .el-menu-item .fa,
+      .aside.collapsed .el-sub-menu__title .fa {
+        margin-right: 0 !important;
+      }
+
+      /* 侧边栏图标统一尺寸与间距（Font Awesome） */
+      .aside .el-menu .fa {
+        font-size: 16px;
+        width: 16px;
+        text-align: center;
+        margin-right: 12px;
+        color: #ffffff;
+      }
+
+      /* 按钮样式优化 */
+      .el-button--primary {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        border: none;
+      }
+      .el-button--primary:hover {
+        background: linear-gradient(135deg, #e55a2b 0%, #e0841a 100%);
+      }
+      
+      /* 全屏图标样式（Font Awesome） */
+      .fullscreen-icon {
+        font-size: 18px;
+        color: #3b82f6; /* 蓝色提升辨识度，与侧栏控制区区分 */
+        cursor: pointer;
+        padding: 8px; /* 提升可点击面积 */
+        border-radius: 50%;
+        transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+      }
+      .fullscreen-icon:hover,
+      .fullscreen-icon:focus {
+        background: rgba(59, 130, 246, 0.12);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        transform: scale(1.05);
+        outline: none;
+      }
+      .fullscreen-icon:active {
+        transform: scale(0.98);
+      }
+      .fullscreen-icon:focus-visible {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+      }
+
+      /* 表格样式 */
+      .el-table {
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .el-table th {
+        background: #fef7f0;
+        font-weight: 600;
+      }
+      
+      /* 仪表盘样式 */
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+      .stat-icon.folder { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); }
+      .stat-icon.link { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+      .stat-icon.eye { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+      .stat-icon.clock { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+      .stat-info h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        color: #1f2937;
+      }
+      .stat-info p {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 4px 0 0 0;
+      }
+      .welcome-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .welcome-card h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 12px 0;
+      }
+      .welcome-card p {
+        font-size: 16px;
+        color: #6b7280;
+        margin: 0 0 24px 0;
+      }
+      .quick-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .quick-btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .quick-btn.primary {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+      }
+      .quick-btn.primary:hover {
+        background: linear-gradient(135deg, #e55a2b 0%, #e0841a 100%);
+        transform: translateY(-1px);
+      }
+      .quick-btn.secondary {
+        background: #f3f4f6;
+        color: #374151;
+      }
+      .quick-btn.secondary:hover {
+        background: #e5e7eb;
+        transform: translateY(-1px);
+      }
+      
+      /* 用户菜单样式 */
+      .user-menu {
+        position: relative;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid transparent;
+      }
+      .user-info:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 107, 53, 0.3);
+      }
+      .user-info i:first-child {
+        font-size: 20px;
+        color: #ff6b35;
+      }
+      .user-info i:last-child {
+        font-size: 12px;
+        color: #6b7280;
+        transition: transform 0.3s ease;
+      }
+      .user-menu:hover .user-info i:last-child {
+        transform: rotate(180deg);
+      }
+      .user-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        min-width: 160px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        border: none;
+        overflow: hidden;
+      }
+      .user-menu:hover .user-dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        color: #374151;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        border-bottom: none;
+      }
+      .dropdown-item:hover {
+        background: #f8fafc;
+        color: #ff6b35;
+      }
+      .dropdown-item i {
+        width: 16px;
+        text-align: center;
+        font-size: 14px;
+      }
+      
+      /* iframe 集成样式 */
+      .iframe-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 200px);
+        min-height: 600px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .categories-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+      }
+      .iframe-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        color: #6b7280;
+        font-size: 14px;
+        z-index: 10;
+      }
+      .iframe-loading .el-icon {
+        font-size: 24px;
+        color: #ff6b35;
+      }
+      
+      /* 视图切换动画 */
+      .main > div {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      .main > div[style*="display: none"] {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* 响应式优化 */
+      @media (max-width: 768px) {
+        .main {
+          padding: 16px;
+        }
+        .toolbar {
+          flex-direction: column;
+          gap: 12px;
+          align-items: stretch;
+        }
+        .toolbar .actions {
+          justify-content: center;
+        }
+        .dashboard-stats {
+          grid-template-columns: 1fr;
+        }
+        .quick-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+        .iframe-container {
+          height: calc(100vh - 160px);
+          min-height: 500px;
+        }
+      }
+    </style>
+
+    <div id="app">
+      <el-config-provider>
+        <el-container class="layout">
+          <el-aside :width="isCollapse ? '64px' : '220px'" class="aside" :class="{ collapsed: isCollapse }">
+            <div class="logo" :class="{ collapsed: isCollapse }">
+              <div class="logo-content">
+                <i class="fas fa-th-large"></i>
+                <span v-show="!isCollapse">导航系统后台</span>
+              </div>
+              <div class="sidebar-collapse-btn" @click="toggleCollapse" v-show="!isCollapse">
+                <i class="fas fa-angle-left"></i>
+              </div>
+            </div>
+            <div class="sidebar-expand-btn" @click="toggleCollapse" v-show="isCollapse">
+              <i class="fas fa-angle-right"></i>
+            </div>
+            <el-menu :default-active="activeMenu" :collapse="isCollapse" @select="handleSelect" router>
+              <el-menu-item index="/dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>仪表盘</span>
+              </el-menu-item>
+              <el-sub-menu index="1">
+                <template #title>
+                  <i class="fas fa-compass"></i>
+                  <span>导航管理</span>
+                </template>
+                <el-menu-item index="/categories">
+                  <i class="fas fa-list"></i>
+                  <span>分类管理</span>
+                </el-menu-item>
+                <el-menu-item index="/projects">
+                  <i class="fas fa-folder"></i>
+                  <span>链接管理</span>
+                </el-menu-item>
+              </el-sub-menu>
+              <el-menu-item index="/settings">
+                <i class="fas fa-cog"></i>
+                <span>系统设置</span>
+              </el-menu-item>
+            </el-menu>
+          </el-aside>
+
+          <el-container>
+            <el-header class="header">
+              <div class="header-left">
+                <el-button class="sidebar-toggle-btn" text @click="toggleCollapse" v-show="isCollapse">
+                  <el-icon size="16"><component :is="isCollapse ? 'Expand' : 'Fold'" /></el-icon>
+                </el-button>
+                <el-breadcrumb separator="/">
+                  <el-breadcrumb-item v-for="(bc, idx) in breadcrumbs" :key="idx">{{ bc }}</el-breadcrumb-item>
+                </el-breadcrumb>
+              </div>
+              <div class="header-right">
+                <el-input v-model="keyword" placeholder="搜索..." clearable style="width: 220px" @clear="reload" @keyup.enter="reload">
+                  <template #prefix><el-icon><Search /></el-icon></template>
+                </el-input>
+                <el-tooltip content="全屏" placement="bottom">
+                  <i class="fas fa-maximize fullscreen-icon fullscreen-btn"
+                     role="button"
+                     tabindex="0"
+                     aria-label="全屏"
+                     @click="toggleFullScreen"
+                     @keydown.enter="toggleFullScreen"
+                     @keydown.space.prevent="toggleFullScreen"></i>
+                </el-tooltip>
+                <div class="user-menu">
+                  <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>{{ currentUser.username || '管理员' }}</span>
+                    <i class="fas fa-chevron-down"></i>
+                  </div>
+                  <div class="user-dropdown">
+                    <a href="#profile" class="dropdown-item">
+                      <i class="fas fa-user"></i>
+                      个人资料
+                    </a>
+                    <a href="#logout" class="dropdown-item" @click.prevent="logout">
+                      <i class="fas fa-sign-out-alt"></i>
+                      退出登录
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </el-header>
+
+            <el-main class="main">
+              <!-- 仪表盘视图 -->
+              <div v-show="currentView === 'dashboard'">
+                <!-- 仪表盘统计卡片 -->
+                <div class="dashboard-stats">
+                  <div class="stat-card">
+                    <div class="stat-icon folder">
+                      <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="stat-info">
+                      <h3>{{ stats.categoryCount }}</h3>
+                      <p>分类总数</p>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-card">
+                    <div class="stat-icon link">
+                      <i class="fas fa-link"></i>
+                    </div>
+                    <div class="stat-info">
+                      <h3>{{ stats.navigationCount }}</h3>
+                      <p>导航总数</p>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-card">
+                    <div class="stat-icon eye">
+                      <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                      <h3>{{ stats.publicCount }}</h3>
+                      <p>公开项目</p>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-card">
+                    <div class="stat-icon clock">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                      <h3>{{ stats.todayCount }}</h3>
+                      <p>今日新增</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 欢迎卡片 -->
+                <div class="welcome-card">
+                  <h2>欢迎使用导航系统管理后台</h2>
+                  <p>您可以在这里管理导航分类、导航项目和系统设置。</p>
+                  <div class="quick-actions">
+                    <button class="quick-btn primary" @click="switchToCategories">
+                      <i class="fas fa-plus"></i>
+                      添加分类
+                    </button>
+                    <button class="quick-btn secondary" @click="goToNavigation">
+                      <i class="fas fa-plus"></i>
+                      添加导航
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 分类管理视图 -->
+              <div v-show="currentView === 'categories'" class="iframe-container">
+                <div v-if="iframeLoading" class="iframe-loading">
+                  <el-icon class="is-loading"><Loading /></el-icon>
+                  <span>正在加载分类管理...</span>
+                </div>
+                <iframe 
+                  ref="categoriesIframe"
+                  src="./categories.html" 
+                  class="categories-iframe"
+                  @load="onIframeLoad"
+                  frameborder="0"
+                ></iframe>
+              </div>
+            </el-main>
+          </el-container>
+        </el-container>
+
+
+
+      </el-config-provider>
+    </div>
+
+    <script>
+      const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+      const App = {
+        setup() {
+          const isCollapse = ref(false);
+          const activeMenu = ref('/dashboard');
+          const breadcrumbs = ref(['首页', '仪表盘']);
+          const currentView = ref('dashboard'); // 'dashboard' | 'categories'
+          const iframeLoading = ref(false);
+          const categoriesIframe = ref(null);
+
+          const keyword = ref('');
+          const viewMode = ref('list'); // 'list' | 'tree'
+          const statusFilter = ref('all'); // all | enabled | disabled
+
+          // 认证与用户信息
+          const apiBaseUrl = 'http://localhost:5000/api';
+          const currentUser = reactive({ id: null, username: '' });
+
+          // 仪表盘统计数据
+          const stats = reactive({
+            categoryCount: 0,
+            navigationCount: 0,
+            publicCount: 0,
+            todayCount: 0
+          });
+
+          // 加载统计数据
+          async function loadStats() {
+            try {
+              const token = localStorage.getItem('admin_token');
+              if (!token) return;
+              
+              // 获取分类统计
+              const categoryResp = await fetch(`${apiBaseUrl}/admin/categories`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (categoryResp.ok) {
+                const categoryData = await categoryResp.json();
+                if (categoryData.code === 1) {
+                  stats.categoryCount = categoryData.data.total || 0;
+                  stats.publicCount = categoryData.data.items?.filter(item => item.is_public).length || 0;
+                }
+              }
+              
+              // 模拟其他统计数据
+              stats.navigationCount = Math.floor(Math.random() * 100) + 50;
+              stats.todayCount = Math.floor(Math.random() * 10) + 1;
+            } catch (error) {
+              console.error('加载统计数据失败:', error);
+              // 使用模拟数据
+              stats.categoryCount = 15;
+              stats.navigationCount = 68;
+              stats.publicCount = 12;
+              stats.todayCount = 3;
+            }
+          }
+
+          function toggleCollapse() { isCollapse.value = !isCollapse.value; }
+          
+          function handleSelect(index) {
+            activeMenu.value = index;
+            
+            // 根据选中的菜单项切换视图
+            if (index === '/dashboard') {
+              currentView.value = 'dashboard';
+              breadcrumbs.value = ['首页', '仪表盘'];
+            } else if (index === '/categories') {
+              switchToCategories();
+            } else if (index === '/projects') {
+              currentView.value = 'dashboard';
+              breadcrumbs.value = ['首页', '项目管理'];
+              ElementPlus.ElMessage.info('项目管理功能开发中...');
+            } else {
+              currentView.value = 'dashboard';
+              breadcrumbs.value = ['首页', '系统设置'];
+              ElementPlus.ElMessage.info('系统设置功能开发中...');
+            }
+          }
+          
+          // 切换到分类管理视图
+          function switchToCategories() {
+            currentView.value = 'categories';
+            activeMenu.value = '/categories';
+            breadcrumbs.value = ['首页', '分类管理'];
+            iframeLoading.value = true;
+          }
+          
+          // iframe 加载完成事件
+          function onIframeLoad() {
+            iframeLoading.value = false;
+          }
+          function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen();
+            } else if (document.exitFullscreen) {
+              document.exitFullscreen();
+            }
+          }
+          async function logout() {
+            try {
+              await ElementPlus.ElMessageBox.confirm('确认退出登录？', '提示', { type: 'warning' });
+            } catch (_) {
+              return;
+            }
+            const token = localStorage.getItem('admin_token');
+            try {
+              await fetch(`${apiBaseUrl}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+            } catch (e) {
+              // 忽略网络错误，仍然执行本地清理
+            }
+            // 清理本地并跳转登录
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_user');
+            ElementPlus.ElMessage.success('已退出登录');
+            setTimeout(() => {
+              window.location.href = './login.html';
+            }, 300);
+          }
+          function reload() {
+            loadStats();
+            ElementPlus.ElMessage.success('已刷新');
+          }
+          
+          // 快捷操作方法
+          function goToCategories() {
+            // 切换到分类管理视图
+            switchToCategories();
+          }
+          
+          function goToNavigation() {
+            // 这里可以添加路由跳转逻辑
+            ElementPlus.ElMessage.info('跳转到导航管理页面');
+          }
+
+          async function ensureAuthenticated() {
+            let token = localStorage.getItem('admin_token');
+            // 兼容: 如果存在 access_token（文档示例中的键名），则同步到 admin_token
+            if (!token) {
+              const altToken = localStorage.getItem('access_token');
+              if (altToken) {
+                console.log('[Auth] 检测到 access_token，进行兼容同步 -> admin_token');
+                localStorage.setItem('admin_token', altToken);
+                token = altToken;
+              }
+            }
+            if (!token) {
+              console.warn('[Auth] 未发现本地 token，跳转登录页');
+              window.location.href = './login.html';
+              return;
+            }
+            try {
+              // 优先调用 /user/profile
+              const resp = await fetch(`${apiBaseUrl}/user/profile`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.code === 1 && data.data) {
+                  currentUser.id = data.data.id;
+                  currentUser.username = data.data.username || '';
+                  localStorage.setItem('admin_user', JSON.stringify(data.data));
+                  console.log('[Auth] 登录状态有效（profile），当前用户：', currentUser.username);
+                  return;
+                }
+                console.error('[Auth] /user/profile 返回无效数据：', data);
+              } else {
+                console.warn('[Auth] /user/profile 响应非 2xx, status=', resp.status);
+              }
+
+              // 回退调用 /auth/verify
+              const verifyResp = await fetch(`${apiBaseUrl}/auth/verify`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (!verifyResp.ok) throw new Error('verify failed');
+              const vr = await verifyResp.json();
+              if (vr && vr.code === 1) {
+                // 兼容不同数据结构
+                const u = (vr.data && (vr.data.user || vr.data)) || (vr.user || null);
+                if (u) {
+                  currentUser.id = u.id || null;
+                  currentUser.username = u.username || '';
+                  localStorage.setItem('admin_user', JSON.stringify(u));
+                }
+                console.log('[Auth] 登录状态有效（verify），当前用户：', currentUser.username || '(未知)');
+                return;
+              }
+              throw new Error('invalid verify');
+            } catch (e) {
+              ElementPlus.ElMessage.error('会话已失效，请重新登录');
+              localStorage.removeItem('admin_token');
+              localStorage.removeItem('admin_user');
+              window.location.href = './login.html';
+            }
+          }
+
+          onMounted(() => {
+            ensureAuthenticated();
+            loadStats();
+          });
+
+          return {
+            isCollapse, activeMenu, breadcrumbs, keyword,
+            currentView, iframeLoading, categoriesIframe,
+            stats, currentUser,
+            // methods
+            toggleCollapse, handleSelect, switchToCategories, onIframeLoad,
+            toggleFullScreen, logout, reload,
+            goToCategories, goToNavigation, loadStats,
+          };
+        },
+      };
+
+      const app = createApp(App);
+      // 注册图标库
+      for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component);
+      }
+      app.use(ElementPlus);
+      app.mount('#app');
+    </script>
+  </body>
+</html>

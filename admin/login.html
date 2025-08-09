@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理员登录 - 导航系统</title>
+
+<!-- Vue 3 -->
+<script src="https://unpkg.com/vue@3"></script>
+
+<!-- Element Plus CSS -->
+<link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+
+<!-- Element Plus JavaScript -->
+<script src="https://unpkg.com/element-plus"></script>
+
+<!-- Element Plus Icons -->
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        /* 优化背景配色：更现代的蓝紫渐变 */
+        background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+    }
+    
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .login-header .logo {
+        /* 提升 Logo 视觉：圆形渐变底，白色图标 */
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(99,102,241,1) 0%, rgba(139,92,246,1) 100%);
+        box-shadow: 0 10px 24px rgba(99,102,241,0.35);
+    }
+    .login-header .logo .el-icon {
+        font-size: 36px;
+        color: #ffffff;
+    }
+    
+    .login-header h1 {
+        margin: 0 0 8px 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #303133;
+    }
+    
+    .login-header p {
+        margin: 0;
+        color: #909399;
+        font-size: 14px;
+    }
+    
+    .login-form {
+        margin-top: 32px;
+    }
+    
+    .form-item {
+        margin-bottom: 24px;
+    }
+    
+    .login-button {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .remember-me {
+        margin: 16px 0;
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #ebeef5;
+        color: #909399;
+        font-size: 12px;
+    }
+    
+    .error-message {
+        color: #f56c6c;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+</style>
+</head>
+<body>
+<div id="app">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <el-icon><Shield /></el-icon>
+                </div>
+                <h1>
+                    <el-icon style="vertical-align: -2px; margin-right: 6px; color:#6366f1;"><Setting /></el-icon>
+                    管理系统
+                </h1>
+                <p>
+                    <el-icon style="vertical-align: -1px; margin-right: 4px; color:#909399;"><Key /></el-icon>
+                    管理员登录，请输入您的凭据
+                </p>
+            </div>
+            
+            <el-form 
+                ref="loginFormRef"
+                :model="loginForm" 
+                :rules="loginRules"
+                class="login-form"
+                @submit.prevent="handleLogin"
+            >
+                <el-form-item prop="username" class="form-item">
+                    <el-input
+                        v-model="loginForm.username"
+                        placeholder="请输入管理员用户名"
+                        size="large"
+                        :prefix-icon="User"
+                        clearable
+                    />
+                </el-form-item>
+                
+                <el-form-item prop="password" class="form-item">
+                    <el-input
+                        v-model="loginForm.password"
+                        type="password"
+                        placeholder="请输入密码"
+                        size="large"
+                        :prefix-icon="Lock"
+                        show-password
+                        clearable
+                        @keyup.enter="handleLogin"
+                    />
+                </el-form-item>
+                
+                <div class="remember-me">
+                    <el-checkbox v-model="loginForm.rememberMe">
+                        记住我
+                    </el-checkbox>
+                </div>
+                
+                <el-button 
+                    type="primary" 
+                    class="login-button"
+                    :loading="loading"
+                    @click="handleLogin"
+                >
+                    <el-icon v-if="!loading"><Right /></el-icon>
+                    {{ loading ? '登录中...' : '登录管理系统' }}
+                </el-button>
+            </el-form>
+            
+            <div class="login-footer">
+                <p>导航系统管理后台 v2.0</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, reactive, onMounted } = Vue;
+    const { ElMessage, ElLoading } = ElementPlus;
+    
+    // 引入图标
+    const icons = ElementPlusIconsVue;
+    
+    const App = {
+        setup() {
+            const loginFormRef = ref();
+            const loading = ref(false);
+            
+            const loginForm = reactive({
+                username: '',
+                password: '',
+                rememberMe: false
+            });
+            
+            const loginRules = {
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' },
+                    { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名只能包含字母、数字和下划线', trigger: 'blur' }
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                    { min: 6, max: 50, message: '密码长度在 6 到 50 个字符', trigger: 'blur' }
+                ]
+            };
+            
+            const apiBaseUrl = 'http://localhost:5000/api';
+            
+            // 处理登录
+            const handleLogin = async () => {
+                if (!loginFormRef.value) return;
+                
+                try {
+                    const valid = await loginFormRef.value.validate();
+                    if (!valid) return;
+                    
+                    loading.value = true;
+                    
+                    const response = await fetch(`${apiBaseUrl}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: loginForm.username,
+                            password: loginForm.password,
+                            remember_me: loginForm.rememberMe
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.code === 1) {
+                        // 登录成功
+                        handleLoginSuccess(result.data);
+                    } else {
+                        // 登录失败
+                        ElMessage.error(result.msg || '登录失败，请检查用户名和密码');
+                    }
+                    
+                } catch (error) {
+                    console.error('登录请求失败:', error);
+                    console.error('错误详情:', {
+                        message: error.message,
+                        stack: error.stack
+                    });
+                    ElMessage.error('网络连接失败，请检查后端服务是否启动');
+                } finally {
+                    loading.value = false;
+                }
+            };
+            
+            // 处理登录成功
+            const handleLoginSuccess = async (data) => {
+                try {
+                    // 从后端返回的数据结构中获取实际的token
+                    const actualToken = data.token.access_token;
+                    
+                    // 保存token和用户信息
+                    localStorage.setItem('admin_token', actualToken);
+                    localStorage.setItem('admin_user', JSON.stringify(data.user));
+                    
+                    // 处理记住用户名
+                    if (loginForm.rememberMe) {
+                        localStorage.setItem('admin_remembered_username', loginForm.username);
+                    } else {
+                        localStorage.removeItem('admin_remembered_username');
+                    }
+                    
+                    console.log('Token已保存:', actualToken.substring(0, 20) + '...');
+                    console.log('Token完整信息:', data.token);
+                    console.log('用户信息:', data.user);
+                    
+                    // 立即验证token有效性
+                    const isTokenValid = await verifyTokenBeforeRedirect(actualToken);
+                    
+                    if (isTokenValid) {
+                        ElMessage.success('登录成功，正在跳转...');
+                        
+                        // 延迟跳转
+                        setTimeout(() => {
+                            window.location.href = './dashboard.html';
+                        }, 1000);
+                    } else {
+                        // Token验证失败，清除存储
+                        localStorage.removeItem('admin_token');
+                        localStorage.removeItem('admin_user');
+                        ElMessage.error('登录验证失败，请重试');
+                    }
+                    
+                } catch (error) {
+                    console.error('处理登录成功时出错:', error);
+                    ElMessage.error('登录处理失败，请重试');
+                }
+            };
+            
+            // 验证token有效性（跳转前）
+            const verifyTokenBeforeRedirect = async (token) => {
+                try {
+                    console.log('正在验证token有效性...');
+                    // 优先 /user/profile
+                    const response = await fetch(`${apiBaseUrl}/user/profile`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('Token验证结果(profile):', result);
+                        if (result.code === 1) return true;
+                    } else {
+                        console.warn('profile 验证非 2xx:', response.status);
+                    }
+
+                    // 回退 /auth/verify
+                    const resp2 = await fetch(`${apiBaseUrl}/auth/verify`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (!resp2.ok) return false;
+                    const vr = await resp2.json();
+                    console.log('Token验证结果(verify):', vr);
+                    return vr && vr.code === 1;
+                } catch (error) {
+                    console.error('Token验证异常:', error);
+                    return false;
+                }
+            };
+            
+            // 加载记住的用户名
+            const loadRememberedUsername = () => {
+                const rememberedUsername = localStorage.getItem('admin_remembered_username');
+                if (rememberedUsername) {
+                    loginForm.username = rememberedUsername;
+                    loginForm.rememberMe = true;
+                }
+            };
+            
+            // 检查是否已登录
+            const checkLoginStatus = async () => {
+                const token = localStorage.getItem('admin_token');
+                if (token) {
+                    console.log('发现已存在的token，正在验证...');
+                    
+                    try {
+                        // 先试 profile，再试 verify
+                        const ok = await verifyTokenBeforeRedirect(token);
+                        if (ok) {
+                            window.location.href = './dashboard.html';
+                            return;
+                        }
+                    } catch (error) {
+                        console.warn('验证token时发生异常：', error);
+                    }
+                    
+                    console.log('已存在token无效，清除并显示登录页面');
+                    // token无效，清除
+                    localStorage.removeItem('admin_token');
+                    localStorage.removeItem('admin_user');
+                }
+                
+                // 加载记住的用户名
+                loadRememberedUsername();
+            };
+            
+            onMounted(() => {
+                checkLoginStatus();
+            });
+            
+
+        
+            return {
+                loginFormRef,
+                loginForm,
+                loginRules,
+                loading,
+                handleLogin,
+                // 图标
+                User: icons.User,
+                Lock: icons.Lock,
+                Right: icons.Right,
+                Shield: icons.Shield
+            };
+        }
+    };
+    
+
+   
+    const app = createApp(App);
+    app.use(ElementPlus);
+    
+    // 注册所有图标
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component);
+    }
+    
+    app.mount('#app');
+</script>
+</body>
+</html>

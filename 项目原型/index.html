@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航栏原型 - 产品设计</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="prototype-container">
+        <h1 class="prototype-title">导航栏原型设计 - 所有状态</h1>
+        
+        <!-- 主导航栏原型 -->
+        <section class="prototype-section">
+            <h2>1. 主导航栏 (默认状态)</h2>
+            <div class="navbar-container">
+                <header class="main-navbar">
+                    <div class="navbar-left">
+                        <div class="logo">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <span class="logo-text">小众技术</span>
+                            <span class="logo-badge">精选</span>
+                        </div>
+                        <nav class="primary-nav">
+                            <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> 首页</a>
+                            <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i> 广告合作</a>
+                        </nav>
+                    </div>
+                    <div class="navbar-right">
+                        <a href="#" class="nav-item"><i class="fa-solid fa-envelope"></i> 邮箱</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-globe"></i> 网盘</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-video"></i> 视频</a>
+                        <a href="#" class="nav-item"><i class="fa-brands fa-weixin"></i></a>
+                        <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    </div>
+                </header>
+            </div>
+        </section>
+
+        <!-- 二级导航栏原型 -->
+        <section class="prototype-section">
+            <h2>2. 二级导航栏</h2>
+            <div class="navbar-container">
+                <div class="secondary-navbar">
+                    <nav class="category-nav">
+                        <a href="#" class="category-item active">站内</a>
+                        <a href="#" class="category-item">搜索引擎</a>
+                        <a href="#" class="category-item">短视频</a>
+                        <a href="#" class="category-item">影视</a>
+                        <a href="#" class="category-item">音乐</a>
+                        <a href="#" class="category-item">购物</a>
+                        <a href="#" class="category-item">社区</a>
+                        <a href="#" class="category-item">生活</a>
+                        <a href="#" class="category-item">求职</a>
+                    </nav>
+                    <div class="search-container">
+                        <input type="text" placeholder="站内搜索" class="search-input">
+                        <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 侧边导航栏原型 -->
+        <section class="prototype-section">
+            <h2>3. 侧边导航栏</h2>
+            <div class="sidebar-container">
+                <aside class="sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="#" class="sidebar-item active">
+                            <i class="fa-solid fa-fire"></i>
+                            <span>热门推荐</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-toolbox"></i>
+                            <span>AI工具库</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                            <span>好评如潮</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-film"></i>
+                            <span>免费影视</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-book"></i>
+                            <span>免费看书</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-images"></i>
+                            <span>免费素材</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-search"></i>
+                            <span>资源搜索</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>学习网站</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-download"></i>
+                            <span>软件下载</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-image"></i>
+                            <span>图片工具</span>
+                        </a>
+                        <a href="#" class="sidebar-item">
+                            <i class="fa-solid fa-wrench"></i>
+                            <span>工具网站</span>
+                        </a>
+                    </nav>
+                </aside>
+            </div>
+        </section>
+
+        <!-- 卡片导航区域 -->
+        <section class="prototype-section">
+            <h2>4. 卡片导航区域</h2>
+            <div class="card-nav-container">
+                <div class="card-grid">
+                    <!-- 第一行卡片 -->
+                    <div class="card">
+                        <i class="fa-solid fa-fish card-icon blue-icon"></i>
+                        <div class="card-content">
+                            <h3>DeepSeek AI 高血版 (入口)</h3>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-file-powerpoint card-icon blue-icon"></i>
+                        <div class="card-content">
+                            <h3>免费AI生成PPT</h3>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-file-powerpoint card-icon pink-icon"></i>
+                        <div class="card-content">
+                            <h3>AI免费生成高质PPT</h3>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-chart-line card-icon blue-icon"></i>
+                        <div class="card-content">
+                            <h3>AI免费生成图表</h3>
+                        </div>
+                    </div>
+
+                    <!-- 第二行卡片 -->
+                    <div class="card wide-card">
+                        <i class="fa-solid fa-image card-icon"></i>
+                        <div class="card-content">
+                            <h3>免费AI设计图片编辑工具</h3>
+                        </div>
+                    </div>
+                    <div class="card wide-card">
+                        <i class="fa-solid fa-file-pdf card-icon pink-icon"></i>
+                        <div class="card-content">
+                            <h3>免费PDF翻译识别转换</h3>
+                        </div>
+                    </div>
+
+                    <!-- 广告横幅 - 占满整行 -->
+                    <div class="banner wide-banner blue-banner" style="grid-column: 1 / -1;">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <h3>AI一键生成毕业论文</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 热门推荐区域 -->
+        <section class="prototype-section">
+            <h2>5. 热门推荐区域</h2>
+            <div class="hot-recommend-container">
+                <div class="section-header">
+                    <i class="fa-solid fa-fire"></i>
+                    <h3>热门推荐</h3>
+                </div>
+                <div class="recommend-grid">
+                    <div class="recommend-card">
+                        <div class="recommend-icon">
+                            <i class="fa-solid fa-film icon-circle"></i>
+                        </div>
+                        <div class="recommend-content">
+                            <h4>555电影</h4>
+                            <p>画质高清，速度快！</p>
+                        </div>
+                        <div class="hot-badge">热</div>
+                    </div>
+                    <div class="recommend-card">
+                        <div class="recommend-icon">
+                            <i class="fa-solid fa-graduation-cap icon-circle"></i>
+                        </div>
+                        <div class="recommend-content">
+                            <h4>AI一键生成毕业论文</h4>
+                            <p>速度快，查重率低！</p>
+                        </div>
+                        <div class="hot-badge">热</div>
+                    </div>
+                    <div class="recommend-card">
+                        <div class="recommend-icon">
+                            <i class="fa-solid fa-robot icon-circle"></i>
+                        </div>
+                        <div class="recommend-content">
+                            <h4>智灵AI一键生成</h4>
+                            <p>3分钟搞定一篇优质论文</p>
+                        </div>
+                    </div>
+                    <div class="recommend-card">
+                        <div class="recommend-icon">
+                            <i class="fa-solid fa-mobile-screen icon-circle"></i>
+                        </div>
+                        <div class="recommend-content">
+                            <h4>免费影视APP</h4>
+                            <p>观看高清电影与电视剧</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 交互状态展示 -->
+        <section class="prototype-section">
+            <h2>6. 交互状态展示</h2>
+            
+            <div class="interaction-states">
+                <div class="state-container">
+                    <h3>导航项悬停状态</h3>
+                    <div class="navbar-container">
+                        <div class="nav-item-demo">
+                            <a href="#" class="nav-item">普通状态</a>
+                            <a href="#" class="nav-item hover-state">悬停状态</a>
+                            <a href="#" class="nav-item active">激活状态</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="state-container">
+                    <h3>搜索框交互状态</h3>
+                    <div class="search-states">
+                        <div class="search-demo">
+                            <input type="text" placeholder="默认状态" class="search-input">
+                            <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                        <div class="search-demo focus-demo">
+                            <input type="text" placeholder="聚焦状态" class="search-input focus-state">
+                            <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                        <div class="search-demo">
+                            <input type="text" value="已输入内容" class="search-input">
+                            <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="state-container">
+                    <h3>卡片交互状态</h3>
+                    <div class="card-states">
+                        <div class="card">
+                            <i class="fa-solid fa-image card-icon"></i>
+                            <div class="card-content">
+                                <h3>默认状态</h3>
+                            </div>
+                        </div>
+                        <div class="card hover-state">
+                            <i class="fa-solid fa-image card-icon"></i>
+                            <div class="card-content">
+                                <h3>悬停状态</h3>
+                            </div>
+                        </div>
+                        <div class="card active-state">
+                            <i class="fa-solid fa-image card-icon"></i>
+                            <div class="card-content">
+                                <h3>点击状态</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 综合展示区域 -->
+        <section class="prototype-section">
+            <h2>7. web页面布局</h2>
+            <div class="comprehensive-view">
+                <!-- 主导航栏 -->
+                <header class="main-navbar">
+                    <div class="navbar-left">
+                        <div class="logo">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <span class="logo-text custom-red">小众技术</span>
+                            <span class="logo-badge">精选</span>
+                        </div>
+                        <nav class="primary-nav">
+                            <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> 首页</a>
+                            <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i> 广告合作</a>
+                        </nav>
+                    </div>
+                    <div class="navbar-right">
+                        <a href="#" class="nav-item"><i class="fa-solid fa-envelope"></i> 邮箱</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-globe"></i> 网盘</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-video"></i> 视频</a>
+                        <a href="#" class="nav-item"><i class="fa-brands fa-weixin"></i></a>
+                        <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    </div>
+                </header>
+
+                <!-- 中心Tab导航区域 -->
+                <div class="center-tab-area">
+                    <div class="center-tabs">
+                        <a href="#" class="center-tab-item active">站内</a>
+                        <a href="#" class="center-tab-item">搜索引擎</a>
+                        <a href="#" class="center-tab-item">短视频</a>
+                        <a href="#" class="center-tab-item">影视</a>
+                        <a href="#" class="center-tab-item">音乐</a>
+                        <a href="#" class="center-tab-item">购物</a>
+                        <a href="#" class="center-tab-item">社区</a>
+                        <a href="#" class="center-tab-item">生活</a>
+                        <a href="#" class="center-tab-item">求职</a>
+                    </div>
+                    
+                    <!-- 搜索框区域 -->
+                    <div class="center-search-container">
+                        <input type="text" placeholder="Bing全网搜索" class="center-search-input">
+                        <button class="center-search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                    
+                    <!-- 搜索引擎选项 -->
+                    <div class="search-engine-options">
+                        <a href="#" class="search-engine-option">Bing</a>
+                        <a href="#" class="search-engine-option">Google</a>
+                        <a href="#" class="search-engine-option">百度</a>
+                        <a href="#" class="search-engine-option">Yandex</a>
+                        <a href="#" class="search-engine-option">神马</a>
+                        <a href="#" class="search-engine-option">360</a>
+                        <a href="#" class="search-engine-option">搜狗</a>
+                        <a href="#" class="search-engine-option">头条</a>
+                    </div>
+                </div>
+
+                <!-- 主内容区域 -->
+                <div class="main-content-area">
+                    <!-- 侧边导航栏 -->
+                    <aside class="sidebar">
+                        <nav class="sidebar-nav">
+                            <a href="#" class="sidebar-item active">
+                                <i class="fa-solid fa-fire"></i>
+                                <span>热门推荐</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fa-solid fa-toolbox"></i>
+                                <span>AI工具库</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span>好评如潮</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fa-solid fa-film"></i>
+                                <span>免费影视</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fa-solid fa-book"></i>
+                                <span>免费看书</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fa-solid fa-images"></i>
+                                <span>免费素材</span>
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <!-- 右侧内容区域 -->
+                    <div class="right-content">
+                        <!-- 卡片导航区域 -->
+                        <div class="card-grid">
+                            <!-- 第一行卡片 -->
+                            <div class="card">
+                                <i class="fa-solid fa-fish card-icon blue-icon"></i>
+                                <div class="card-content">
+                                    <h3>DeepSeek AI 高血版 (入口)</h3>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <i class="fa-solid fa-file-powerpoint card-icon blue-icon"></i>
+                                <div class="card-content">
+                                    <h3>免费AI生成PPT</h3>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <i class="fa-solid fa-file-powerpoint card-icon pink-icon"></i>
+                                <div class="card-content">
+                                    <h3>AI免费生成高质PPT</h3>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <i class="fa-solid fa-chart-line card-icon blue-icon"></i>
+                                <div class="card-content">
+                                    <h3>AI免费生成图表</h3>
+                                </div>
+                            </div>
+
+                            <!-- 第二行卡片 -->
+                            <div class="card wide-card">
+                                <i class="fa-solid fa-image card-icon"></i>
+                                <div class="card-content">
+                                    <h3>免费AI设计图片编辑工具</h3>
+                                </div>
+                            </div>
+                            <div class="card wide-card">
+                                <i class="fa-solid fa-file-pdf card-icon pink-icon"></i>
+                                <div class="card-content">
+                                    <h3>免费PDF翻译识别转换</h3>
+                                </div>
+                            </div>
+
+                            <!-- 广告横幅 -->
+                            <div class="banner wide-banner blue-banner" style="grid-column: 1 / -1;">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <h3>AI一键生成毕业论文</h3>
+                            </div>
+                        </div>
+
+                        <!-- 热门推荐区域 -->
+                        <div class="hot-recommend-container">
+                            <div class="section-header">
+                                <i class="fa-solid fa-fire"></i>
+                                <h3>热门推荐</h3>
+                            </div>
+                            <div class="recommend-grid">
+                                <div class="recommend-card">
+                                    <div class="recommend-icon">
+                                        <i class="fa-solid fa-film icon-circle"></i>
+                                    </div>
+                                    <div class="recommend-content">
+                                        <h4>555电影</h4>
+                                        <p>画质高清，速度快！</p>
+                                    </div>
+                                    <div class="hot-badge">热</div>
+                                </div>
+                                <div class="recommend-card">
+                                    <div class="recommend-icon">
+                                        <i class="fa-solid fa-graduation-cap icon-circle"></i>
+                                    </div>
+                                    <div class="recommend-content">
+                                        <h4>AI一键生成毕业论文</h4>
+                                        <p>速度快，查重率低！</p>
+                                    </div>
+                                    <div class="hot-badge">热</div>
+                                </div>
+                                <div class="recommend-card">
+                                    <div class="recommend-icon">
+                                        <i class="fa-solid fa-robot icon-circle"></i>
+                                    </div>
+                                    <div class="recommend-content">
+                                        <h4>智灵AI一键生成</h4>
+                                        <p>3分钟搞定一篇优质论文</p>
+                                    </div>
+                                </div>
+                                <div class="recommend-card">
+                                    <div class="recommend-icon">
+                                        <i class="fa-solid fa-mobile-screen icon-circle"></i>
+                                    </div>
+                                    <div class="recommend-content">
+                                        <h4>免费影视APP</h4>
+                                        <p>观看高清电影与电视剧</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 工具网站区域 -->
+                        <div class="tools-area-container">
+                            <div class="section-header">
+                                <i class="fa-solid fa-toolbox"></i>
+                                <h3>工具网站</h3>
+                            </div>
+                            <div class="tab-nav">
+                                <div class="tab-item active" data-tab="pdf">PDF转换</div>
+                                <div class="tab-item" data-tab="digital">数码相关</div>
+                                <div class="tab-item" data-tab="maps">地图网站</div>
+                                <div class="tab-item" data-tab="transfer">文件传输</div>
+                                <div class="tab-item" data-tab="video">视频下载</div>
+                            </div>
+                            <div class="tab-content active" id="pdf-tab">
+                                <div class="search-cards">
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #e74c3c;">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF压缩工具</div>
+                                            <div class="search-card-desc">快速压缩PDF文件</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #3498db;">
+                                            <i class="fa-solid fa-file-signature"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF在线编辑</div>
+                                            <div class="search-card-desc">无需下载即可编辑</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #2ecc71;">
+                                            <i class="fa-solid fa-file-contract"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF合并分割</div>
+                                            <div class="search-card-desc">多文件处理工具</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #9b59b6;">
+                                            <i class="fa-solid fa-language"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF翻译工具</div>
+                                            <div class="search-card-desc">多语言翻译支持</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="digital-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-mobile-screen icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>手机性能排行</h4>
+                                            <p>最新跑分排名</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-laptop icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>笔记本选购</h4>
+                                            <p>专业选购指南</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-headphones icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>耳机推荐</h4>
+                                            <p>音质体验测评</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-camera icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>相机评测</h4>
+                                            <p>专业摄影设备</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="maps-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-map icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>离线地图</h4>
+                                            <p>无网络也能导航</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-car icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>实时路况</h4>
+                                            <p>避开拥堵路段</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-compass icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>全球卫星图</h4>
+                                            <p>高清卫星影像</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-route icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>路线规划</h4>
+                                            <p>多种出行方式</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="transfer-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cloud-upload-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件上传</h4>
+                                            <p>快速分享大文件</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cloud-download-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件下载</h4>
+                                            <p>高速下载不限速</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-share-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件分享</h4>
+                                            <p>安全分享文件</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-lock icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>加密传输</h4>
+                                            <p>保护隐私安全</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="video-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-video icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频下载器</h4>
+                                            <p>支持多平台下载</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-film icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频格式转换</h4>
+                                            <p>多格式互转工具</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cut icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频剪辑</h4>
+                                            <p>在线剪辑编辑</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-closed-captioning icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>字幕提取</h4>
+                                            <p>自动生成字幕</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 友情链接区域 -->
+                        <div class="friend-links-container">
+                            <div class="section-header">
+                                <i class="fa-solid fa-link"></i>
+                                <h3>友情链接</h3>
+                            </div>
+                            <div class="friend-links-wrapper">
+                                <a href="#" class="friend-link" style="color: #fff;">阿众软件库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">小众超级页</a>
+                                <a href="#" class="friend-link" style="color: #fff;">硬核指南</a>
+                                <a href="#" class="friend-link" style="color: #fff;">亚洲云服务器</a>
+                                <a href="#" class="friend-link" style="color: #fff;">下次一定白嫖库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">AIGC工具导航</a>
+                                <a href="#" class="friend-link" style="color: #fff;">小众AI工具库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">AI工具箱</a>
+                                <a href="#" class="friend-link" style="color: #fff;">更多链接</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网站说明区域 - 移到外部以占满整个宽度 -->
+                    <div class="site-info-container">
+                        <div class="site-logo">
+                            <img src="https://via.placeholder.com/120x40" alt="小众技术" class="footer-logo">
+                        </div>
+                        <div class="site-info-links-container">
+                            <div class="site-info-links-column">
+                                <a href="#" class="site-info-link" style="color: #fff;">关于本站</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">网站地图</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">广告合作</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">热门排行</a>
+                            </div>
+                            <div class="site-info-links-column">
+                                <a href="#" class="site-info-link" style="color: #fff;">免责声明</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">网址分类</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">公告列表</a>
+                                <a href="#" class="site-info-link" style="color: #fff;">网址标签</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 响应式设计展示 -->
+        <section class="prototype-section">
+            <h2>7. 响应式设计</h2>
+            
+            <div class="responsive-demos">
+                <div class="responsive-container">
+                    <h3>桌面视图</h3>
+                    <div class="desktop-view">
+                        <div class="main-navbar mini-view">
+                            <div class="navbar-left">
+                                <div class="logo">
+                                    <i class="fa-solid fa-circle-user"></i>
+                                    <span class="logo-text">小众技术</span>
+                                </div>
+                            </div>
+                            <div class="navbar-right">
+                                <a href="#" class="ad-icon"><i class="fa-solid fa-bullhorn"></i></a>
+                                <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                <a href="#" class="menu-icon" id="desktop-menu-toggle"><i class="fa-solid fa-bars"></i></a>
+                            </div>
+                        </div>
+                        <div class="desktop-menu">
+                            <a href="#" class="mobile-menu-item">邮箱</a>
+                            <a href="#" class="mobile-menu-item">网盘</a>
+                            <a href="#" class="mobile-menu-item">视频</a>
+                        </div>
+                        <div class="hot-area">
+                            <div class="hot-area-title">
+                                <i class="fa-solid fa-fire"></i> 热门推荐
+                            </div>
+                            <div class="search-cards">
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-film"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">555电影</div>
+                                        <div class="search-card-desc">画质高清，速度快！</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">AI一键生成毕业论文</div>
+                                        <div class="search-card-desc">速度快，查重率低！</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="responsive-container">
+                    <h3>平板视图 <span style="color: #F44336; font-size: 12px;">(包含工具网站区域和Tab切换功能)</span></h3>
+                    <div class="tablet-view">
+                        <div class="main-navbar mini-view">
+                            <div class="navbar-left">
+                                <div class="logo">
+                                    <i class="fa-solid fa-circle-user"></i>
+                                    <span class="logo-text">小众技术</span>
+                                </div>
+                            </div>
+                            <div class="navbar-right">
+                                <a href="#" class="ad-icon"><i class="fa-solid fa-bullhorn"></i></a>
+                                <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                <a href="#" class="menu-icon" id="tablet-menu-toggle"><i class="fa-solid fa-bars"></i></a>
+                            </div>
+                        </div>
+                        <div class="tablet-menu">
+                            <a href="#" class="mobile-menu-item">邮箱</a>
+                            <a href="#" class="mobile-menu-item">网盘</a>
+                            <a href="#" class="mobile-menu-item">视频</a>
+                        </div>
+                        <div class="hot-area">
+                            <div class="hot-area-title">
+                                <i class="fa-solid fa-fire"></i> 热门推荐
+                            </div>
+                            <div class="search-cards">
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-film"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">555电影</div>
+                                        <div class="search-card-desc">画质高清，速度快！</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">AI一键生成毕业论文</div>
+                                        <div class="search-card-desc">速度快，查重率低！</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">智灵AI一键生成</div>
+                                        <div class="search-card-desc">3分钟搞定一篇优质论文</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-mobile-screen"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">免费影视APP</div>
+                                        <div class="search-card-desc">观看高清电影与电视剧</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">免费AI设计图片</div>
+                                        <div class="search-card-desc">一键生成高质量图片</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">免费PDF转换</div>
+                                        <div class="search-card-desc">翻译识别转换一体</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="hot-area">
+                            <div class="hot-area-title">
+                                <i class="fa-solid fa-video"></i> 免费影视
+                            </div>
+                            <div class="search-cards">
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon" style="background-color: #00a5e0;">
+                                        <i class="fa-brands fa-tencent-weibo"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">腾讯视频</div>
+                                        <div class="search-card-desc">海量高清视频内容</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon" style="background-color: #fb7299;">
+                                        <i class="fa-brands fa-bilibili"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">哔哩哔哩</div>
+                                        <div class="search-card-desc">年轻人的视频社区</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon" style="background-color: #00cc36;">
+                                        <i class="fa-solid fa-circle-play"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">爱奇艺</div>
+                                        <div class="search-card-desc">高清流畅看大片</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="search-card">
+                                    <div class="search-card-icon" style="background-color: #ff6600;">
+                                        <i class="fa-solid fa-tv"></i>
+                                    </div>
+                                    <div class="search-card-content">
+                                        <div class="search-card-title">芒果TV</div>
+                                        <div class="search-card-desc">湖南卫视官方视频</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tools-area">
+                            <div class="tools-area-title">
+                                <i class="fa-solid fa-toolbox"></i> 工具网站
+                            </div>
+                            <div class="tab-nav">
+                                <div class="tab-item active" data-tab="pdf">PDF转换</div>
+                                <div class="tab-item" data-tab="digital">数码相关</div>
+                                <div class="tab-item" data-tab="maps">地图网站</div>
+                                <div class="tab-item" data-tab="transfer">文件传输</div>
+                                <div class="tab-item" data-tab="video">视频下载</div>
+                            </div>
+                            <div class="tab-content active" id="pdf-tab">
+                                <div class="search-cards">
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #e74c3c;">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF压缩工具</div>
+                                            <div class="search-card-desc">快速压缩PDF文件</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #3498db;">
+                                            <i class="fa-solid fa-file-signature"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF在线编辑</div>
+                                            <div class="search-card-desc">无需下载即可编辑</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #2ecc71;">
+                                            <i class="fa-solid fa-file-contract"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF合并分割</div>
+                                            <div class="search-card-desc">多文件处理工具</div>
+                                        </div>
+                                    </a>
+                                    <a href="#" class="search-card">
+                                        <div class="search-card-icon" style="background-color: #9b59b6;">
+                                            <i class="fa-solid fa-language"></i>
+                                        </div>
+                                        <div class="search-card-content">
+                                            <div class="search-card-title">PDF翻译工具</div>
+                                            <div class="search-card-desc">多语言翻译支持</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="digital-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-mobile-screen icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>手机性能排行</h4>
+                                            <p>最新跑分排名</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-laptop icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>笔记本选购</h4>
+                                            <p>专业选购指南</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-headphones icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>耳机推荐</h4>
+                                            <p>音质体验测评</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-camera icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>相机评测</h4>
+                                            <p>专业摄影设备</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="maps-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-map icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>离线地图</h4>
+                                            <p>无网络也能导航</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-car icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>实时路况</h4>
+                                            <p>避开拥堵路段</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-compass icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>全球卫星图</h4>
+                                            <p>高清卫星影像</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-route icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>路线规划</h4>
+                                            <p>多种出行方式</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="transfer-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cloud-upload-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件上传</h4>
+                                            <p>快速分享大文件</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cloud-download-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件下载</h4>
+                                            <p>高速下载不限速</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-share-alt icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>文件分享</h4>
+                                            <p>安全分享文件</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-lock icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>加密传输</h4>
+                                            <p>保护隐私安全</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="video-tab">
+                                <div class="search-cards">
+                                    <!-- Removed the search cards as requested -->
+                                </div>
+                                
+                                <!-- 四个导航栏 -->
+                                <div class="recommend-grid" style="margin-top: 20px;">
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-video icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频下载器</h4>
+                                            <p>支持多平台下载</p>
+                                        </div>
+                                        <div class="hot-badge">热</div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-film icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频格式转换</h4>
+                                            <p>多格式互转工具</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-cut icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>视频剪辑</h4>
+                                            <p>在线剪辑编辑</p>
+                                        </div>
+                                    </div>
+                                    <div class="recommend-card">
+                                        <div class="recommend-icon">
+                                            <i class="fa-solid fa-closed-captioning icon-circle"></i>
+                                        </div>
+                                        <div class="recommend-content">
+                                            <h4>字幕提取</h4>
+                                            <p>自动生成字幕</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="friend-links-area">
+                            <div class="friend-links-title">
+                                <i class="fa-solid fa-link"></i> 友情链接
+                            </div>
+                            <div class="friend-links-container">
+                                <a href="#" class="friend-link" style="color: #fff;">阿众软件库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">小众超级页</a>
+                                <a href="#" class="friend-link" style="color: #fff;">硬核指南</a>
+                                <a href="#" class="friend-link" style="color: #fff;">亚洲云服务器</a>
+                                <a href="#" class="friend-link" style="color: #fff;">下次一定白嫖库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">AIGC工具导航</a>
+                                <a href="#" class="friend-link" style="color: #fff;">小众AI工具库</a>
+                                <a href="#" class="friend-link" style="color: #fff;">AI工具箱</a>
+                                <a href="#" class="friend-link" style="color: #fff;">更多链接</a>
+                            </div>
+                        </div>
+                        <div class="site-info-area">
+                            <div class="site-logo">
+                                <img src="https://via.placeholder.com/120x40" alt="小众技术" class="footer-logo">
+                            </div>
+                            <div class="site-info-links-container">
+                                <div class="site-info-links-column">
+                                    <a href="#" class="site-info-link" style="color: #fff;">关于本站</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">网站地图</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">广告合作</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">热门排行</a>
+                                </div>
+                                <div class="site-info-links-column">
+                                    <a href="#" class="site-info-link" style="color: #fff;">免责声明</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">网址分类</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">公告列表</a>
+                                    <a href="#" class="site-info-link" style="color: #fff;">网址标签</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="responsive-container">
+                    <h3>移动视图</h3>
+                    <div class="mobile-view">
+                        <div class="main-navbar mini-view">
+                            <div class="navbar-left">
+                                <div class="logo">
+                                    <i class="fa-solid fa-circle-user"></i>
+                                </div>
+                            </div>
+                            <div class="navbar-right">
+                                <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i></a>
+                                <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                <a href="#" class="menu-icon" id="mobile-menu-toggle"><i class="fa-solid fa-bars"></i></a>
+                            </div>
+                        </div>
+                        <div class="mobile-menu">
+                            <a href="#" class="mobile-menu-item">邮箱</a>
+                            <a href="#" class="mobile-menu-item">网盘</a>
+                            <a href="#" class="mobile-menu-item">视频</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 设计规范 -->
+        <section class="prototype-section">
+            <h2>8. 设计规范</h2>
+            
+            <div class="design-specs">
+                <div class="color-palette">
+                    <h3>颜色规范</h3>
+                    <div class="colors">
+                        <div class="color-item">
+                            <div class="color-swatch primary-color"></div>
+                            <div class="color-info">
+                                <h4>主色调</h4>
+                                <p>#1e88e5</p>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-swatch secondary-color"></div>
+                            <div class="color-info">
+                                <h4>次要色</h4>
+                                <p>#ff4081</p>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-swatch accent-color"></div>
+                            <div class="color-info">
+                                <h4>强调色</h4>
+                                <p>#ff9800</p>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-swatch dark-color"></div>
+                            <div class="color-info">
+                                <h4>深色背景</h4>
+                                <p>#212121</p>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-swatch light-color"></div>
+                            <div class="color-info">
+                                <h4>浅色文本</h4>
+                                <p>#f5f5f5</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="typography">
+                    <h3>字体规范</h3>
+                    <div class="font-samples">
+                        <div class="font-item">
+                            <h1 class="font-h1">标题一 (24px)</h1>
+                            <p>用于主要标题，如页面标题</p>
+                        </div>
+                        <div class="font-item">
+                            <h2 class="font-h2">标题二 (20px)</h2>
+                            <p>用于次要标题，如区域标题</p>
+                        </div>
+                        <div class="font-item">
+                            <h3 class="font-h3">标题三 (18px)</h3>
+                            <p>用于卡片标题，导航项</p>
+                        </div>
+                        <div class="font-item">
+                            <p class="font-p">正文文本 (16px)</p>
+                            <p>用于一般内容文本</p>
+                        </div>
+                        <div class="font-item">
+                            <p class="font-small">小文本 (14px)</p>
+                            <p>用于辅助文本，说明文字</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="spacing">
+                    <h3>间距规范</h3>
+                    <div class="spacing-samples">
+                        <div class="spacing-item">
+                            <div class="spacing-block xs-space"></div>
+                            <p>超小间距 (4px)</p>
+                        </div>
+                        <div class="spacing-item">
+                            <div class="spacing-block sm-space"></div>
+                            <p>小间距 (8px)</p>
+                        </div>
+                        <div class="spacing-item">
+                            <div class="spacing-block md-space"></div>
+                            <p>中间距 (16px)</p>
+                        </div>
+                        <div class="spacing-item">
+                            <div class="spacing-block lg-space"></div>
+                            <p>大间距 (24px)</p>
+                        </div>
+                        <div class="spacing-item">
+                            <div class="spacing-block xl-space"></div>
+                            <p>超大间距 (32px)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

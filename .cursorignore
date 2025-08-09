@@ -1,0 +1,30 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+# ====================== 第一部分：严格排除（高优先级）======================
+# 虚拟环境 - 使用绝对路径和相对路径双重保证
+**/site-packages/**/*
+app/.pytest_cache/**/*
+app/python-sdk-1.5.0/**/*
+项目原型/*
+web/*
+
+# ====================== 第二部分：通用排除 ======================
+# Python缓存
+**/__pycache__/**/*
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache/**/*
+
+# 开发工具和临时文件
+.git/**/*
+.idea/**/*
+.vscode/**/*
+**/.DS_Store
+**/*.swp
+**/*.swo
+**/*.bak
+**/*.tmp
+
+# ====================== 第三部分：强制包含（最高优先级）======================
+# 后端源码 - 明确指定目录
+web.rar

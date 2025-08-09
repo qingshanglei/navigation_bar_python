@@ -1,0 +1,78 @@
+{
+  "mcpServers": {
+      "puppeteer": {
+          "command": "npx",
+          "args": [
+              "-y",
+              "@modelcontextprotocol/server-puppeteer"
+          ],
+          "env": {}
+      },
+      "filesystem": {
+          "command": "npx",
+          "args": [
+              "@modelcontextprotocol/server-filesystem",
+              "F:\\练习\\Java\\Project\\navigation_project",
+              "/"
+          ]
+      },
+      "sqlite": {
+          "command": "docker",
+          "args": [
+              "run",
+              "-i",
+              "--rm",
+              "-v",
+              "backend\\instance\\app.db:/data/db.sqlite",
+              "mcp/sqlite",
+              "/data/db.sqlite"
+          ],
+          "env": {}
+      },
+      "postgresql": {
+          "command": "npx",
+          "args": [
+              "-y",
+              "modelcontextprotocol/server-postgresql"
+          ],
+          "env": {}
+      },
+      "sequential-thinking": {
+          "command": "npx",
+          "args": [
+              "-y",
+              "modelcontextprotocol/server-sequential-thinking"
+          ],
+          "env": {}
+      },
+      "terminal": {
+          "command": "npx",
+          "args": [
+              "-y",
+              "modelcontextprotocol/server-terminal"
+          ],
+          "env": {}
+      },
+      "bytebase-postgresql": {
+          "command": "npx",
+          "args": [
+              "@bytebase/dbhub",
+              "--transport",
+              "sse",
+              "--port",
+              "8080",
+              "--dsn",
+              "sqlite:///f:/练习/Java/Project/navigation_project/backend/instance/app.db"
+          ],
+          "env": {}
+      },
+      "iBz-04@Filesys": {
+          "command": "npx",
+          "args": [
+              "-y",
+              "@modelcontextprotocol/server-filesystem"
+          ],
+          "env": {}
+      }
+  }
+}

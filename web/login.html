@@ -1,0 +1,205 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <!-- Element Plus Icons -->
+    <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+    <title>登录 - 导航系统</title>
+    <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        background: linear-gradient(135deg, #1f2937 0%, #0ea5e9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+          Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      }
+      .login-wrapper {
+        width: 100%;
+        max-width: 420px;
+        padding: 16px;
+      }
+      .brand {
+        text-align: center;
+        margin-bottom: 16px;
+        color: #fff;
+      }
+      .brand h1 {
+        margin: 8px 0 4px;
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .brand p { margin: 0; opacity: .85; }
+      .footer-link { text-align: center; margin-top: 12px; }
+      .footer-link a { color: #409eff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="login-wrapper">
+      <div class="brand">
+        <el-icon size="36" color="#fff"><Compass /></el-icon>
+        <h1>导航系统</h1>
+        <p>欢迎回来，请登录您的账户</p>
+      </div>
+
+      <el-card shadow="hover" body-style="padding: 24px 20px;">
+        <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @keyup.enter="onSubmit">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model.trim="form.username" placeholder="请输入用户名" clearable>
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" type="password" show-password placeholder="请输入密码">
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-checkbox v-model="form.rememberMe">记住我</el-checkbox>
+            <div style="flex:1"></div>
+            <el-link type="primary" :underline="false" href="#">忘记密码？</el-link>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" style="width:100%" :loading="loading" @click="onSubmit">
+              登录
+            </el-button>
+          </el-form-item>
+
+          <el-alert v-if="errorMsg" :title="errorMsg" type="error" show-icon :closable="false" />
+          <el-alert v-if="successMsg" :title="successMsg" type="success" show-icon :closable="false" style="margin-top:8px;" />
+        </el-form>
+        <div class="footer-link">
+          <a href="./index.html">返回主页</a>
+        </div>
+      </el-card>
+    </div>
+
+    <script>
+      const { createApp, ref, reactive, onMounted } = Vue;
+      const { ElMessage } = ElementPlus;
+
+      const App = {
+        setup() {
+          const formRef = ref();
+          const loading = ref(false);
+          const errorMsg = ref('');
+          const successMsg = ref('');
+
+          const form = reactive({
+            username: '',
+            password: '',
+            rememberMe: false,
+          });
+
+          const rules = {
+            username: [
+              { required: true, message: '请输入用户名', trigger: 'blur' },
+              { min: 3, max: 20, message: '用户名长度必须在3-20位之间', trigger: 'blur' },
+              { validator: (_, v, cb) => { /^[a-zA-Z0-9_]+$/.test(v || '') ? cb() : cb(new Error('用户名只能包含字母、数字和下划线')); }, trigger: 'blur' },
+            ],
+            password: [
+              { required: true, message: '请输入密码', trigger: 'blur' },
+              { min: 6, max: 20, message: '密码长度必须在6-20位之间', trigger: 'blur' },
+            ],
+          };
+
+          const hideMessage = () => {
+            errorMsg.value = '';
+            successMsg.value = '';
+          };
+
+          const setLoading = (val) => { loading.value = val; };
+
+          const saveRemember = () => {
+            if (form.rememberMe && form.username) {
+              localStorage.setItem('saved_username', form.username);
+            } else {
+              localStorage.removeItem('saved_username');
+            }
+          };
+
+          const loadSaved = () => {
+            const saved = localStorage.getItem('saved_username');
+            if (saved) {
+              form.username = saved;
+              form.rememberMe = true;
+            }
+          };
+
+          const doLogin = async () => {
+            const resp = await fetch('http://localhost:5000/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: form.username,
+                password: form.password,
+                remember_me: form.rememberMe,
+              }),
+            });
+            return await resp.json();
+          };
+
+          const handleLoginSuccess = (data) => {
+            localStorage.setItem('access_token', data.token.access_token);
+            localStorage.setItem('user_info', JSON.stringify(data.user));
+            saveRemember();
+            successMsg.value = '登录成功，正在跳转...';
+            ElMessage.success('登录成功');
+            setTimeout(() => { window.location.href = './index.html'; }, 1500);
+          };
+
+          const onSubmit = () => {
+            hideMessage();
+            formRef.value.validate(async (valid) => {
+              if (!valid) return;
+              try {
+                setLoading(true);
+                const res = await doLogin();
+                if (res && res.code === 1) {
+                  handleLoginSuccess(res.data);
+                } else {
+                  errorMsg.value = (res && res.msg) || '登录失败';
+                  ElMessage.error(errorMsg.value);
+                }
+              } catch (e) {
+                console.error('登录错误:', e);
+                errorMsg.value = '网络错误，请稍后重试';
+                ElMessage.error(errorMsg.value);
+              } finally {
+                setLoading(false);
+              }
+            });
+          };
+
+          onMounted(() => { loadSaved(); });
+
+          return { formRef, form, rules, loading, errorMsg, successMsg, onSubmit };
+        },
+      };
+
+      const app = createApp(App);
+      app.use(ElementPlus);
+      // register icons
+      for (const [key, comp] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, comp);
+      }
+      app.mount('#app');
+    </script>
+  </body>
+</html>
