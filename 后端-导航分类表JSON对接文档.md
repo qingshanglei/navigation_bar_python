@@ -1,7 +1,7 @@
 # 后端-导航分类表JSON对接文档
 
-版本：v1.1  
-最后更新：2025-08-08
+版本：v1.2  
+最后更新：2025-08-10
 
 ---
 
@@ -225,6 +225,56 @@
             "created_at": "2025-08-01 10:05:00"
         }
     ]
+}
+```
+
+### 2.5 获取所有顶级分类列表
+
+**基本信息**
+- **请求路径**: `/admin/categories/categoriesRoot`
+- **请求方式**: GET
+- **接口描述**: 获取所有顶级分类（parent_id 为 null 的分类）列表
+- **认证要求**: 需要JWT Token
+
+**请求参数**
+无
+
+**成功响应**
+```json
+{
+    "code": 1,
+    "msg": "获取顶级分类成功",
+    "data": [
+        {
+            "id": 1,
+            "parent_id": null,
+            "name": "编程网站",
+            "description": "编程相关的网站集合",
+            "sort_order": 1,
+            "level": 1,
+            "is_public": 1,
+            "created_at": "2025-08-01 10:00:00"
+        },
+        {
+            "id": 2,
+            "parent_id": null,
+            "name": "工具网站",
+            "description": "编程相关的网站集合",
+            "sort_order": 1,
+            "level": 1,
+            "is_public": 1,
+            "created_at": "2025-08-01 10:00:00"
+        }
+    ]
+}
+```
+
+**失败响应**
+```json
+{
+    "code": 0,
+    "msg": "查询失败",
+    "data": []
 }
 ```
 

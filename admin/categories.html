@@ -121,8 +121,7 @@
               <el-option :value="0" label="私有"></el-option>
             </el-select>
             <el-select v-model="filters.sort" placeholder="排序字段" clearable style="width:160px">
-              <el-option value="sort_order" label="排序优先级"></el-option>
-              <el-option value="created_at" label="创建时间"></el-option>
+              <el-option value="sort_order"   label="排序优先级"></el-option>
             </el-select>
             <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
             <el-button icon="el-icon-refresh" @click="resetFilters">重置</el-button>
@@ -213,13 +212,12 @@
           </el-form-item>
           <el-form-item label="父分类" prop="parent_id">
             <el-select v-model="form.parent_id" placeholder="选择父分类（留空为顶级）" clearable style="width:100%">
-              <el-option :value="null" label="顶级分类">顶级分类</el-option>
+              <!-- <el-option :value="null" label="顶级分类">顶级分类</el-option> -->
               <el-option 
                 v-for="item in parentOptions" 
                 :key="item.id" 
                 :value="item.id" 
-                :label="item.name"
-                :disabled="isParentDisabled(item.id)"
+                :label="item.name" 
               >{{ item.name }}</el-option>
             </el-select>
           </el-form-item>
@@ -247,16 +245,16 @@
       el: '#app',
       data() {
         return {
-          loading: false,
-          submitting: false,
-          dialogVisible: false,
-          dialogMode: 'create',
-          list: [],
-          parentOptions: [],
-          pagination: { page: 1, size: 10, total: 0 },
-          filters: { keyword: '', level: null, is_public: null, sort: 'sort_order' },
-          form: { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 },
-          formRules: { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }] }
+          loading: false, // 加载中状态
+          submitting: false, // 提交中状态  
+          dialogVisible: false, // 对话框可见状态
+          dialogMode: 'create', // 对话框模式：create 新建、edit 编辑
+          list: [],// 分类列表
+          parentOptions: [], // 父分类下拉选项
+          pagination: { page: 1, size: 10, total: 0 }, // 分页信息
+          filters: { keyword: '', level: null, is_public: null, sort: 'sort_order' }, // 筛选条件
+          form: { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 }, // 分类表单数据
+          formRules: { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }] }, // 分类表单校验规则
         };
       },
       methods: {
@@ -311,12 +309,13 @@
             if (this.filters.sort) params.sort = this.filters.sort;
             if (this.filters.keyword) params.keyword = this.filters.keyword;
             const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params });
-            console.log("======加载分类列表========resp");
-            console.log(resp);
+        
             const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
               const data = result.data[0];
               this.list = (data.list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
+            
+              
               this.pagination.total = data.pagination ? data.pagination.total : 0;
             } else {
               this.list = [];
@@ -354,12 +353,14 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
+            console.log("======加载父分类下拉选apiBaseUrl项：获取顶级分类列表=====parentOptions===resp");
             const resp = await axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
-            console.log("======加载父分类下拉选项：获取顶级分类列表========resp");
+            console.log("======加载父分类下拉选项：获取顶级分类列表=====parentOptions===resp");
             console.log(resp);
             const result = resp.data;
             if (result.code === 1 && Array.isArray(result.data)) {
               this.parentOptions = result.data;
+            console.log(this.parentOptions );
             } else {
               this.parentOptions = [];
             }

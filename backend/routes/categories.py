@@ -379,6 +379,30 @@ def delete_category(category_id):
     except Exception as e:
         return error_response(f"删除分类失败: {str(e)}"), 500
 
+@categories_bp.route('/categoriesRoot', methods=['GET'])
+@jwt_required()
+def get_root_categories():
+    """
+    获取所有顶级分类列表
+    返回所有parent_id为null的分类
+    """
+    try:
+        # 验证token
+        is_valid, result = validate_token()
+        if not is_valid:
+            return error_response(result), 401
+        
+        # 获取所有顶级分类（parent_id为null）
+        root_categories, _ = Category.get_all({'parent_id': None}, None, None, 'sort_order')
+        
+        # 转换为字典格式
+        data = [cat.to_dict() for cat in root_categories]
+        
+        return success_response(data, "获取顶级分类成功")
+        
+    except Exception as e:
+        return error_response(f"获取顶级分类失败: {str(e)}"), 500
+
 # 公共接口（不需要认证）
 @categories_bp.route('/public', methods=['GET'])
 def get_public_categories():
