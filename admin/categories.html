@@ -258,6 +258,7 @@
         };
       },
       methods: {
+        // 获取认证请求头：兼容多存储与键名，自动补齐 Bearer 前缀
         getAuthHeaders() {
           // 兼容多种存储与键名
           const tryGet = (store, keys) => {
@@ -296,6 +297,7 @@
           const auth = /^Bearer\s+/i.test(token) ? token : `Bearer ${token}`;
           return { 'Content-Type': 'application/json', 'Authorization': auth };
         },
+        // 加载分类列表：根据筛选条件与分页从后端获取数据
         async loadList() {
           this.loading = true;
           try {
@@ -324,6 +326,7 @@
             this.loading = false;
           }
         },
+        // 懒加载子分类：表格树展开时按父ID加载子节点
         async loadChildren(tree, treeNode, resolve) {
           try {
             const headers = this.getAuthHeaders();
@@ -342,6 +345,7 @@
             resolve([]);
           }
         },
+        // 加载父分类下拉选项：获取顶级分类列表
         async loadParentOptions() {
           try {
             const headers = this.getAuthHeaders();
@@ -359,10 +363,12 @@
             this.parentOptions = [];
           }
         },
+        // 判断父分类是否禁用：编辑时禁止选择自身（可扩展为禁止自身及后代）
         isParentDisabled(parentId) {
           if (this.dialogMode === 'create') return false;
           return parentId === this.form.id;
         },
+        // 重置筛选条件并刷新列表
         resetFilters() {
           this.filters.keyword = '';
           this.filters.level = null;
@@ -371,7 +377,9 @@
           this.pagination.page = 1;
           this.reload();
         },
+        // 重新加载列表数据
         reload() { this.loadList(); },
+        // 打开新建对话框：可从行操作默认带入父分类
         openCreate(row) {
           this.dialogMode = 'create';
           this.resetForm();
@@ -379,6 +387,7 @@
           this.loadParentOptions();
           this.dialogVisible = true;
         },
+        // 打开编辑对话框：填充当前行数据
         openEdit(row) {
           this.dialogMode = 'edit';
           this.form.id = row.id;
@@ -390,10 +399,12 @@
           this.loadParentOptions();
           this.dialogVisible = true;
         },
+        // 重置表单：恢复为初始状态并清理校验
         resetForm() {
           this.form = { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 };
           if (this.$refs.formRef) this.$refs.formRef.resetFields();
         },
+        // 提交表单：区分创建/更新，成功后刷新列表
         async handleSubmit() {
           if (!this.$refs.formRef) return;
           try { await this.$refs.formRef.validate(); } catch (e) { return; }
@@ -424,6 +435,7 @@
             this.submitting = false;
           }
         },
+        // 删除分类：二次确认后调用后端删除并刷新
         async handleDelete(row) {
           try {
             await this.$confirm(`确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`, '删除确认', { type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消' });
