@@ -283,6 +283,32 @@ class Category:
             conn.commit()
             return True
     
+    @staticmethod
+    def find_by_name(name):
+        """根据分类名称查找分类"""
+        if not name:
+            return None
+        
+        db = get_db()
+        with db.engine.connect() as conn:
+            result = conn.execute(
+                db.text('SELECT * FROM nav_categories WHERE LOWER(name) = LOWER(:name)'), 
+                {'name': name}
+            )
+            row = result.fetchone()
+            if row:
+                return Category(
+                    id=row[0],
+                    parent_id=row[1],
+                    name=row[2],
+                    description=row[3],
+                    sort_order=row[4],
+                    level=row[5],
+                    is_public=bool(row[6]),
+                    created_at=datetime.fromisoformat(row[7]) if row[7] else None
+                )
+        return None
+    
     def __repr__(self):
         return f'<Category {self.name}>'
 

@@ -22,7 +22,7 @@ def get_categories():
     - level: 分类层级筛选（1,2,3）
     - is_public: 公开状态筛选（1=公开，0=私有）
     - parent_id: 父分类ID筛选
-    - sort: 排序字段（sort_order,created_at）
+    - keyword/q: 名称或描述模糊查询
     """
     try:
         # 验证token
@@ -36,7 +36,8 @@ def get_categories():
         parent_id = request.args.get('parent_id')
         level = request.args.get('level', type=int)
         is_public = request.args.get('is_public', type=int)
-        sort = request.args.get('sort', 'sort_order')
+        kw = request.args.get('keyword', type=str) or request.args.get('q', type=str)
+        sort_field = 'sort_order'  # 固定排序字段，前端已移除排序选项
         
         # 构建过滤条件
         filters = {}
@@ -51,7 +52,14 @@ def get_categories():
             filters['is_public'] = is_public
         
         # 获取所有符合条件的分类（用于构建树结构）
-        all_categories, total = Category.get_all(filters, None, None, sort)
+        all_categories, total = Category.get_all(filters, None, None, sort_field)
+        
+        # 关键词过滤（名称/描述模糊匹配）
+        if kw:
+            kw_lc = kw.strip().lower()
+            def _text(v): return (v or '').lower()
+            all_categories = [c for c in all_categories if (kw_lc in _text(getattr(c, 'name', ''))) or (kw_lc in _text(getattr(c, 'description', '')))]
+            total = len(all_categories)
         
         # 构建树结构
         category_dict = {cat.id: cat for cat in all_categories}

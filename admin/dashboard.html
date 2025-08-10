@@ -74,14 +74,6 @@
       .sidebar-collapse-btn:active {
         transform: scale(0.95);
       }
-      /* 收缩状态下的样式 */
-      .aside.collapsed .logo {
-        padding: 0 16px;
-        justify-content: center;
-      }
-      .aside.collapsed .logo-content {
-        justify-content: center;
-      }
       .sidebar-expand-btn {
         width: 32px;
         height: 32px;
@@ -742,6 +734,21 @@
                   frameborder="0"
                 ></iframe>
               </div>
+
+              <!-- 链接管理视图（iframe 集成 navs.html） -->
+              <div v-if="currentView === 'navs'" class="iframe-container">
+                <div v-if="iframeLoading" class="iframe-loading">
+                  <el-icon class="is-loading"><Loading /></el-icon>
+                  <span>正在加载链接管理...</span>
+                </div>
+                <iframe 
+                  ref="navsIframe"
+                  src="./navs.html" 
+                  class="categories-iframe"
+                  @load="onIframeLoad"
+                  frameborder="0"
+                ></iframe>
+              </div>
             </el-main>
           </el-container>
         </el-container>
@@ -759,9 +766,10 @@
           const isCollapse = ref(false);
           const activeMenu = ref('/dashboard');
           const breadcrumbs = ref(['首页', '仪表盘']);
-          const currentView = ref('dashboard'); // 'dashboard' | 'categories'
+          const currentView = ref('dashboard'); // 'dashboard' | 'categories' | 'navs'
           const iframeLoading = ref(false);
           const categoriesIframe = ref(null);
+          const navsIframe = ref(null);
           const iframeLoadTimer = ref(null);
 
           const keyword = ref('');
@@ -823,9 +831,7 @@
             } else if (index === '/categories') {
               switchToCategories();
             } else if (index === '/projects') {
-              currentView.value = 'dashboard';
-              breadcrumbs.value = ['首页', '项目管理'];
-              ElementPlus.ElMessage.info('项目管理功能开发中...');
+              switchToNavs();
             } else {
               currentView.value = 'dashboard';
               breadcrumbs.value = ['首页', '系统设置'];
@@ -846,13 +852,44 @@
             iframeLoadTimer.value = setTimeout(() => {
               if (iframeLoading.value) {
                 iframeLoading.value = false;
-                ElementPlus.ElMessage.warning('分类页加载较慢，已关闭加载指示。如内容未显示，请直接访问 categories.html 或检查网络/CDN。');
               }
             }, 8000);
-            // 兼容：如果 iframe 早已加载完成（readyState 已是 complete），立即关闭加载指示
             setTimeout(() => {
               try {
                 const iframeEl = categoriesIframe.value;
+                if (iframeEl) {
+                  const doc = iframeEl.contentDocument || (iframeEl.contentWindow && iframeEl.contentWindow.document);
+                  if (doc && doc.readyState === 'complete') {
+                    if (iframeLoadTimer.value) {
+                      clearTimeout(iframeLoadTimer.value);
+                      iframeLoadTimer.value = null;
+                    }
+                    iframeLoading.value = false;
+                  }
+                }
+              } catch (e) {
+                // 忽略跨域或访问异常
+              }
+            }, 0);
+          }
+
+          // 切换到链接管理视图
+          function switchToNavs() {
+            currentView.value = 'navs';
+            activeMenu.value = '/projects';
+            breadcrumbs.value = ['首页', '链接管理'];
+            iframeLoading.value = true;
+            if (iframeLoadTimer.value) {
+              clearTimeout(iframeLoadTimer.value);
+            }
+            iframeLoadTimer.value = setTimeout(() => {
+              if (iframeLoading.value) {
+                iframeLoading.value = false;
+              }
+            }, 8000);
+            setTimeout(() => {
+              try {
+                const iframeEl = navsIframe.value;
                 if (iframeEl) {
                   const doc = iframeEl.contentDocument || (iframeEl.contentWindow && iframeEl.contentWindow.document);
                   if (doc && doc.readyState === 'complete') {
@@ -922,8 +959,7 @@
           }
           
           function goToNavigation() {
-            // 这里可以添加路由跳转逻辑
-            ElementPlus.ElMessage.info('跳转到导航管理页面');
+            switchToNavs();
           }
 
           async function ensureAuthenticated() {
@@ -996,10 +1032,10 @@
 
           return {
             isCollapse, activeMenu, breadcrumbs, keyword,
-            currentView, iframeLoading, categoriesIframe,
+            currentView, iframeLoading, categoriesIframe, navsIframe,
             stats, currentUser,
             // methods
-            toggleCollapse, handleSelect, switchToCategories, onIframeLoad,
+            toggleCollapse, handleSelect, switchToCategories, switchToNavs, onIframeLoad,
             toggleFullScreen, logout, reload,
             goToCategories, goToNavigation, loadStats,
           };

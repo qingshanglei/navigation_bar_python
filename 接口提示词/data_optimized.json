@@ -1,0 +1,456 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "parent_id": null,
+      "name": "编程网站",
+      "description": "编程相关的网站集合",
+      "sort_order": 1,
+      "level": 1,
+      "is_public": 1
+    },
+    {
+      "id": 2,
+      "parent_id": null,
+      "name": "工具网站",
+      "description": "各类实用工具网站",
+      "sort_order": 2,
+      "level": 1,
+      "is_public": 1
+    },
+    {
+      "id": 3,
+      "parent_id": 1,
+      "name": "编码工具",
+      "description": "编码和开发工具",
+      "sort_order": 1,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 4,
+      "parent_id": 1,
+      "name": "后端",
+      "description": "后端开发资源",
+      "sort_order": 2,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 5,
+      "parent_id": 1,
+      "name": "前端",
+      "description": "前端开发资源",
+      "sort_order": 3,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 6,
+      "parent_id": 1,
+      "name": "第三方对接",
+      "description": "第三方服务和API对接资源",
+      "sort_order": 4,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 7,
+      "parent_id": 1,
+      "name": "学习资源",
+      "description": "编程学习相关资源",
+      "sort_order": 5,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 8,
+      "parent_id": 1,
+      "name": "论坛区域",
+      "description": "编程相关论坛和社区",
+      "sort_order": 6,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 9,
+      "parent_id": 2,
+      "name": "PDF转换",
+      "description": "PDF文件处理工具",
+      "sort_order": 1,
+      "level": 2,
+      "is_public": 1
+    },
+    {
+      "id": 10,
+      "parent_id": 2,
+      "name": "数码相关",
+      "description": "数码产品信息和工具",
+      "sort_order": 2,
+      "level": 2,
+      "is_public": 1
+    }
+  ],
+  "navs": [
+    {
+      "id": 1,
+      "category_id": 3,
+      "title": "Visual Studio Code",
+      "url": "https://code.visualstudio.com/",
+      "description": "微软开发的轻量级代码编辑器",
+      "icon": "https://files.codelife.cc/website/visual-studio-code.svg",
+      "sort_order": 1,
+      "is_public": 1
+    },
+    {
+      "id": 2,
+      "category_id": 3,
+      "title": "GitHub",
+      "url": "https://github.com/",
+      "description": "全球最大的代码托管平台",
+      "icon": "https://files.codelife.cc/website/github.svg",
+      "sort_order": 2,
+      "is_public": 1
+    },
+    {
+      "id": 3,
+      "category_id": 3,
+      "title": "Gitee",
+      "url": "https://gitee.com/",
+      "description": "中国本土的代码托管平台",
+      "icon": "https://files.codelife.cc/website/gitee.svg",
+      "sort_order": 3,
+      "is_public": 1
+    },
+    {
+      "id": 4,
+      "category_id": 3,
+      "title": "MarsCode",
+      "url": "https://marscode.com.cn/",
+      "description": "豆包旗下的智能编程工具",
+      "icon": "https://lf-cdn.marscode.com.cn/obj/marscode-cn-release/marscode-icon.png",
+      "sort_order": 4,
+      "is_public": 1
+    },
+    {
+      "id": 5,
+      "category_id": 3,
+      "title": "CodePen",
+      "url": "https://codepen.io/",
+      "description": "前端代码在线编辑器",
+      "icon": "https://files.codelife.cc/website/codepen.svg",
+      "sort_order": 5,
+      "is_public": 1
+    },
+    {
+      "id": 6,
+      "category_id": 3,
+      "title": "JSFiddle",
+      "url": "https://jsfiddle.net/",
+      "description": "在线JavaScript代码测试工具",
+      "icon": "https://files.codelife.cc/website/jsfiddle.png",
+      "sort_order": 6,
+      "is_public": 1
+    },
+    {
+      "id": 7,
+      "category_id": 3,
+      "title": "StackBlitz",
+      "url": "https://stackblitz.com/",
+      "description": "在线IDE，支持多种框架",
+      "icon": "https://files.codelife.cc/website/stackblitz.svg",
+      "sort_order": 7,
+      "is_public": 1
+    },
+    {
+      "id": 8,
+      "category_id": 3,
+      "title": "GitLab",
+      "url": "https://gitlab.com/",
+      "description": "开源的代码托管平台",
+      "icon": "https://files.codelife.cc/website/gitlab.svg",
+      "sort_order": 8,
+      "is_public": 1
+    },
+    {
+      "id": 9,
+      "category_id": 3,
+      "title": "Bitbucket",
+      "url": "https://bitbucket.org/",
+      "description": "Atlassian旗下的代码托管平台",
+      "icon": "https://files.codelife.cc/website/bitbucket.svg",
+      "sort_order": 9,
+      "is_public": 1
+    },
+    {
+      "id": 10,
+      "category_id": 3,
+      "title": "Docker",
+      "url": "https://www.docker.com/",
+      "description": "容器化应用平台",
+      "icon": "https://files.codelife.cc/website/docker.svg",
+      "sort_order": 10,
+      "is_public": 1
+    },
+    {
+      "id": 11,
+      "category_id": 3,
+      "title": "Postman",
+      "url": "https://www.postman.com/",
+      "description": "API开发测试工具",
+      "icon": "https://files.codelife.cc/website/postman.svg",
+      "sort_order": 11,
+      "is_public": 1
+    },
+    {
+      "id": 12,
+      "category_id": 3,
+      "title": "Apifox",
+      "url": "https://www.apifox.cn/",
+      "description": "API一体化协作平台",
+      "icon": "https://files.codelife.cc/icons/www.apifox.cn.svg",
+      "sort_order": 12,
+      "is_public": 1
+    },
+    {
+      "id": 13,
+      "category_id": 4,
+      "title": "MyBatis",
+      "url": "https://mybatis.org/mybatis-3/",
+      "description": "Java持久层框架",
+      "icon": "https://files.codelife.cc/user-website-icon/20220803/J_G1ipNrekOYJSmTCACZ99269.png",
+      "sort_order": 1,
+      "is_public": 1
+    },
+    {
+      "id": 14,
+      "category_id": 4,
+      "title": "MyBatis-Plus",
+      "url": "https://baomidou.com/",
+      "description": "MyBatis增强工具",
+      "icon": "https://files.codelife.cc/icons/20bacf68b2efe5b2.png",
+      "sort_order": 2,
+      "is_public": 1
+    },
+    {
+      "id": 15,
+      "category_id": 4,
+      "title": "Spring",
+      "url": "https://spring.io/",
+      "description": "Java企业级开发框架",
+      "icon": "https://files.codelife.cc/website/5b307dd14c14a60c5612d29d.png",
+      "sort_order": 3,
+      "is_public": 1
+    },
+    {
+      "id": 16,
+      "category_id": 4,
+      "title": "MySQL",
+      "url": "https://dev.mysql.com/",
+      "description": "开源关系型数据库",
+      "icon": "https://files.codelife.cc/website/5f4386f4aa121b0c2ac69e22.png",
+      "sort_order": 4,
+      "is_public": 1
+    },
+    {
+      "id": 17,
+      "category_id": 4,
+      "title": "Redis",
+      "url": "https://redis.io/",
+      "description": "内存数据结构存储",
+      "icon": "https://files.codelife.cc/website/redis.svg",
+      "sort_order": 5,
+      "is_public": 1
+    },
+    {
+      "id": 18,
+      "category_id": 4,
+      "title": "MongoDB",
+      "url": "https://www.mongodb.com/",
+      "description": "文档型数据库",
+      "icon": "https://files.codelife.cc/website/mongodb.svg",
+      "sort_order": 6,
+      "is_public": 1
+    },
+    {
+      "id": 19,
+      "category_id": 4,
+      "title": "PostgreSQL",
+      "url": "https://www.postgresql.org/",
+      "description": "高级开源关系型数据库",
+      "icon": "https://files.codelife.cc/website/postgresql.svg",
+      "sort_order": 7,
+      "is_public": 1
+    },
+    {
+      "id": 20,
+      "category_id": 4,
+      "title": "Elasticsearch",
+      "url": "https://www.elastic.co/",
+      "description": "分布式搜索引擎",
+      "icon": "https://files.codelife.cc/website/elasticsearch.svg",
+      "sort_order": 8,
+      "is_public": 1
+    },
+    {
+      "id": 21,
+      "category_id": 5,
+      "title": "React",
+      "url": "https://react.dev/",
+      "description": "用于构建用户界面的JavaScript库",
+      "icon": "https://files.codelife.cc/website/react.svg",
+      "sort_order": 1,
+      "is_public": 1
+    },
+    {
+      "id": 22,
+      "category_id": 5,
+      "title": "Vue.js",
+      "url": "https://vuejs.org/",
+      "description": "渐进式JavaScript框架",
+      "icon": "https://files.codelife.cc/website/vue.svg",
+      "sort_order": 2,
+      "is_public": 1
+    },
+    {
+      "id": 23,
+      "category_id": 5,
+      "title": "Angular",
+      "url": "https://angular.io/",
+      "description": "Google开发的前端框架",
+      "icon": "https://files.codelife.cc/website/angular.svg",
+      "sort_order": 3,
+      "is_public": 1
+    },
+    {
+      "id": 24,
+      "category_id": 5,
+      "title": "TypeScript",
+      "url": "https://www.typescriptlang.org/",
+      "description": "JavaScript的超集，添加了类型系统",
+      "icon": "https://files.codelife.cc/website/typescript.svg",
+      "sort_order": 4,
+      "is_public": 1
+    },
+    {
+      "id": 25,
+      "category_id": 5,
+      "title": "Webpack",
+      "url": "https://webpack.js.org/",
+      "description": "现代JavaScript应用程序的静态模块打包工具",
+      "icon": "https://files.codelife.cc/website/webpack.svg",
+      "sort_order": 5,
+      "is_public": 1
+    },
+    {
+      "id": 26,
+      "category_id": 5,
+      "title": "Vite",
+      "url": "https://vitejs.dev/",
+      "description": "下一代前端构建工具",
+      "icon": "https://files.codelife.cc/website/vite.svg",
+      "sort_order": 6,
+      "is_public": 1
+    },
+    {
+      "id": 27,
+      "category_id": 9,
+      "title": "iLovePDF",
+      "url": "https://www.ilovepdf.com/",
+      "description": "完全免费的PDF文件在线管理工具",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/iLovePDF.png",
+      "sort_order": 1,
+      "is_public": 1
+    },
+    {
+      "id": 28,
+      "category_id": 9,
+      "title": "PDF转换器",
+      "url": "https://www.pdf2go.com/zh",
+      "description": "在线PDF转换器",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/pdf2go.png",
+      "sort_order": 2,
+      "is_public": 1
+    },
+    {
+      "id": 29,
+      "category_id": 9,
+      "title": "PDF Eagle",
+      "url": "https://cn.pdfeagle.com/",
+      "description": "专业PDF编辑器",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/PDFEagle.png",
+      "sort_order": 3,
+      "is_public": 1
+    },
+    {
+      "id": 30,
+      "category_id": 9,
+      "title": "Smallpdf",
+      "url": "https://smallpdf.com/cn",
+      "description": "在线PDF工具集合",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/smallpdf.png",
+      "sort_order": 4,
+      "is_public": 1
+    },
+    {
+      "id": 31,
+      "category_id": 9,
+      "title": "PDF24 Tools",
+      "url": "https://tools.pdf24.org/zh/",
+      "description": "免费且易于使用的在线PDF工具",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/pdf24.png",
+      "sort_order": 5,
+      "is_public": 1
+    },
+    {
+      "id": 32,
+      "category_id": 10,
+      "title": "鲁大师天梯榜",
+      "url": "https://www.ludashi.com/tianti",
+      "description": "手机、PC硬件性能排行榜",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/ludashi.png",
+      "sort_order": 1,
+      "is_public": 1
+    },
+    {
+      "id": 33,
+      "category_id": 10,
+      "title": "SiliconCat",
+      "url": "https://www.siliconcat.com/",
+      "description": "CPU、GPU、手机SOC性能排行榜",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/siliconcat.png",
+      "sort_order": 2,
+      "is_public": 1
+    },
+    {
+      "id": 34,
+      "category_id": 10,
+      "title": "显卡性能天梯图",
+      "url": "https://www.mydrivers.com/zhuanti/tianti/gpu/",
+      "description": "显卡性能排行榜",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/mydrivers.png",
+      "sort_order": 3,
+      "is_public": 1
+    },
+    {
+      "id": 35,
+      "category_id": 10,
+      "title": "手机性能排行榜",
+      "url": "https://www.phonearena.com/phones/benchmarks",
+      "description": "手机性能跑分排行榜",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/phonearena.png",
+      "sort_order": 4,
+      "is_public": 1
+    },
+    {
+      "id": 36,
+      "category_id": 10,
+      "title": "纳米AI搜索",
+      "url": "https://bot.n.cn/",
+      "description": "360AI搜索，AI智能答案引擎",
+      "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2024/04/1744285564-n.cn.png",
+      "sort_order": 5,
+      "is_public": 1
+    }
+  ]
+}

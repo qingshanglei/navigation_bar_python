@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航管理</title>
+    
+    <!-- Vue 2 -->
+    <script src="https://unpkg.com/vue@2"></script>
+    
+    <!-- Element UI CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    
+    <!-- Element UI JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <style>
+      body, html { 
+        height: 100%; 
+        margin: 0; 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #fef7f0;
+      }
+      .layout { 
+        min-height: 100vh; 
+        padding: 16px; 
+      }
+      .page-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 20px;
+        height: calc(100vh - 80px);
+        display: flex;
+        flex-direction: column;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+      .toolbar .spacer { flex: 1; }
+      .search-area { 
+        display: flex; 
+        gap: 12px; 
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .table-wrap {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .el-table {
+        flex: 1;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .el-table th {
+        background: #fef7f0;
+        font-weight: 600;
+        color: #374151;
+      }
+      .name-cell { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+      }
+      .footer { 
+        margin-top: 16px; 
+        display: flex; 
+        justify-content: flex-end;
+        flex-shrink: 0;
+      }
+      .level-indent { padding-left: 20px; }
+      
+      /* 响应式优化 */
+      @media (max-width: 768px) {
+        .layout {
+          padding: 8px;
+        }
+        .page-card {
+          padding: 12px;
+          height: calc(100vh - 40px);
+        }
+        .search-area {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .search-area .el-input,
+        .search-area .el-select {
+          width: 100% !important;
+        }
+        .toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="layout">
+      <div class="page-card">
+        <div class="toolbar">
+          <div class="search-area">
+            <el-input v-model="filters.keyword" placeholder="搜索标题/描述/链接" clearable style="width:260px"></el-input>
+            <el-select v-model="filters.category_id" placeholder="所属分类" clearable filterable style="width:200px">
+              <el-option 
+                v-for="item in categoryOptionsLevel2" 
+                :key="item.id" 
+                :value="item.id" 
+                :label="item.__label || item.title || item.name">
+              </el-option>
+            </el-select>
+            <el-select v-model="filters.is_public" placeholder="公开状态" clearable style="width:140px">
+              <el-option :value="1" label="公开"></el-option>
+              <el-option :value="0" label="私有"></el-option>
+            </el-select>
+            <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
+            <el-button icon="el-icon-refresh" @click="resetFilters">重置</el-button>
+          </div>
+          <div class="spacer"></div>
+          <el-button type="primary" icon="el-icon-plus" @click="openCreate()">新增导航</el-button>
+          <el-button icon="el-icon-upload" @click="openImportDialog()">CSV 批量导入</el-button>
+          <el-button type="danger" icon="el-icon-delete" :disabled="!multipleSelection.length" @click="handleBatchDelete">批量删除</el-button>
+        </div>
+
+        <div class="table-wrap">
+          <el-table 
+            ref="navsTable"
+            :data="list" 
+            v-loading="loading" 
+            size="small" 
+            border
+            stripe
+            :height="550"
+            row-key="id"
+            @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="50" align="center"></el-table-column>
+            <el-table-column type="index" width="50"  label="序号" align="center"></el-table-column>
+            <!-- 标题 -->
+            <el-table-column prop="title" label="标题" min-width="160"></el-table-column>
+            <!-- 链接地址 -->
+            <el-table-column label="链接地址" min-width="220">
+              <template slot-scope="scope">
+                <a :href="scope.row.url" target="_blank" rel="noopener noreferrer">{{ scope.row.url }}</a>
+              </template>
+            </el-table-column>
+            <!-- 描述 -->
+            <el-table-column label="描述" min-width="220">
+              <template slot-scope="scope">
+                <span v-if="scope.row.description" class="el-text--small">{{ scope.row.description }}</span>
+                <span v-else class="el-text--small" style="color:#909399">-</span>
+              </template>
+            </el-table-column>
+            <!-- 图标（展示字段值） -->
+            <el-table-column label="图标" prop="icon" width="100" align="center">
+              <template slot-scope="scope">
+                <template v-if="scope.row.icon">
+                  <!-- .ico 使用原生 img 渲染，其他格式使用 el-image 支持懒加载与预览 -->
+                  <img v-if="isIco(scope.row.icon) && !scope.row._icoFallback"
+                       :src="scope.row.icon" alt="icon"
+                       referrerpolicy="no-referrer"
+                       @error="onIcoError(scope.row)"
+                        style="width:24px;height:24px;object-fit:contain;border-radius:4px;" />
+                  <el-image v-else
+                            :src="scope.row.icon"
+                            fit="contain"
+                            lazy
+                            :preview-src-list="[scope.row.icon]"
+                            style="width:24px;height:24px;border-radius:4px;">
+                    <div slot="placeholder" class="image-slot" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#c0c4cc;background:#f5f7fa;border-radius:4px;">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                    <div slot="error" class="image-slot" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#c0c4cc;background:#fef0f0;border-radius:4px;">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                </template>
+                <span v-else class="el-text--small" style="color:#909399">-</span>
+              </template>
+            </el-table-column>
+            <!-- 排序优先级 -->
+            <el-table-column prop="sort_order" label="排序优先级" sortable width="120" align="center"></el-table-column>
+            <!-- 是否公开：1=是，0=否 -->
+            <el-table-column label="是否公开" width="90" align="center">
+              <template slot-scope="scope">
+                <el-tag :type="Number(scope.row.is_public) === 1 ? 'success' : 'info'" size="small">
+                  {{ Number(scope.row.is_public) === 1 ? '是' : '否' }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <!-- 创建时间 -->
+            <el-table-column prop="created_at" label="创建时间" width="180" align="center"></el-table-column>
+            <!-- 操作 -->
+            <el-table-column label="操作" width="160" fixed="right" align="center">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="openEdit(scope.row)">编辑</el-button>
+                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <div class="footer">
+          <el-pagination
+            :current-page.sync="pagination.page"
+            :page-size.sync="pagination.size"
+            :page-sizes="[10, 20, 50, 100]"
+            :total="pagination.total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="reload"
+            @current-change="reload"
+          ></el-pagination>
+        </div>
+      </div>
+
+      <!-- 新建/编辑对话框 -->
+      <el-dialog
+        :title="dialogMode === 'create' ? '新增导航' : '编辑导航'"
+        :visible.sync="dialogVisible"
+        width="500px"
+        @close="resetForm"
+      >
+        <el-form
+          ref="formRef"
+          :model="form"
+          :rules="formRules"
+          label-width="100px"
+        >
+          <el-form-item label="分类" prop="category_id">
+            <el-select v-model="form.category_id" placeholder="请选择所属分类" clearable filterable style="width:100%">
+              <el-option 
+                v-for="item in categoryOptionsLevel2" 
+                :key="item.id" 
+                :value="item.id" 
+                :label="item.__label || item.title || item.name">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+          </el-form-item>
+          <el-form-item label="链接地址" prop="url">
+            <el-input v-model="form.url" placeholder="请输入链接地址，如 https://example.com"></el-input>
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入描述"></el-input>
+          </el-form-item>
+          <el-form-item label="图标" prop="icon">
+            <el-input v-model="form.icon" placeholder="可填写图标标识，例如 mdi:vue"></el-input>
+          </el-form-item>
+          <el-form-item label="排序优先级" prop="sort_order">
+            <el-input-number v-model="form.sort_order" :min="0" :max="999" style="width:100%"></el-input-number>
+          </el-form-item>
+          <el-form-item label="公开状态">
+            <el-switch v-model="form.is_public" :active-value="1" :inactive-value="0"></el-switch>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" :loading="submitting" @click="handleSubmit">
+            {{ dialogMode === 'create' ? '创建' : '更新' }}
+          </el-button>
+        </span>
+      </el-dialog>
+
+      <!-- CSV 批量导入对话框 -->
+      <el-dialog
+        title="CSV 批量导入"
+        :visible.sync="importDialogVisible"
+        width="600px"
+        :close-on-click-modal="false"
+      >
+        <el-form label-width="100px">
+          <el-form-item label="选择文件">
+            <el-upload
+              class="upload-demo"
+              action="#"
+              :auto-upload="false"
+              :limit="1"
+              accept=".csv"
+              :file-list="importFileList"
+              :on-change="onImportFileChange"
+              :on-remove="onImportFileRemove"
+              :before-upload="() => false"
+            >
+              <el-button type="primary" icon="el-icon-folder-opened">选择 CSV 文件</el-button>
+              <div slot="tip" class="el-upload__tip">仅支持 UTF-8 的 .csv 文件；表头需含 category_name/title/url（支持中英文别名）</div>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="去重">
+            <el-switch v-model="importForm.dedupe" :active-value="1" :inactive-value="0"></el-switch>
+            <span class="el-text--secondary" style="margin-left:8px;">按“分类名称 + URL”去重</span>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="importDialogVisible = false" :disabled="importLoading">取 消</el-button>
+          <el-button type="primary" :loading="importLoading" @click="submitImport">开始导入</el-button>
+        </span>
+      </el-dialog>
+
+      <!-- 导入结果对话框 -->
+      <el-dialog
+        title="导入结果"
+        :visible.sync="importResultVisible"
+        width="740px"
+      >
+        <div>
+          <p>总数：{{ importResult.total || 0 }}，成功：<span style="color:#67C23A">{{ importResult.success || 0 }}</span>，失败：<span style="color:#F56C6C">{{ importResult.failed || 0 }}</span></p>
+
+          <el-collapse v-if="importResult.errors && importResult.errors.length">
+            <el-collapse-item title="失败明细" name="err">
+              <el-table :data="importResult.errors" size="mini" border height="240">
+                <el-table-column prop="row" label="行号" width="80" align="center"></el-table-column>
+                <el-table-column prop="message" label="原因" min-width="240"></el-table-column>
+              </el-table>
+            </el-collapse-item>
+          </el-collapse>
+
+          <el-collapse v-if="importResult.preview && importResult.preview.length" style="margin-top:10px;">
+            <el-collapse-item title="成功预览" name="ok">
+              <el-table :data="importResult.preview" size="mini" border height="240">
+                <el-table-column type="index" width="60" label="#"></el-table-column>
+                <el-table-column prop="title" label="标题" min-width="160"></el-table-column>
+                <el-table-column prop="url" label="URL" min-width="220"></el-table-column>
+                <el-table-column prop="category_name" label="分类名称" width="140"></el-table-column>
+              </el-table>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="importResultVisible = false">关 闭</el-button>
+        </span>
+      </el-dialog>
+  </div>
+  <script>
+    const apiBaseUrl = 'http://localhost:5000';
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          loading: false, // 加载中状态
+          submitting: false, // 提交中状态  
+          dialogVisible: false, // 对话框可见状态
+          dialogMode: 'create', // 对话框模式：create 新建、edit 编辑
+          list: [],// 导航列表
+          multipleSelection: [], // 表格多选选中项
+          categoryOptions: [], // 分类下拉选项（全部，用于筛选）
+          categoryOptionsLevel2: [], // 仅二级分类（用于表单）
+          pagination: { page: 1, size: 10, total: 0 }, // 分页信息
+          filters: { keyword: '', category_id: null, is_public: null }, // 筛选条件
+          form: { id: null, category_id: null, title: '', url: '', description: '', icon: '', sort_order: 0, is_public: 1 }, // 导航表单数据
+          formRules: { 
+            category_id: [{ required: true, message: '请选择所属分类', trigger: 'change' }],
+            title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+            url: [{ required: true, message: '请输入链接地址', trigger: 'blur' }]
+          }, // 表单校验规则
+          // CSV 导入相关
+          importDialogVisible: false,
+          importLoading: false,
+          importForm: { dedupe: 1 },
+          importFile: null,
+          importFileList: [],
+          importResultVisible: false,
+          importResult: { total: 0, success: 0, failed: 0, errors: [], preview: [] },
+        };
+      },
+      methods: {
+        // 表格多选变化
+        handleSelectionChange(val) {
+          this.multipleSelection = Array.isArray(val) ? val : [];
+        },
+        // 批量删除
+        async handleBatchDelete() {
+          // 获取选中的ID列表
+          const ids = (this.multipleSelection || []).map(it => it && it.id).filter(v => v != null);
+          if (!ids.length) {
+            this.$message.warning('请先选择要删除的导航项');
+            return;
+          }
+          
+          try {
+            // 确认对话框
+            const count = ids.length;
+            await this.$confirm(
+              `是否批量删除选中的 ${count} 条导航项？此操作不可撤销。`,
+              '批量删除确认', 
+              { 
+                type: 'warning', 
+                confirmButtonText: '确定删除', 
+                cancelButtonText: '取消',
+                dangerouslyUseHTMLString: true
+              }
+            );
+        
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+
+            // 显示加载状态
+            const loading = this.$loading({
+              lock: true,
+              text: '正在删除...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(255, 255, 255, 0.7)'
+            });
+
+            try {
+              // 接口路径
+              const apiUrl = `${apiBaseUrl}/admin/navs/bulk-delete`;
+              
+              // 按后端规则最多 1000 条/次，必要时拆分
+              const chunkSize = 1000;
+              const chunks = [];
+              for (let i = 0; i < ids.length; i += chunkSize) {
+                chunks.push(ids.slice(i, i + chunkSize));
+              }
+
+              // 统计结果
+              let totalRequested = 0, totalDeleted = 0, totalNotFound = 0, totalFailed = 0;
+              
+              // 逐批处理
+              for (const batch of chunks) {
+                const body = { ids: batch };
+                try {
+                  const resp = await axios.post(apiUrl, body, { headers });
+                  const respData = resp && resp.data;
+                  
+                  if (respData && respData.code === 1 && respData.data) {
+                    const data = respData.data;
+                    totalRequested += Number(data.requested || batch.length) || 0;
+                    totalDeleted += Number(data.deleted || 0) || 0;
+                    totalNotFound += Array.isArray(data.not_found) ? data.not_found.length : (Number(data.not_found) || 0);
+                    totalFailed += Array.isArray(data.failed) ? data.failed.length : (Number(data.failed) || 0);
+                  } else {
+                    throw new Error(respData.msg || '批量删除失败');
+                  }
+                } catch (e) {
+                  console.error('批量删除请求失败:', e);
+                  const errMsg = e.response && e.response.data && e.response.data.msg 
+                    ? e.response.data.msg 
+                    : (e.message || '未知错误');
+                  throw new Error(`批量删除失败: ${errMsg}`);
+                }
+              }
+
+              // 清空选择并刷新
+              if (this.$refs.navsTable && this.$refs.navsTable.clearSelection) {
+                this.$refs.navsTable.clearSelection();
+              }
+              this.multipleSelection = [];
+              this.reload();
+
+              // 结果提示
+              const summary = `请求 ${totalRequested} 条，删除 ${totalDeleted} 条` +
+                (totalNotFound ? `，未找到 ${totalNotFound} 条` : '') +
+                (totalFailed ? `，失败 ${totalFailed} 条` : '');
+                
+              if (totalFailed > 0) {
+                this.$message.warning('批量删除完成（部分失败）：' + summary);
+              } else if (totalDeleted === 0) {
+                this.$message.warning('批量删除完成（无记录被删除）：' + summary);
+              } else {
+                this.$message.success('批量删除完成：' + summary);
+              }
+            } finally {
+              // 关闭加载状态
+              loading.close();
+            }
+          } catch (e) {
+            if (e === 'cancel') return; // 用户取消操作
+            
+            const msg = (e && e.message) ? e.message : '批量删除失败';
+            this.$message.error(msg);
+            console.error('批量删除出错:', e);
+          }
+        },
+        // 获取认证请求头：兼容多存储与键名，自动补齐 Bearer 前缀
+        getAuthHeaders() {
+          // 兼容多种存储与键名
+          const tryGet = (store, keys) => {
+            for (const k of keys) {
+              const v = store.getItem(k);
+              if (v) return v;
+            }
+            return null;
+          };
+          const keys = ['token', 'Authorization', 'authorization', 'authToken', 'auth_token', 'admin_token'];
+          let token = tryGet(localStorage, keys) || tryGet(sessionStorage, keys);
+
+          // 尝试从 URL 参数获取（仅用于调试/临时登录传参）
+          if (!token && location && location.search) {
+            const sp = new URLSearchParams(location.search);
+            token = sp.get('token') || sp.get('auth') || sp.get('Authorization');
+          }
+
+          if (!token) {
+            this.$message.error('未登录或登录已过期');
+            return null;
+          }
+
+          // 处理 JSON 包装或带引号的情况
+          try {
+            if (token.trim().startsWith('{')) {
+              const obj = JSON.parse(token);
+              token = obj.token || obj.access_token || token;
+            }
+          } catch (e) {
+            // ignore JSON parse error
+          }
+          token = (token || '').toString().replace(/^"|"$/g, '').trim();
+
+          // 自动补齐 Bearer 前缀
+          const auth = /^Bearer\s+/i.test(token) ? token : `Bearer ${token}`;
+          return { 'Content-Type': 'application/json', 'Authorization': auth };
+        },
+        // 加载导航列表：根据筛选条件与分页从后端获取数据
+        async loadList() {
+          this.loading = true;
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const params = { page: this.pagination.page, size: this.pagination.size };
+            if (this.filters.keyword) params.keyword = this.filters.keyword;
+            if (this.filters.category_id) params.category_id = this.filters.category_id;
+            if (this.filters.is_public !== null) params.is_public = this.filters.is_public;
+            const resp = await axios.get(`${apiBaseUrl}/admin/navs/search`, { headers, params });
+
+            const result = resp.data;
+            if (result.code === 1 && result.data) {
+              const data = result.data;
+              this.list = Array.isArray(data.list) ? data.list : [];
+              this.pagination.total = data.pagination ? (data.pagination.total || 0) : 0;
+            } else {
+              this.list = [];
+              this.pagination.total = 0;
+            }
+          } catch (e) {
+            console.error('加载导航列表失败:', e);
+            this.$message.error('加载导航列表失败: ' + e.message);
+          } finally {
+            this.loading = false;
+          }
+        },
+        // 加载分类下拉选项：根分类 + 子分类平铺
+        async loadCategoryOptions() {
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const [rootResp, childResp] = await Promise.all([
+              axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers }),
+              axios.get(`${apiBaseUrl}/admin/categories/categoriesChildren`, { headers }).catch(() => ({ data: { code: 0, data: [] } }))
+            ]);
+            const roots = (rootResp.data && rootResp.data.code === 1 && Array.isArray(rootResp.data.data)) ? rootResp.data.data : [];
+            const children = (childResp.data && childResp.data.code === 1 && Array.isArray(childResp.data.data)) ? childResp.data.data : [];
+
+            // 全部分类（用于工具条筛选）
+            const map = new Map();
+            [...roots, ...children].forEach(it => { if (it && it.id != null) map.set(it.id, it); });
+            this.categoryOptions = Array.from(map.values());
+
+            // 二级分类（用于表单选择）
+            let level2 = children.filter(it => Number(it.level) === 2 || (it.parent_id && roots.some(r => r.id === it.parent_id)));
+            if (level2.length === 0) {
+              // 兜底：从全部中筛选 level=2
+              level2 = this.categoryOptions.filter(it => Number(it.level) === 2);
+            }
+            // 生成“父/子”可读标签
+            const rootIndex = new Map(roots.map(r => [r.id, r]));
+            this.categoryOptionsLevel2 = level2.map(it => {
+              const parent = rootIndex.get(it.parent_id);
+              const parentName = parent ? (parent.name || parent.title || '') : '';
+              const selfName = it.name || it.title || '';
+              return { ...it, __label: parentName ? `${parentName} / ${selfName}` : selfName };
+            });
+            // 若当前筛选选中的不是二级分类，则清空
+            const level2IdSet = new Set(this.categoryOptionsLevel2.map(it => it.id));
+            if (this.filters && this.filters.category_id != null && !level2IdSet.has(this.filters.category_id)) {
+              this.filters.category_id = null;
+            }
+          } catch (e) {
+            console.error('加载分类选项失败:', e);
+            this.categoryOptions = [];
+            this.categoryOptionsLevel2 = [];
+          }
+        },
+        // 判断是否为 .ico 链接（含查询串也可识别）
+        isIco(url) {
+          if (!url || typeof url !== 'string') return false;
+          try {
+            const noHash = url.split('#')[0];
+            return /\.ico(\?|$)/i.test(noHash);
+          } catch (e) {
+            return false;
+          }
+        },
+        // 重置筛选条件并刷新列表
+        resetFilters() {
+          this.filters.keyword = '';
+          this.filters.category_id = null;
+          this.filters.is_public = null;
+          this.pagination.page = 1;
+          this.reload();
+        },
+        // 重新加载列表数据
+        reload() { this.loadList(); },
+        // 打开新建对话框
+        openCreate() {
+          this.dialogMode = 'create';
+          this.resetForm();
+          this.loadCategoryOptions();
+          this.dialogVisible = true;
+        },
+        // 打开编辑对话框：填充当前行数据
+        openEdit(row) {
+          this.dialogMode = 'edit';
+          this.form.id = row.id;
+          this.form.category_id = row.category_id;
+          this.form.title = row.title;
+          this.form.url = row.url;
+          this.form.description = row.description || '';
+          this.form.icon = row.icon || '';
+          this.form.sort_order = Number(row.sort_order) || 0;
+          this.form.is_public = Number(row.is_public);
+          this.loadCategoryOptions();
+          this.dialogVisible = true;
+        },
+        // 重置表单：恢复为初始状态并清理校验
+        resetForm() {
+          this.form = { id: null, category_id: null, title: '', url: '', description: '', icon: '', sort_order: 0, is_public: 1 };
+          if (this.$refs.formRef) this.$refs.formRef.resetFields();
+        },
+        // 提交表单：区分创建/更新，成功后刷新列表
+        async handleSubmit() {
+          if (!this.$refs.formRef) return;
+          try { await this.$refs.formRef.validate(); } catch (e) { return; }
+          this.submitting = true;
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const payload = {
+              category_id: this.form.category_id,
+              title: this.form.title,
+              url: this.form.url,
+              description: this.form.description,
+              icon: this.form.icon,
+              sort_order: Number(this.form.sort_order),
+              is_public: Number(this.form.is_public)
+            };
+            let resp;
+            if (this.dialogMode === 'create') {
+              resp = await axios.post(`${apiBaseUrl}/admin/navs`, payload, { headers });
+            } else {
+              resp = await axios.put(`${apiBaseUrl}/admin/navs/${this.form.id}`, payload, { headers });
+            }
+            const result = resp.data;
+            if (result.code === 1) {
+              this.$message.success(this.dialogMode === 'create' ? '创建成功' : '更新成功');
+              this.dialogVisible = false;
+              this.reload();
+            } else {
+              this.$message.error(result.msg || '操作失败');
+            }
+          } catch (e) {
+            console.error('提交失败:', e);
+            const detail = e && e.response && e.response.data ? (e.response.data.msg || JSON.stringify(e.response.data)) : e.message;
+            this.$message.error('操作失败: ' + detail);
+          } finally {
+            this.submitting = false;
+          }
+        },
+        // 删除导航：二次确认后调用后端删除并刷新
+        async handleDelete(row) {
+          try {
+            await this.$confirm(`确定要删除导航「${row.title}」吗？`, '删除确认', { type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消' });
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const resp = await axios.delete(`${apiBaseUrl}/admin/navs/${row.id}`, { headers });
+            const result = resp.data;
+            if (result.code === 1) {
+              this.$message.success('删除成功');
+              this.reload();
+            } else {
+              this.$message.error(result.msg || '删除失败');
+            }
+          } catch (e) {
+            if (e !== 'cancel') {
+              console.error('删除失败:', e);
+              this.$message.error('删除失败: ' + e.message);
+            }
+          }
+        },
+        // .ico 加载失败时，回退到 el-image 渲染
+        onIcoError(row) {
+          if (row) row._icoFallback = true;
+        },
+        // 打开 CSV 导入对话框
+        openImportDialog() {
+          this.importDialogVisible = true;
+          this.importLoading = false;
+          this.importForm = { dedupe: 1 };
+          this.importFile = null;
+          this.importFileList = [];
+        },
+        // 选择文件变更
+        onImportFileChange(file, fileList) {
+          this.importFile = file && file.raw ? file.raw : null;
+          // 仅保留最后一次选择的 1 个文件
+          this.importFileList = fileList.slice(-1);
+        },
+        // 移除文件
+        onImportFileRemove(file, fileList) {
+          this.importFile = null;
+          this.importFileList = fileList || [];
+        },
+        // 提交导入
+        async submitImport() {
+          if (!this.importFile) {
+            this.$message.error('请先选择 CSV 文件');
+            return;
+          }
+          const tokenHeaders = this.getAuthHeaders();
+          if (!tokenHeaders) return;
+          const auth = tokenHeaders['Authorization'];
+          const headers = { Authorization: auth };
+          const fd = new FormData();
+          fd.append('file', this.importFile);
+          fd.append('dedupe', this.importForm.dedupe);
+
+          this.importLoading = true;
+          try {
+            const resp = await axios.post(`${apiBaseUrl}/admin/navs/import`, fd, { headers });
+            const result = resp && resp.data ? resp.data : null;
+            if (result && result.code === 1) {
+              this.importResult = result.data || { total: 0, success: 0, failed: 0, errors: [], preview: [] };
+              this.importDialogVisible = false;
+              this.importResultVisible = true;
+              this.$message.success(`导入完成：成功 ${this.importResult.success || 0} 条，失败 ${this.importResult.failed || 0} 条`);
+              this.reload();
+            } else {
+              this.$message.error((result && result.msg) || '导入失败');
+            }
+          } catch (e) {
+            console.error('导入失败:', e);
+            const detail = e && e.response && e.response.data ? (e.response.data.msg || JSON.stringify(e.response.data)) : e.message;
+            this.$message.error('导入失败: ' + detail);
+          } finally {
+            this.importLoading = false;
+          }
+        },
+      },
+      mounted() { this.loadCategoryOptions(); this.loadList(); } // 组件挂载时加载列表与分类选项
+    });
+  </script>
+</body>
+</html>

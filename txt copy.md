@@ -39,7 +39,33 @@
 2. **admin/categories.html** - 优化修改
    - 表格布局优化
    
-     
+   
+   
+   
+   
+   - 字段：
+     - id：主键，自增
+     - category_id：所属分类 ID（外键，必填）
+     - category_title: 分类 名称
+     - title：标题（必填）
+     - url：链接地址（必填）
+     - description：描述（可选）
+     - icon：图标（可选）
+     - sort_order：排序优先级（默认 0）
+     - is_public：是否公开（1=公开，0=私有，默认 1）
+     - created_at：创建时间（自动生成）
+   
+   
+   
+   | 分类名称 | 标题    | 链接地址                                    | 描述         | 图标       | 排序优先级 | 是否公开 | 创建时间             |
+   | -------- | ------- | ------------------------------------------- | ------------ | ---------- | ---------- | -------- | -------------------- |
+   | 开发工具 | GitHub  | [https://github.com](https://github.com/)   | 代码托管平台 | fa-github  | 1          | 是       | 2023-01-15T08:30:00Z |
+   | 社交媒体 | Twitter | [https://twitter.com](https://twitter.com/) | 社交网络平台 | fa-twitter | 2          | 是       | 2023-02-20T10:15:00Z |
+   | 搜索引擎 | Google  | [https://google.com](https://google.com/)   | 搜索引擎     | fa-google  | 3          | 是       | 2023-03-10T09:00:00Z |
+   
+   
+   
+   
 
 ---
 *修改时间: 2025-08-09*

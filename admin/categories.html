@@ -120,9 +120,6 @@
               <el-option :value="1" label="公开"></el-option>
               <el-option :value="0" label="私有"></el-option>
             </el-select>
-            <el-select v-model="filters.sort" placeholder="排序字段" clearable style="width:160px">
-              <el-option value="sort_order"   label="排序优先级"></el-option>
-            </el-select>
             <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
             <el-button icon="el-icon-refresh" @click="resetFilters">重置</el-button>
           </div>
@@ -131,16 +128,19 @@
 
         <div class="table-wrap">
           <el-table 
+            ref="table"
             :data="list" 
             v-loading="loading" 
             size="small" 
             border
+            stripe
             row-key="id"
+            :height="550"
             lazy
             :load="loadChildren"
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
           >
-            <el-table-column type="index" width="50"  ></el-table-column>
+            <el-table-column type="index" width="50"  label="序号" align="center"></el-table-column>
             <el-table-column prop="id" label="ID" width="70" sortable  align="center" ></el-table-column>
             <el-table-column label="名称" min-width="180">
               <template slot-scope="scope">
@@ -252,12 +252,31 @@
           list: [],// 分类列表
           parentOptions: [], // 父分类下拉选项
           pagination: { page: 1, size: 10, total: 0 }, // 分页信息
-          filters: { keyword: '', level: null, is_public: null, sort: 'sort_order' }, // 筛选条件
+          filters: { keyword: '', level: 1, is_public: null }, // 筛选条件
           form: { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 }, // 分类表单数据
           formRules: { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }] }, // 分类表单校验规则
         };
       },
       methods: {
+        // 完全刷新表格数据和缓存
+        async refreshTableCompletely() {
+          // 清空树形表格的缓存
+          if (this.$refs.table) {
+            this.$refs.table.store.states.lazyTreeNodeMap = {};
+            this.$refs.table.store.states.treeData = {};
+          }
+          
+          // 重新加载数据
+          await this.loadList();
+          
+          // 通知 Vue 更新视图
+          this.$nextTick(() => {
+            if (this.$refs.table) {
+              this.$refs.table.doLayout();
+            }
+          });
+        },
+        
         // 获取认证请求头：兼容多存储与键名，自动补齐 Bearer 前缀
         getAuthHeaders() {
           // 兼容多种存储与键名
@@ -306,16 +325,18 @@
             const params = { page: this.pagination.page, size: this.pagination.size };
             if (this.filters.level) params.level = this.filters.level;
             if (this.filters.is_public !== null) params.is_public = this.filters.is_public;
-            if (this.filters.sort) params.sort = this.filters.sort;
-            if (this.filters.keyword) params.keyword = this.filters.keyword;
+            const kw = (this.filters.keyword || '').trim();
+            if (kw) { params.keyword = kw; params.q = kw; }
+            
+            // 添加时间戳防止缓存
+            params._t = Date.now();
+            
             const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params });
         
             const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
               const data = result.data[0];
               this.list = (data.list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
-            
-              
               this.pagination.total = data.pagination ? data.pagination.total : 0;
             } else {
               this.list = [];
@@ -333,7 +354,14 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return resolve([]);
-            const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params: { parent_id: tree.id } });
+            
+            // 添加时间戳防止缓存
+            const params = { 
+              parent_id: tree.id,
+              _t: Date.now() 
+            };
+            
+            const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params });
            
             const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
@@ -351,7 +379,15 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            const resp = await axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
+            
+            // 添加时间戳防止缓存
+            const params = { _t: Date.now() };
+            
+            const resp = await axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { 
+              headers, 
+              params 
+            });
+            
             const result = resp.data;
             if (result.code === 1 && Array.isArray(result.data)) {
               this.parentOptions = result.data;
@@ -371,14 +407,16 @@
         // 重置筛选条件并刷新列表
         resetFilters() {
           this.filters.keyword = '';
-          this.filters.level = null;
+          this.filters.level = 1; // 默认仅显示一级分类
           this.filters.is_public = null;
-          this.filters.sort = 'sort_order';
           this.pagination.page = 1;
           this.reload();
         },
-        // 重新加载列表数据
-        reload() { this.loadList(); },
+        // 重新加载列表数据（搜索时重置到第1页）
+        reload() { 
+          this.pagination.page = 1; 
+          this.refreshTableCompletely(); 
+        },
         // 打开新建对话框：可从行操作默认带入父分类
         openCreate(row) {
           this.dialogMode = 'create';
@@ -408,13 +446,28 @@
         async handleSubmit() {
           if (!this.$refs.formRef) return;
           try { await this.$refs.formRef.validate(); } catch (e) { return; }
+          
+          // 显示加载状态
+          const loading = this.$loading({
+            lock: true,
+            text: this.dialogMode === 'create' ? '正在创建...' : '正在更新...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(255, 255, 255, 0.7)'
+          });
+          
           this.submitting = true;
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            const payload = { name: this.form.name, parent_id: this.form.parent_id, description: this.form.description, sort_order: this.form.sort_order, is_public: this.form.is_public };
-            console.log('提交的数据:', payload);
-            console.log('请求头:', headers);
+            
+            const payload = { 
+              name: this.form.name, 
+              parent_id: this.form.parent_id, 
+              description: this.form.description, 
+              sort_order: this.form.sort_order, 
+              is_public: this.form.is_public 
+            };
+            
             let resp;
             if (this.dialogMode === 'create') {
               resp = await axios.post(`${apiBaseUrl}/admin/categories/`, payload, { headers });
@@ -425,7 +478,29 @@
             if (result.code === 1) {
               this.$message.success(this.dialogMode === 'create' ? '创建成功' : '更新成功');
               this.dialogVisible = false;
-              this.reload();
+              
+              // 记录当前操作的父分类ID，用于后续刷新
+              const parentId = this.form.parent_id;
+              
+              // 完全重置树形表格的缓存
+              if (this.$refs.table) {
+                this.$refs.table.store.states.lazyTreeNodeMap = {};
+                this.$refs.table.store.states.treeData = {};
+              }
+              
+              // 强制刷新表格数据
+              await this.loadList();
+              
+              // 如果是新增子分类，尝试展开父节点
+              if (this.dialogMode === 'create' && parentId && this.$refs.table) {
+                // 查找父节点并展开
+                const parentNode = this.list.find(item => item.id === parentId);
+                if (parentNode) {
+                  this.$nextTick(() => {
+                    this.$refs.table.toggleRowExpansion(parentNode, true);
+                  });
+                }
+              }
             } else {
               this.$message.error(result.msg || '操作失败');
             }
@@ -435,21 +510,48 @@
             this.$message.error('操作失败: ' + detail);
           } finally {
             this.submitting = false;
+            loading.close();
           }
         },
         // 删除分类：二次确认后调用后端删除并刷新
         async handleDelete(row) {
           try {
-            await this.$confirm(`确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`, '删除确认', { type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消' });
-            const headers = this.getAuthHeaders();
-            if (!headers) return;
-            const resp = await axios.delete(`${apiBaseUrl}/admin/categories/${row.id}`, { headers });
-            const result = resp.data;
-            if (result.code === 1) {
-              this.$message.success('删除成功');
-              this.reload();
-            } else {
-              this.$message.error(result.msg || '删除失败');
+            await this.$confirm(
+              `确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`, 
+              '删除确认', 
+              { 
+                type: 'warning', 
+                confirmButtonText: '确定删除', 
+                cancelButtonText: '取消',
+                dangerouslyUseHTMLString: true
+              }
+            );
+            
+            // 显示加载状态
+            const loading = this.$loading({
+              lock: true,
+              text: '正在删除...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(255, 255, 255, 0.7)'
+            });
+            
+            try {
+              const headers = this.getAuthHeaders();
+              if (!headers) return;
+              
+              const resp = await axios.delete(`${apiBaseUrl}/admin/categories/${row.id}`, { headers });
+              const result = resp.data;
+              
+              if (result.code === 1) {
+                this.$message.success('删除成功');
+                
+                // 使用完全刷新方法
+                await this.refreshTableCompletely();
+              } else {
+                this.$message.error(result.msg || '删除失败');
+              }
+            } finally {
+              loading.close();
             }
           } catch (e) {
             if (e !== 'cancel') {

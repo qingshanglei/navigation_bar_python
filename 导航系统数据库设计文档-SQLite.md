@@ -39,7 +39,6 @@ erDiagram
     navs {
         bigint id PK "导航ID"
         bigint category_id FK "分类ID"
-        bigint parent_id FK "父级ID"
         varchar title "标题"
         varchar url "链接"
         text description "描述信息"
@@ -78,15 +77,14 @@ erDiagram
 
 | 字段名      | 类型    | 约束        | 描述                   | 示例值                          |
 | ----------- | ------- | ----------- | ---------------------- | --------------------------------- |
-| id          | INTEGER | PRIMARY KEY | 导航项唯一标识         | 1                                 |
-| category_id | INTEGER | FOREIGN KEY | 所属分类ID             | 1                                 |
-| parent_id   | INTEGER | FOREIGN KEY | 父级导航ID             | NULL (顶级菜单)               |
-| title       | TEXT    | NOT NULL    | 导航标题               | "Visual Studio Code"              |
+| id          | INTEGER | PRIMARY KEY | 导航项唯一标识         | 1                                |
+| category_id | INTEGER | FOREIGN KEY | 所属分类ID             | 1                                |
+| title       | TEXT    | NOT NULL    | 导航标题               | "Visual Studio Code"             |
 | url         | TEXT    | NOT NULL    | 导航链接               | "https://code.visualstudio.com/" |
-| description | TEXT    |             | 网站描述信息           | "微软开发的轻量级代码编辑器"      |
-| icon        | TEXT    |             | 图标URL地址           | "https://files.codelife.cc/..."  |
-| sort_order  | INTEGER | DEFAULT 0   | 排序优先级             | 1                                 |
-| is_public   | INTEGER | DEFAULT 1   | 是否公开（1=公开）       | 1                                 |
+| description | TEXT    |             | 网站描述信息           | "微软开发的轻量级代码编辑器"       |
+| icon        | TEXT    |             | 图标URL地址            | "https://files.codelife.cc/..."  |
+| sort_order  | INTEGER | DEFAULT 0   | 排序优先级             | 1                                |
+| is_public   | INTEGER | DEFAULT 1   | 是否公开（1=公开）       | 1                                |
 | created_at  | TEXT    |             | 创建时间               | "2023-08-15 10:10:00"            |
 
 ## 完整SQL语句
@@ -119,7 +117,6 @@ CREATE TABLE nav_categories (
 CREATE TABLE navs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL,
-    parent_id INTEGER DEFAULT NULL,
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     description TEXT,
@@ -129,9 +126,10 @@ CREATE TABLE navs (
     created_at TEXT DEFAULT (datetime('now', 'localtime')),
     
     -- 外键约束
-    FOREIGN KEY (category_id) REFERENCES nav_categories(id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES navs(id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES nav_categories(id) ON DELETE CASCADE
 );
+
+
 
 -- 创建索引优化查询性能
 CREATE INDEX idx_users_username ON users(username);
@@ -149,13 +147,13 @@ CREATE INDEX idx_categories_public ON nav_categories(is_public);
 CREATE UNIQUE INDEX uk_category_name_parent ON nav_categories(name, parent_id);
 ```
 
-
-
 ## 外键约束
 
 外键约束已在表创建时定义，无需额外添加。
 
 ## 数据操作示例
+
+> 关键说明：navs.category_id 为外键，必须指向已存在的 nav_categories.id。插入导航项前应先确保对应分类记录存在，否则将触发外键约束错误。
 
 ### 重要说明：外键约束修复
 
@@ -189,7 +187,6 @@ CREATE TABLE nav_categories (
 CREATE TABLE navs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '导航项唯一标识',
     category_id BIGINT NOT NULL COMMENT '所属分类ID',
-    parent_id BIGINT DEFAULT NULL COMMENT '父级导航ID（NULL表示顶级）',
     title VARCHAR(100) NOT NULL COMMENT '导航显示名称',
     url VARCHAR(500) NOT NULL COMMENT '导航跳转链接',
     description TEXT COMMENT '网站描述信息',
@@ -202,14 +199,8 @@ CREATE TABLE navs (
         FOREIGN KEY (category_id) 
         REFERENCES nav_categories(id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    
-    CONSTRAINT fk_navs_parent 
-        FOREIGN KEY (parent_id) 
-        REFERENCES navs(id)
-        ON DELETE SET NULL
         ON UPDATE CASCADE
-) COMMENT '导航菜单表（支持层级结构）';
+) COMMENT '导航菜单表（按分类分组，取消自关联层级）';
 
 -- 创建索引
 CREATE INDEX idx_navs_category ON navs(category_id);
@@ -245,217 +236,59 @@ INSERT INTO nav_categories (name, parent_id, description, sort_order, level, is_
 
 ### 2. 添加导航菜单项
 
-根据data.json中的具体数据，添加导航项示例：
+根据 data.json 中的具体数据，添加导航项示例。
+
+- SQLite 版本（推荐）：通过子查询获取分类 id，确保 category_id 正确链接到 nav_categories.id。
+
+```sql
+-- 编码工具分类下的导航项（category = "编码工具"）
+INSERT INTO navs (category_id, title, url, description, icon, sort_order)
+VALUES
+((SELECT id FROM nav_categories WHERE name = '编码工具' LIMIT 1), 'Visual Studio Code', 'https://code.visualstudio.com/', '微软开发的轻量级代码编辑器', 'https://files.codelife.cc/website/visual-studio-code.svg', 1),
+((SELECT id FROM nav_categories WHERE name = '编码工具' LIMIT 1), 'GitHub', 'https://github.com/', '全球最大的代码托管平台', 'https://files.codelife.cc/website/github.svg', 2),
+((SELECT id FROM nav_categories WHERE name = '编码工具' LIMIT 1), 'Gitee', 'https://gitee.com/', '中国本土的代码托管平台', 'https://files.codelife.cc/website/gitee.svg', 3);
+
+-- 后端分类下的导航项（category = "后端"）
+INSERT INTO navs (category_id, title, url, description, icon, sort_order)
+VALUES
+((SELECT id FROM nav_categories WHERE name = '后端' LIMIT 1), 'MyBatis', 'https://mybatis.org/mybatis-3/', 'Java 持久层框架', 'https://files.codelife.cc/user-website-icon/20220803/J_G1ipNrekOYJSmTCACZ99269.png', 1),
+((SELECT id FROM nav_categories WHERE name = '后端' LIMIT 1), 'Spring', 'https://spring.io/', 'Java 企业级开发框架', 'https://files.codelife.cc/website/5b307dd14c14a60c5612d29d.png', 2),
+((SELECT id FROM nav_categories WHERE name = '后端' LIMIT 1), 'MySQL', 'https://dev.mysql.com/', '开源关系型数据库', 'https://files.codelife.cc/website/5f4386f4aa121b0c2ac69e22.png', 3);
+
+-- 前端分类下的导航项（category = "前端"）
+INSERT INTO navs (category_id, title, url, description, icon, sort_order)
+VALUES
+((SELECT id FROM nav_categories WHERE name = '前端' LIMIT 1), 'React', 'https://react.dev/', '用于构建用户界面的 JavaScript 库', 'https://files.codelife.cc/website/react.svg', 1),
+((SELECT id FROM nav_categories WHERE name = '前端' LIMIT 1), 'Vue.js', 'https://vuejs.org/', '渐进式 JavaScript 框架', 'https://files.codelife.cc/website/vue.svg', 2);
+```
+
+- MySQL 版本（可选）：通过变量保存分类 id，再插入 navs（同样遵循 category_id -> nav_categories.id 的外键约束）。
 
 ```sql
 -- 获取分类ID用于插入
 SET @coding_tools_id = (SELECT id FROM nav_categories WHERE name = '编码工具');
 SET @backend_id = (SELECT id FROM nav_categories WHERE name = '后端');
 SET @frontend_id = (SELECT id FROM nav_categories WHERE name = '前端');
-SET @pdf_tools_id = (SELECT id FROM nav_categories WHERE name = 'PDF转换');
 
 -- 编码工具分类下的导航项
 INSERT INTO navs (category_id, title, url, description, icon, sort_order) VALUES
 (@coding_tools_id, 'Visual Studio Code', 'https://code.visualstudio.com/', '微软开发的轻量级代码编辑器', 'https://files.codelife.cc/website/visual-studio-code.svg', 1),
-(@coding_tools_id, 'GitHub', 'https://github.com/', '全球最大的代码托管平台', 'https://files.codelife.cc/website/github.svg', 2),
-(@coding_tools_id, 'Gitee', 'https://gitee.com/', '中国本土的代码托管平台', 'https://files.codelife.cc/website/gitee.svg', 3),
-(@coding_tools_id, 'MarsCode', 'https://marscode.com.cn/', '豆包旗下的智能编程工具', 'https://lf-cdn.marscode.com.cn/obj/marscode-cn-release/marscode-icon.png', 4),
-(@coding_tools_id, 'CodePen', 'https://codepen.io/', '前端代码在线编辑器', 'https://files.codelife.cc/website/codepen.svg', 5),
-(@coding_tools_id, 'JSFiddle', 'https://jsfiddle.net/', '在线JavaScript代码测试工具', 'https://files.codelife.cc/website/jsfiddle.png', 6),
-(@coding_tools_id, 'StackBlitz', 'https://stackblitz.com/', '在线IDE，支持多种框架', 'https://files.codelife.cc/website/stackblitz.svg', 7),
-(@coding_tools_id, 'GitLab', 'https://gitlab.com/', '开源的代码托管平台', 'https://files.codelife.cc/website/gitlab.svg', 8),
-(@coding_tools_id, 'Bitbucket', 'https://bitbucket.org/', 'Atlassian旗下的代码托管平台', 'https://files.codelife.cc/website/bitbucket.svg', 9),
-(@coding_tools_id, 'Docker', 'https://www.docker.com/', '容器化平台', 'https://files.codelife.cc/website/docker.svg', 10);
+(@coding_tools_id, 'GitHub', 'https://github.com/', '全球最大的代码托管平台', 'https://files.codelife.cc/website/github.svg', 2);
 
--- 后端分类下的导航项（7个）
+-- 后端分类下的导航项
 INSERT INTO navs (category_id, title, url, description, icon, sort_order) VALUES
 (@backend_id, 'MyBatis', 'https://mybatis.org/mybatis-3/', 'Java持久层框架', 'https://files.codelife.cc/user-website-icon/20220803/J_G1ipNrekOYJSmTCACZ99269.png', 1),
-(@backend_id, 'Spring', 'https://spring.io/', 'Java企业级开发框架', 'https://files.codelife.cc/website/5b307dd14c14a60c5612d29d.png', 2),
-(@backend_id, 'MySQL', 'https://dev.mysql.com/', '开源关系型数据库', 'https://files.codelife.cc/website/5f4386f4aa121b0c2ac69e22.png', 3),
-(@backend_id, 'Maven', 'https://maven.apache.org/', 'Java项目管理工具', 'https://files.codelife.cc/website/5b3110634c14a60c5612d3e1.png', 4),
-(@backend_id, 'Redis', 'https://redis.io/', '内存数据结构存储', 'https://files.codelife.cc/website/redis.svg', 5),
-(@backend_id, 'MongoDB', 'https://www.mongodb.com/', '文档型数据库', 'https://files.codelife.cc/website/mongodb.svg', 6),
-(@backend_id, 'PostgreSQL', 'https://www.postgresql.org/', '高级开源关系型数据库', 'https://files.codelife.cc/website/postgresql.svg', 7);
+(@backend_id, 'Spring', 'https://spring.io/', 'Java企业级开发框架', 'https://files.codelife.cc/website/5b307dd14c14a60c5612d29d.png', 2);
 
--- 前端分类下的导航项（5个）
+-- 前端分类下的导航项
 INSERT INTO navs (category_id, title, url, description, icon, sort_order) VALUES
 (@frontend_id, 'React', 'https://react.dev/', '用于构建用户界面的JavaScript库', 'https://files.codelife.cc/website/react.svg', 1),
-(@frontend_id, 'Vue.js', 'https://vuejs.org/', '渐进式JavaScript框架', 'https://files.codelife.cc/website/vue.svg', 2),
-(@frontend_id, 'TypeScript', 'https://www.typescriptlang.org/', 'JavaScript的超集，添加了类型系统', 'https://files.codelife.cc/website/typescript.svg', 3),
-(@frontend_id, 'Figma', 'https://www.figma.com/', '协作式设计工具', 'https://files.codelife.cc/website/figma.svg', 4),
-(@frontend_id, 'Canva可画', 'https://www.canva.cn/', '在线设计工具平台', 'https://files.codelife.cc/website/canva.svg', 5);
+(@frontend_id, 'Vue.js', 'https://vuejs.org/', '渐进式JavaScript框架', 'https://files.codelife.cc/website/vue.svg', 2);
 
--- 添加测试用户
-INSERT INTO users (username, password) VALUES
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iOEfeVdi'),
-('user1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iOEfeVdi'),
-('guest', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iOEfeVdi');
+
 
 ```
 
-## 查询示例
+> 提示：若子查询/变量查不到对应分类（返回 NULL），将违反外键约束导致插入失败。请先创建并确认分类存在再插入导航项。
 
-### 1. 获取所有顶级分类
-
-```sql
-SELECT * FROM nav_categories 
-WHERE parent_id IS NULL 
-ORDER BY sort_order;
-```
-
-### 2. 获取指定分类下的所有子分类
-
-```sql
-SELECT * FROM nav_categories 
-WHERE parent_id = 1 
-ORDER BY sort_order;
-```
-
-### 3. 获取指定分类下的所有导航项
-
-```sql
-SELECT n.*, c.name as category_name 
-FROM navs n 
-JOIN nav_categories c ON n.category_id = c.id 
-WHERE n.category_id = 3 
-ORDER BY n.sort_order;
-```
-
-### 4. 获取完整的导航树结构
-
-```sql
--- 获取所有分类和导航项（分层查询）
-SELECT 
-    c1.id as level1_id,
-    c1.name as level1_name,
-    c2.id as level2_id,
-    c2.name as level2_name,
-    n.id as nav_id,
-    n.title as nav_title,
-    n.url as nav_url,
-    n.description as nav_description,
-    n.icon as nav_icon
-FROM nav_categories c1
-LEFT JOIN nav_categories c2 ON c2.parent_id = c1.id
-LEFT JOIN navs n ON n.category_id = c2.id
-WHERE c1.parent_id IS NULL
-ORDER BY c1.sort_order, c2.sort_order, n.sort_order;
-```
-
-### 5. 搜索导航项
-
-```sql
--- 按标题搜索
-SELECT n.*, c.name as category_name 
-FROM navs n 
-JOIN nav_categories c ON n.category_id = c.id 
-WHERE n.title LIKE '%GitHub%' 
-ORDER BY n.sort_order;
-
--- 获取顶级分类列表
-SELECT 
-    id,
-    name,
-    description,
-    sort_order
-FROM nav_categories
-WHERE parent_id = 1 AND is_public = TRUE
-ORDER BY sort_order;
-
--- 获取某个顶级分类下的所有子分类及其导航项数量
-SELECT 
-    c.id,
-    c.name,
-    c.description,
-    c.sort_order,
-    COUNT(n.id) AS nav_count
-FROM nav_categories c
-LEFT JOIN navs n ON c.id = n.category_id AND n.is_public = TRUE
-WHERE c.parent_id = @programming_id AND c.is_public = TRUE
-GROUP BY c.id, c.name, c.description, c.sort_order
-ORDER BY c.sort_order;
-```
-
-## 数据库维护
-
-### 1. 备份数据库
-
-```bash
-mysqldump -u username -p database_name > navigation_backup.sql
-```
-
-### 2. 恢复数据库
-
-```bash
-mysql -u username -p database_name < navigation_backup.sql
-```
-
-### 3. 清理无用数据
-
-```sql
--- 删除无效的导航项（URL为空或无效）
-DELETE FROM navs WHERE url IS NULL OR url = '';
-
--- 删除空的分类（没有子分类和导航项）
-DELETE FROM nav_categories 
-WHERE id NOT IN (
-    SELECT DISTINCT parent_id FROM nav_categories WHERE parent_id IS NOT NULL
-    UNION 
-    SELECT DISTINCT category_id FROM navs
-) AND parent_id IS NOT NULL;
-```
-
-## 优化总结
-
-### 1. 修复SQL语法错误
-- **问题**：navs表创建时外键约束语法错误（MySQL 1064错误）
-- **解决**：移除了FOREIGN KEY后的COMMENT语句，确保语法正确
-
-### 2. 表结构优化
-基于data.json实际数据结构，进行了以下优化：
-
-#### 导航分类表优化
-
-- **新增**：`parent_id`字段支持多级分类，使用0代替NULL表示顶级分类
-- **新增**：虚拟根节点确保分类树结构完整
-- **新增**：显式命名的外键约束`fk_categories_parent`
-- **调整**：`name`字段改为非唯一，通过复合唯一约束`uk_category_name_parent`确保同级分类名称唯一
-- **调整**：统一级联删除策略为ON DELETE CASCADE
-- **修复**：唯一约束在NULL值时的失效问题
-- **新增**：`idx_categories_parent`索引优化分类树查询
-
-#### 导航菜单表优化
-- **新增**：`description`字段存储网站详细描述
-- **调整**：`icon`字段扩展至500字符，支持完整URL图标地址
-- **调整**：`url`字段设为NOT NULL，确保数据完整性
-- **移除**：`parent_id`字段（导航项不再支持子菜单，简化设计）
-- **新增**：显式命名的外键约束`fk_navs_category`
-
-### 3. 简化设计（个人使用）
-- **移除**：角色权限管理表（role_category_permissions、role_nav_permissions）
-- **移除**：角色权限相关的索引
-- **简化**：数据库结构，专注于导航功能本身
-
-### 4. 数据设计
-- **虚拟根节点**：1个（根节点）
-- **顶级分类**：1个（编程网站）
-- **子分类**：3个（编码工具、后端、前端）
-- **导航项**：20个真实数据
-  - 编码工具：8个（VS Code、GitHub、Gitee等）
-  - 后端技术：7个（MyBatis、Spring、MySQL等）
-  - 前端技术：5个（React、Vue.js、TypeScript等）
-- **测试用户**：3个（含加密密码）
-
-### 5. 查询优化
-- 提供完整的分类树查询示例
-- 支持按分类筛选导航项
-- 优化索引设计，提升查询性能
-
-### 6. 技术规范
-- 所有外键约束均使用显式命名
-- 统一级联删除策略确保数据一致性
-- 保持MySQL兼容性
-- 支持事务完整性
-- 预留权限管理扩展接口
-
-该优化后的设计完全基于data.json数据结构，支持真实的业务场景，具有良好的扩展性和查询性能。
+{{ ... }}

@@ -133,7 +133,8 @@ class Nav:
             'description': self.description,
             'icon': self.icon,
             'sort_order': self.sort_order,
-            'is_public': self.is_public,
+            # 文档要求以 0/1 返回
+            'is_public': int(self.is_public) if self.is_public is not None else None,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None
         }
 
@@ -181,10 +182,19 @@ class Nav:
             return self
 
     def delete(self):
+        """删除导航项"""
         if not self.id:
             return False
-        db = get_db()
-        with db.engine.connect() as conn:
-            conn.execute(db.text('DELETE FROM navs WHERE id = :id'), {'id': self.id})
-            conn.commit()
-            return True
+        
+        try:
+            db = get_db()
+            with db.engine.connect() as conn:
+                conn.execute(
+                    db.text('DELETE FROM navs WHERE id = :id'),
+                    {'id': self.id}
+                )
+                conn.commit() 
+                return True
+        except Exception as e:
+            print(f"删除导航项 {self.id} 失败: {str(e)}")
+            return False
