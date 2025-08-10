@@ -132,6 +132,44 @@ class Category:
             return categories, total
     
     @staticmethod
+    def get_all_children(filters=None, sort='sort_order'):
+        """获取所有子分类（parent_id 非空），支持 is_public 过滤，返回 (list, total)"""
+        db = get_db()
+        with db.engine.connect() as conn:
+            sql = 'SELECT * FROM nav_categories WHERE parent_id IS NOT NULL'
+            count_sql = 'SELECT COUNT(*) FROM nav_categories WHERE parent_id IS NOT NULL'
+            params = {}
+
+            # 仅支持 is_public 的附加过滤
+            if filters and 'is_public' in filters:
+                sql += ' AND is_public = :is_public'
+                count_sql += ' AND is_public = :is_public'
+                params['is_public'] = filters['is_public']
+
+            # 排序
+            if sort == 'created_at':
+                sql += ' ORDER BY created_at DESC'
+            else:
+                sql += ' ORDER BY sort_order ASC, created_at ASC'
+
+            total = conn.execute(db.text(count_sql), params).fetchone()[0]
+            result = conn.execute(db.text(sql), params)
+
+            items = []
+            for row in result:
+                items.append(Category(
+                    id=row[0],
+                    parent_id=row[1],
+                    name=row[2],
+                    description=row[3],
+                    sort_order=row[4],
+                    level=row[5],
+                    is_public=bool(row[6]),
+                    created_at=datetime.fromisoformat(row[7]) if row[7] else None
+                ))
+            return items, total
+    
+    @staticmethod
     def get_children(parent_id):
         """获取子分类"""
         children, _ = Category.get_all({'parent_id': parent_id})

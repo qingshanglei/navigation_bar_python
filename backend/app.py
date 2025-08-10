@@ -52,7 +52,7 @@ def create_app(config_class=Config):
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth') # 认证接口
     app.register_blueprint(api_bp, url_prefix='/api') # API接口
-    app.register_blueprint(nav_bp, url_prefix='/api/navs') # 导航接口
+    app.register_blueprint(nav_bp, url_prefix='/admin/navs') # 导航接口
     app.register_blueprint(categories_bp, url_prefix='/admin/categories') # 分类接口
     
     # 添加根路径路由
@@ -132,6 +132,14 @@ def create_app(config_class=Config):
             os.makedirs(instance_dir)
         
         db.create_all()
+        # 兼容原生SQL模型：确保表存在
+        try:
+            from models.category import Category
+            from models.navs import Nav
+            Category.create_table()
+            Nav.create_table()
+        except Exception as e:
+            app.logger.error(f"原生SQL表创建失败: {e}")
     
     return app
 

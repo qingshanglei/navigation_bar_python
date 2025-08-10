@@ -1,47 +1,15 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from models.category import Category
 import re
 import json
 
-# 延迟导入模型避免循环导入
-def get_user_model():
-    from models.user_simple import User
-    return User
+from utils.responses import success_response, error_response
+from utils.auth import validate_token
 
 categories_bp = Blueprint('categories', __name__)
 
-# 用于存储已注销的token（简单实现，生产环境建议使用Redis）
-blacklisted_tokens = set()
-
-def success_response(data=None, msg="操作成功", code=1):
-    """成功响应格式"""
-    return jsonify({
-        'code': code,
-        'msg': msg,
-        'data': data
-    })
-
-def error_response(msg="操作失败", code=0):
-    """错误响应格式"""
-    return jsonify({
-        'code': code,
-        'msg': msg,
-        'data': None
-    })
-
-def validate_token():
-    """验证token是否有效"""
-    jti = get_jwt()['jti']
-    if jti in blacklisted_tokens:
-        return False, "Token已失效，请重新登录"
-    
-    User = get_user_model()
-    user = User.get(get_jwt_identity())
-    if not user:
-        return False, "用户不存在"
-    
-    return True, user
+# 统一响应与鉴权由 utils 提供
 
 @categories_bp.route('/', methods=['GET'])
 @jwt_required()
@@ -128,7 +96,7 @@ def get_categories():
             }
         }]
         
-        return success_response(data, "获取分类树成功")
+        return success_response(data, "success")
         
     except Exception as e:
         return error_response(f"获取分类列表失败: {str(e)}"), 500
@@ -148,7 +116,7 @@ def get_category(category_id):
         if not category:
             return error_response("分类不存在"), 404
         
-        return success_response(category.to_dict(), "获取分类详情成功")
+        return success_response(category.to_dict(), "success")
         
     except Exception as e:
         return error_response(f"获取分类详情失败: {str(e)}"), 500
@@ -172,7 +140,7 @@ def get_category_children(category_id):
         children = Category.get_children(category_id)
         data = [child.to_dict() for child in children]
         
-        return success_response(data, "获取子分类列表成功")
+        return success_response(data, "success")
         
     except Exception as e:
         return error_response(f"获取子分类列表失败: {str(e)}"), 500
@@ -271,7 +239,7 @@ def create_category():
         category.save()
         
         print(f"分类创建成功: {category.to_dict()}")
-        return success_response(category.to_dict(), "创建分类成功"), 201
+        return success_response(category.to_dict(), "success"), 201
         
     except Exception as e:
         print(f"创建分类异常: {str(e)}")
@@ -373,7 +341,7 @@ def update_category(category_id):
         # 保存更新
         category.save()
         
-        return success_response(category.to_dict(), "更新分类成功")
+        return success_response(category.to_dict(), "success")
         
     except Exception as e:
         return error_response(f"更新分类失败: {str(e)}"), 500
@@ -409,7 +377,7 @@ def delete_category(category_id):
                     child.delete()
             
             category.delete()
-            return success_response(None, "分类删除成功")
+            return success_response(None, "success")
         except ValueError as e:
             return error_response(str(e)), 400
         
@@ -435,10 +403,38 @@ def get_root_categories():
         # 转换为字典格式
         data = [cat.to_dict() for cat in root_categories]
         
-        return success_response(data, "获取顶级分类成功")
+        return success_response(data, "success")
         
     except Exception as e:
         return error_response(f"获取顶级分类失败: {str(e)}"), 500
+
+# 新增：获取所有子分类（parent_id 非空）的平铺列表
+@categories_bp.route('/categoriesChildren', methods=['GET'])
+@jwt_required()
+def get_all_children_categories():
+    """
+    返回系统内所有子分类（parent_id 非空）的平铺列表
+    可选 is_public 过滤（0/1）
+    """
+    try:
+        # 验证token
+        is_valid, result = validate_token()
+        if not is_valid:
+            return error_response(result), 401
+
+        is_public = request.args.get('is_public', type=int)
+
+        # 复用现有模型查询，先取全部后在内存中过滤，避免修改模型方法
+        all_categories, _ = Category.get_all({}, None, None, 'sort_order')
+
+        children = [c for c in all_categories if c.parent_id is not None]
+        if is_public is not None:
+            children = [c for c in children if int(getattr(c, 'is_public', 0)) == int(is_public)]
+
+        data = [c.to_dict() for c in children]
+        return success_response(data, "success")
+    except Exception as e:
+        return error_response(f"获取子分类失败: {str(e)}"), 500
 
 # 公共接口（不需要认证）
 @categories_bp.route('/public', methods=['GET'])
@@ -470,7 +466,7 @@ def get_public_categories():
             categories, _ = Category.get_all({'is_public': True})
             data = [cat.to_dict() for cat in categories]
         
-        return success_response(data, "获取公开分类成功")
+        return success_response(data, "success")
         
     except Exception as e:
         return error_response(f"获取公开分类失败: {str(e)}"), 500
