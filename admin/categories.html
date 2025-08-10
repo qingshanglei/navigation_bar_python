@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>分类管理</title>
     
-    <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3"></script>
+    <!-- Vue 2 -->
+    <script src="https://unpkg.com/vue@2"></script>
     
-    <!-- Element Plus CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <!-- Element UI CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     
-    <!-- Element Plus JavaScript -->
-    <script src="https://unpkg.com/element-plus"></script>
-    
-    <!-- Element Plus Icons -->
-    <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+    <!-- Element UI JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     
     <style>
       body, html { 
@@ -110,22 +107,23 @@
       <div class="page-card">
         <div class="toolbar">
           <div class="search-area">
-            <el-input v-model="filters.keyword" placeholder="搜索名称/描述" clearable style="width:220px" />
+           
+            <el-input v-model="filters.keyword" placeholder="搜索名称/描述" clearable style="width:220px"></el-input>
             <el-select v-model="filters.level" placeholder="层级" clearable  style="width:120px">
-              <el-option :value="1" label="一级" />
-              <el-option :value="2" label="二级" />
-              <el-option :value="3" label="三级" />
+              <el-option :value="1" label="一级"></el-option>
+              <el-option :value="2" label="二级"></el-option>
+              <el-option :value="3" label="三级"></el-option>
             </el-select>
             <el-select v-model="filters.is_public" placeholder="公开状态" clearable style="width:140px">
-              <el-option :value="1" label="公开" />
-              <el-option :value="0" label="私有" />
+              <el-option :value="1" label="公开"></el-option>
+              <el-option :value="0" label="私有"></el-option>
             </el-select>
             <el-select v-model="filters.sort" placeholder="排序字段" clearable style="width:160px">
-              <el-option value="sort_order" label="排序优先级" />
-              <el-option value="created_at" label="创建时间" />
+              <el-option value="sort_order" label="排序优先级"></el-option>
+              <el-option value="created_at" label="创建时间"></el-option>
             </el-select>
-            <el-button type="primary" :icon="Search" @click="reload">查询</el-button>
-            <el-button :icon="Refresh" @click="resetFilters">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
+            <el-button icon="el-icon-refresh" @click="resetFilters">重置</el-button>
           </div>
           <div class="spacer"></div>
         </div>
@@ -144,39 +142,39 @@
             <el-table-column type="index" width="50"  ></el-table-column>
             <el-table-column prop="id" label="ID" width="70" sortable  align="center" ></el-table-column>
             <el-table-column label="名称" min-width="180">
-              <template #default="{ row }">
+              <template slot-scope="scope">
                 <div class="name-cell">
-                  <strong>{{ row.name }}</strong>
+                  <strong>{{ scope.row.name }}</strong>
                 </div>
               </template>
             </el-table-column>
             <el-table-column label="分类描述" min-width="220">
-              <template #default="{ row }">
-                <el-text v-if="row.description" size="small">{{ row.description }}</el-text>
-                <el-text v-else type="info" size="small">-</el-text>
+              <template slot-scope="scope">
+                <span v-if="scope.row.description" class="el-text--small">{{ scope.row.description }}</span>
+                <span v-else class="el-text--small" style="color:#909399">-</span>
               </template>
             </el-table-column>
             <el-table-column prop="sort_order" label="排序优先级" sortable  width="110" align="center"  ></el-table-column>
             <el-table-column prop="level" label="分类层级" sortable  width="100" align="center">
-              <template #default="{ row }">
-                <el-tag size="small" :type="row.level === 1 ? 'primary' : row.level === 2 ? 'success' : 'warning'">
-                  {{ row.level }}级
+              <template slot-scope="scope">
+                <el-tag size="small" :type="scope.row.level === 1 ? 'primary' : scope.row.level === 2 ? 'success' : 'warning'">
+                  {{ scope.row.level }}级
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column label="是否公开" width="80" align="center">
-              <template #default="{ row }">
-                <el-tag :type="row.is_public ? 'success' : 'info'" size="small">
-                  {{ row.is_public ? '公开' : '私有' }}
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.is_public ? 'success' : 'info'" size="small">
+                  {{ scope.row.is_public ? '公开' : '私有' }}
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="created_at" label="创建时间" width="160" align="center"  ></el-table-column>
-            <el-table-column label="功能" width="250" fixed="right" align="center">
-              <template #default="{ row }">
-                <el-button size="small" :icon="Plus" type="primary" @click="openCreate(row)">新建分类</el-button>
-                <el-button size="small" type="primary" @click="openEdit(row)">编辑</el-button>
-                <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <el-table-column label="功能" width="300" fixed="right" align="center">
+              <template slot-scope="scope">
+                <el-button size="small" icon="el-icon-plus" type="primary" @click="openCreate(scope.row)">新建分类</el-button>
+                <el-button size="small" type="primary" @click="openEdit(scope.row)">编辑</el-button>
+                <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -184,21 +182,21 @@
 
         <div class="footer">
           <el-pagination
-            v-model:current-page="pagination.page"
-            v-model:page-size="pagination.size"
+            :current-page.sync="pagination.page"
+            :page-size.sync="pagination.size"
             :page-sizes="[10, 20, 50, 100]"
             :total="pagination.total"
             layout="total, sizes, prev, pager, next, jumper"
             @size-change="reload"
             @current-change="reload"
-          />
+          ></el-pagination>
         </div>
       </div>
 
       <!-- 新建/编辑对话框 -->
       <el-dialog
         :title="dialogMode === 'create' ? '新建分类' : '编辑分类'"
-        v-model="dialogVisible"
+        :visible.sync="dialogVisible"
         width="500px"
         @close="resetForm"
       >
@@ -209,404 +207,247 @@
           label-width="100px"
         >
           <el-form-item label="分类名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入分类名称" />
+            <el-input v-model="form.name" placeholder="请输入分类名称"></el-input>
           </el-form-item>
           <el-form-item label="父分类" prop="parent_id">
             <el-select v-model="form.parent_id" placeholder="选择父分类（留空为顶级）" clearable style="width:100%">
-              <el-option :value="null" label="顶级分类" />
+              <el-option :value="null" label="顶级分类">顶级分类</el-option>
               <el-option 
                 v-for="item in parentOptions" 
                 :key="item.id" 
                 :value="item.id" 
                 :label="item.name"
                 :disabled="isParentDisabled(item.id)"
-              />
+              >{{ item.name }}</el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="分类描述" prop="description">
-            <el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入分类描述" />
+            <el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入分类描述"></el-input>
           </el-form-item>
           <el-form-item label="排序优先级" prop="sort_order">
-            <el-input-number v-model="form.sort_order" :min="0" :max="999" style="width:100%" />
+            <el-input-number v-model="form.sort_order" :min="0" :max="999" style="width:100%"></el-input-number>
           </el-form-item>
           <el-form-item label="公开状态">
-            <el-switch v-model="form.is_public" :active-value="1" :inactive-value="0" />
+            <el-switch v-model="form.is_public" :active-value="1" :inactive-value="0"></el-switch>
           </el-form-item>
         </el-form>
-        <template #footer>
+        <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" :loading="submitting" @click="handleSubmit">
             {{ dialogMode === 'create' ? '创建' : '更新' }}
           </el-button>
-        </template>
+        </span>
       </el-dialog>
-    </div>
+  </div>
+  <script>
+    const apiBaseUrl = 'http://localhost:5000';
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          loading: false,
+          submitting: false,
+          dialogVisible: false,
+          dialogMode: 'create',
+          list: [],
+          parentOptions: [],
+          pagination: { page: 1, size: 20, total: 0 },
+          filters: { keyword: '', level: null, is_public: null, sort: 'sort_order' },
+          form: { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 },
+          formRules: { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }] }
+        };
+      },
+      methods: {
+        getAuthHeaders() {
+          // 兼容多种存储与键名
+          const tryGet = (store, keys) => {
+            for (const k of keys) {
+              const v = store.getItem(k);
+              if (v) return v;
+            }
+            return null;
+          };
+          const keys = ['token', 'Authorization', 'authorization', 'authToken', 'auth_token', 'admin_token'];
+          let token = tryGet(localStorage, keys) || tryGet(sessionStorage, keys);
 
-    <script>
-      const { createApp, ref, reactive, onMounted } = Vue;
-      const { ElMessage, ElMessageBox } = ElementPlus;
-      const icons = ElementPlusIconsVue;
-      
-      const apiBaseUrl = 'http://localhost:5000';
-      
-      const App = {
-        setup() {
-          const loading = ref(false);
-          const submitting = ref(false);
-          const dialogVisible = ref(false);
-          const dialogMode = ref('create'); // 'create' | 'edit'
-          const formRef = ref(null);
-          
-          const list = ref([]);
-          const parentOptions = ref([]);
-          
-          const pagination = reactive({
-            page: 1,
-            size: 20,
-            total: 0
-          });
-          
-          const filters = reactive({
-            keyword: '',
-            level: null,
-            is_public: null,
-            sort: 'sort_order'
-          });
-          
-          const form = reactive({
-            id: null,
-            name: '',
-            parent_id: null,
-            description: '',
-            sort_order: 0,
-            is_public: 1
-          });
-          
-          const formRules = {
-            name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }],
-            sort_order: [{ type: 'number', min: 0, max: 999, message: '排序优先级范围0-999', trigger: 'blur' }]
-          };
-          
-          // 获取认证头
-          const getAuthHeaders = () => {
-            let token = localStorage.getItem('admin_token');
-            if (!token) {
-              token = localStorage.getItem('access_token');
+          // 尝试从 URL 参数获取（仅用于调试/临时登录传参）
+          if (!token && location && location.search) {
+            const sp = new URLSearchParams(location.search);
+            token = sp.get('token') || sp.get('auth') || sp.get('Authorization');
+          }
+
+          if (!token) {
+            this.$message.error('未登录或登录已过期');
+            return null;
+          }
+
+          // 处理 JSON 包装或带引号的情况
+          try {
+            if (token.trim().startsWith('{')) {
+              const obj = JSON.parse(token);
+              token = obj.token || obj.access_token || token;
             }
-            if (!token) {
-              ElMessage.error('未找到认证令牌，请重新登录');
-              window.location.href = './login.html';
-              return null;
+          } catch (e) {
+            // ignore JSON parse error
+          }
+          token = (token || '').toString().replace(/^"|"$/g, '').trim();
+
+          // 自动补齐 Bearer 前缀
+          const auth = /^Bearer\s+/i.test(token) ? token : `Bearer ${token}`;
+          return { 'Content-Type': 'application/json', 'Authorization': auth };
+        },
+        async loadList() {
+          this.loading = true;
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const params = new URLSearchParams({ page: this.pagination.page, size: this.pagination.size });
+            if (this.filters.level) params.append('level', this.filters.level);
+            if (this.filters.is_public !== null) params.append('is_public', this.filters.is_public);
+            if (this.filters.sort) params.append('sort', this.filters.sort);
+            if (this.filters.keyword) params.append('keyword', this.filters.keyword);
+            const resp = await fetch(`${apiBaseUrl}/admin/categories?${params}`, { headers });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.code === 1 && result.data && result.data.length > 0) {
+              const data = result.data[0];
+              this.list = (data.list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
+              this.pagination.total = data.pagination ? data.pagination.total : 0;
+            } else {
+              this.list = [];
+              this.pagination.total = 0;
             }
-            return {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            };
-          };
-          
-          // 加载分类列表
-          const loadList = async () => {
-            loading.value = true;
-            try {
-              const headers = getAuthHeaders();
-              if (!headers) return;
-              
-              const params = new URLSearchParams({
-                page: pagination.page,
-                size: pagination.size
-              });
-              
-              if (filters.level) params.append('level', filters.level);
-              if (filters.is_public !== null) params.append('is_public', filters.is_public);
-              if (filters.sort) params.append('sort', filters.sort);
-              
-              const response = await fetch(`${apiBaseUrl}/admin/categories?${params}`, {
-                headers
-              });
-              
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              const result = await response.json();
-              
-              if (result.code === 1 && result.data && result.data.length > 0) {
-                const data = result.data[0];
-                list.value = (data.list || []).map(item => ({
-                  ...item,
-                  hasChildren: item.level < 3 // 假设最多3级，可根据实际调整
-                }));
-                
-                if (data.pagination) {
-                  pagination.total = data.pagination.total;
-                }
-              } else {
-                list.value = [];
-                pagination.total = 0;
-              }
-            } catch (error) {
-              console.error('加载分类列表失败:', error);
-              ElMessage.error('加载分类列表失败: ' + error.message);
-            } finally {
-              loading.value = false;
-            }
-          };
-          
-          // 懒加载子分类
-          const loadChildren = async (tree, treeNode, resolve) => {
-            try {
-              const headers = getAuthHeaders();
-              if (!headers) return resolve([]);
-              
-              const response = await fetch(`${apiBaseUrl}/admin/categories?parent_id=${tree.id}`, {
-                headers
-              });
-              
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              const result = await response.json();
-              
-              if (result.code === 1 && result.data && result.data.length > 0) {
-                const children = (result.data[0].list || []).map(item => ({
-                  ...item,
-                  hasChildren: item.level < 3
-                }));
-                resolve(children);
-              } else {
-                resolve([]);
-              }
-            } catch (error) {
-              console.error('加载子分类失败:', error);
+          } catch (e) {
+            console.error('加载分类列表失败:', e);
+            this.$message.error('加载分类列表失败: ' + e.message);
+          } finally {
+            this.loading = false;
+          }
+        },
+        async loadChildren(tree, treeNode, resolve) {
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return resolve([]);
+            const resp = await fetch(`${apiBaseUrl}/admin/categories?parent_id=${tree.id}`, { headers });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.code === 1 && result.data && result.data.length > 0) {
+              const children = (result.data[0].list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
+              resolve(children);
+            } else {
               resolve([]);
             }
-          };
-          
-          // 加载父分类选项
-          const loadParentOptions = async () => {
-            try {
-              const headers = getAuthHeaders();
-              if (!headers) return;
-              
-              const response = await fetch(`${apiBaseUrl}/admin/categories/tree`, {
-                headers
-              });
-              
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              const result = await response.json();
-              
-              if (result.code === 1 && result.data) {
-                parentOptions.value = flattenTree(result.data);
-              }
-            } catch (error) {
-              console.error('加载父分类选项失败:', error);
+          } catch (e) {
+            console.error('加载子分类失败:', e);
+            resolve([]);
+          }
+        },
+        async loadParentOptions() {
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const resp = await fetch(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.code === 1 && Array.isArray(result.data)) {
+              this.parentOptions = result.data;
+            } else {
+              this.parentOptions = [];
             }
-          };
-          
-          // 扁平化树结构
-          const flattenTree = (tree, level = 0) => {
-            const result = [];
-            tree.forEach(item => {
-              result.push({
-                id: item.id,
-                name: '  '.repeat(level) + item.name,
-                level: item.level
-              });
-              if (item.children && item.children.length > 0) {
-                result.push(...flattenTree(item.children, level + 1));
-              }
-            });
-            return result;
-          };
-          
-          // 判断父分类是否禁用（编辑时排除自身及后代）
-          const isParentDisabled = (parentId) => {
-            if (dialogMode.value === 'create') return false;
-            // 简化版：禁用自身
-            return parentId === form.id;
-          };
-          
-          // 重置筛选
-          const resetFilters = () => {
-            filters.keyword = '';
-            filters.level = null;
-            filters.is_public = null;
-            filters.sort = 'sort_order';
-            pagination.page = 1;
-            reload();
-          };
-          
-          // 刷新列表
-          const reload = () => {
-            loadList();
-          };
-          
-          // 打开新建对话框
-          const openCreate = () => {
-            dialogMode.value = 'create';
-            resetForm();
-            loadParentOptions();
-            dialogVisible.value = true;
-          };
-          
-          // 打开编辑对话框
-          const openEdit = (row) => {
-            dialogMode.value = 'edit';
-            form.id = row.id;
-            form.name = row.name;
-            form.parent_id = row.parent_id;
-            form.description = row.description || '';
-            form.sort_order = row.sort_order || 0;
-            form.is_public = row.is_public;
-            loadParentOptions();
-            dialogVisible.value = true;
-          };
-          
-          // 重置表单
-          const resetForm = () => {
-            form.id = null;
-            form.name = '';
-            form.parent_id = null;
-            form.description = '';
-            form.sort_order = 0;
-            form.is_public = 1;
-            if (formRef.value) {
-              formRef.value.resetFields();
+          } catch (e) {
+            console.error('加载父分类选项失败:', e);
+            this.parentOptions = [];
+          }
+        },
+        isParentDisabled(parentId) {
+          if (this.dialogMode === 'create') return false;
+          return parentId === this.form.id;
+        },
+        resetFilters() {
+          this.filters.keyword = '';
+          this.filters.level = null;
+          this.filters.is_public = null;
+          this.filters.sort = 'sort_order';
+          this.pagination.page = 1;
+          this.reload();
+        },
+        reload() { this.loadList(); },
+        openCreate(row) {
+          this.dialogMode = 'create';
+          this.resetForm();
+          if (row && row.id) this.form.parent_id = row.id;
+          this.loadParentOptions();
+          this.dialogVisible = true;
+        },
+        openEdit(row) {
+          this.dialogMode = 'edit';
+          this.form.id = row.id;
+          this.form.name = row.name;
+          this.form.parent_id = row.parent_id;
+          this.form.description = row.description || '';
+          this.form.sort_order = row.sort_order || 0;
+          this.form.is_public = row.is_public;
+          this.loadParentOptions();
+          this.dialogVisible = true;
+        },
+        resetForm() {
+          this.form = { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 };
+          if (this.$refs.formRef) this.$refs.formRef.resetFields();
+        },
+        async handleSubmit() {
+          if (!this.$refs.formRef) return;
+          try { await this.$refs.formRef.validate(); } catch (e) { return; }
+          this.submitting = true;
+          try {
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const payload = { name: this.form.name, parent_id: this.form.parent_id, description: this.form.description, sort_order: this.form.sort_order, is_public: this.form.is_public };
+            let resp;
+            if (this.dialogMode === 'create') {
+              resp = await fetch(`${apiBaseUrl}/admin/categories`, { method: 'POST', headers, body: JSON.stringify(payload) });
+            } else {
+              resp = await fetch(`${apiBaseUrl}/admin/categories/${this.form.id}`, { method: 'PUT', headers, body: JSON.stringify(payload) });
             }
-          };
-          
-          // 提交表单
-          const handleSubmit = async () => {
-            if (!formRef.value) return;
-            
-            try {
-              await formRef.value.validate();
-            } catch {
-              return;
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.code === 1) {
+              this.$message.success(this.dialogMode === 'create' ? '创建成功' : '更新成功');
+              this.dialogVisible = false;
+              this.reload();
+            } else {
+              this.$message.error(result.msg || '操作失败');
             }
-            
-            submitting.value = true;
-            try {
-              const headers = getAuthHeaders();
-              if (!headers) return;
-              
-              const payload = {
-                name: form.name,
-                parent_id: form.parent_id,
-                description: form.description,
-                sort_order: form.sort_order,
-                is_public: form.is_public
-              };
-              
-              let response;
-              if (dialogMode.value === 'create') {
-                response = await fetch(`${apiBaseUrl}/admin/categories`, {
-                  method: 'POST',
-                  headers,
-                  body: JSON.stringify(payload)
-                });
-              } else {
-                response = await fetch(`${apiBaseUrl}/admin/categories/${form.id}`, {
-                  method: 'PUT',
-                  headers,
-                  body: JSON.stringify(payload)
-                });
-              }
-              
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              const result = await response.json();
-              
-              if (result.code === 1) {
-                ElMessage.success(dialogMode.value === 'create' ? '创建成功' : '更新成功');
-                dialogVisible.value = false;
-                reload();
-              } else {
-                ElMessage.error(result.msg || '操作失败');
-              }
-            } catch (error) {
-              console.error('提交失败:', error);
-              ElMessage.error('操作失败: ' + error.message);
-            } finally {
-              submitting.value = false;
+          } catch (e) {
+            console.error('提交失败:', e);
+            this.$message.error('操作失败: ' + e.message);
+          } finally {
+            this.submitting = false;
+          }
+        },
+        async handleDelete(row) {
+          try {
+            await this.$confirm(`确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`, '删除确认', { type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消' });
+            const headers = this.getAuthHeaders();
+            if (!headers) return;
+            const resp = await fetch(`${apiBaseUrl}/admin/categories/${row.id}`, { method: 'DELETE', headers });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.code === 1) {
+              this.$message.success('删除成功');
+              this.reload();
+            } else {
+              this.$message.error(result.msg || '删除失败');
             }
-          };
-          
-          // 删除分类
-          const handleDelete = async (row) => {
-            try {
-              await ElMessageBox.confirm(
-                `确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`,
-                '删除确认',
-                {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }
-              );
-              
-              const headers = getAuthHeaders();
-              if (!headers) return;
-              
-              const response = await fetch(`${apiBaseUrl}/admin/categories/${row.id}`, {
-                method: 'DELETE',
-                headers
-              });
-              
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              const result = await response.json();
-              
-              if (result.code === 1) {
-                ElMessage.success('删除成功');
-                reload();
-              } else {
-                ElMessage.error(result.msg || '删除失败');
-              }
-            } catch (error) {
-              if (error !== 'cancel') {
-                console.error('删除失败:', error);
-                ElMessage.error('删除失败: ' + error.message);
-              }
+          } catch (e) {
+            if (e !== 'cancel') {
+              console.error('删除失败:', e);
+              this.$message.error('删除失败: ' + e.message);
             }
-          };
-          
-          onMounted(() => {
-            loadList();
-          });
-          
-          return {
-            loading,
-            submitting,
-            dialogVisible,
-            dialogMode,
-            formRef,
-            list,
-            parentOptions,
-            pagination,
-            filters,
-            form,
-            formRules,
-            loadChildren,
-            resetFilters,
-            reload,
-            openCreate,
-            openEdit,
-            resetForm,
-            handleSubmit,
-            handleDelete,
-            isParentDisabled,
-            // 图标
-            Search: icons.Search,
-            Refresh: icons.Refresh,
-            Plus: icons.Plus
-          };
+          }
         }
-      };
-      
-      const app = createApp(App);
-      app.use(ElementPlus);
-      
-      // 注册所有图标
-      for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-        app.component(key, component);
-      }
-      
-      app.mount('#app');
-    </script>
-  </body>
+      },
+      mounted() { this.loadList(); }
+    });
+  </script>
+</body>
 </html>
-
