@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from models.category import Category
 import re
+import json
 
 # 延迟导入模型避免循环导入
 def get_user_model():
@@ -186,10 +187,20 @@ def create_category():
         if not is_valid:
             return error_response(result), 401
         
-        # 获取请求数据
-        data = request.get_json()
-        if not data:
+        # 获取原始请求数据并解析为JSON，避免 get_json 触发 BadRequest
+        raw_text = request.get_data(as_text=True)
+        print("========创建新分类raw========")
+        print(raw_text)
+        try:
+            data = json.loads(raw_text) if raw_text else None
+        except Exception:
+            return error_response("请求数据不是有效的JSON"), 400
+
+        if data is None:
             return error_response("请求数据不能为空"), 400
+        
+        # 调试：打印接收到的数据
+        print(f"接收到的创建分类数据: {data}")
         
         # 验证必填字段
         name = data.get('name', '').strip()
@@ -201,36 +212,54 @@ def create_category():
         
         # 验证可选字段
         parent_id = data.get('parent_id')
-        description = data.get('description', '').strip()
+        description = data.get('description', '').strip() if data.get('description') else ''
         sort_order = data.get('sort_order', 0)
-        is_public = data.get('is_public', True)
+        is_public_raw = data.get('is_public', 1)
+        
+        # 处理 is_public 字段（支持数字和布尔值）
+        if isinstance(is_public_raw, bool):
+            is_public = is_public_raw
+        elif isinstance(is_public_raw, (int, float)):
+            is_public = bool(int(is_public_raw))
+        else:
+            is_public = True  # 默认公开
         
         # 验证描述长度
         if description and len(description) > 200:
             return error_response("分类描述不能超过200个字符"), 400
         
         # 验证排序值
-        if not isinstance(sort_order, int) or sort_order < 0:
+        try:
+            sort_order = int(sort_order)
+            if sort_order < 0:
+                return error_response("排序值必须为非负整数"), 400
+        except (ValueError, TypeError):
             return error_response("排序值必须为非负整数"), 400
         
         # 计算分类层级
         level = 1
         if parent_id:
-            parent = Category.get(parent_id)
-            if not parent:
-                return error_response("父分类不存在"), 400
-            level = parent.level + 1
-            
-            # 限制层级深度
-            if level > 5:
-                return error_response("分类层级不能超过5级"), 400
+            try:
+                parent_id = int(parent_id)
+                parent = Category.get(parent_id)
+                if not parent:
+                    return error_response("父分类不存在"), 400
+                level = parent.level + 1
+                
+                # 限制层级深度
+                if level > 5:
+                    return error_response("分类层级不能超过5级"), 400
+            except (ValueError, TypeError):
+                return error_response("父分类ID格式错误"), 400
+        else:
+            parent_id = None  # 确保顶级分类的 parent_id 为 None
         
-        # 检查同级分类名称是否重复
-        existing = Category.query().filter_by(parent_id=parent_id, name=name).first()
-        if existing:
-            return error_response("同级分类中已存在相同名称的分类"), 400
-        
+        # 按需放开同级同名：不进行同级重名校验
+        # 注意：数据库未设置唯一约束，此变更将允许同一父分类下出现同名分类
+
         # 创建分类
+        print(f"准备创建分类: name={name}, parent_id={parent_id}, description={description}, sort_order={sort_order}, level={level}, is_public={is_public}")
+        
         category = Category(
             parent_id=parent_id,
             name=name,
@@ -241,9 +270,13 @@ def create_category():
         )
         category.save()
         
+        print(f"分类创建成功: {category.to_dict()}")
         return success_response(category.to_dict(), "创建分类成功"), 201
         
     except Exception as e:
+        print(f"创建分类异常: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return error_response(f"创建分类失败: {str(e)}"), 500
 
 @categories_bp.route('/<int:category_id>', methods=['PUT'])
@@ -261,9 +294,16 @@ def update_category(category_id):
         if not category:
             return error_response("分类不存在"), 404
         
-        # 获取请求数据
-        data = request.get_json()
-        if not data:
+        # 获取原始请求数据并解析为JSON，避免 get_json 触发 BadRequest
+        raw_text = request.get_data(as_text=True)
+        print("========更新分类raw========")
+        print(raw_text)
+        try:
+            data = json.loads(raw_text) if raw_text else None
+        except Exception:
+            return error_response("请求数据不是有效的JSON"), 400
+
+        if data is None:
             return error_response("请求数据不能为空"), 400
         
         # 更新字段
@@ -273,12 +313,7 @@ def update_category(category_id):
                 return error_response("分类名称不能为空"), 400
             if len(name) > 50:
                 return error_response("分类名称不能超过50个字符"), 400
-            
-            # 检查同级分类名称是否重复（排除自己）
-            existing = Category.query().filter_by(parent_id=category.parent_id, name=name).first()
-            if existing and existing.id != category.id:
-                return error_response("同级分类中已存在相同名称的分类"), 400
-            
+            # 仅校验基本规则，重名检查在最终 parent/name 确认后统一进行
             category.name = name
         
         if 'description' in data:
@@ -333,6 +368,8 @@ def update_category(category_id):
                 
                 category.parent_id = new_parent_id
         
+        # 按需放开同级同名：不进行同级重名校验（包括编辑场景）
+
         # 保存更新
         category.save()
         

@@ -212,7 +212,7 @@
           </el-form-item>
           <el-form-item label="父分类" prop="parent_id">
             <el-select v-model="form.parent_id" placeholder="选择父分类（留空为顶级）" clearable style="width:100%">
-              <!-- <el-option :value="null" label="顶级分类">顶级分类</el-option> -->
+              <el-option :value="null" label="顶级分类">顶级分类</el-option>
               <el-option 
                 v-for="item in parentOptions" 
                 :key="item.id" 
@@ -334,8 +334,7 @@
             const headers = this.getAuthHeaders();
             if (!headers) return resolve([]);
             const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params: { parent_id: tree.id } });
-            console.log("========headers======resp");
-            console.log(resp);
+           
             const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
               const children = (result.data[0].list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
@@ -344,7 +343,6 @@
               resolve([]);
             }
           } catch (e) {
-            console.error('加载子分类失败:', e);
             resolve([]);
           }
         },
@@ -353,14 +351,10 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            console.log("======加载父分类下拉选apiBaseUrl项：获取顶级分类列表=====parentOptions===resp");
             const resp = await axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
-            console.log("======加载父分类下拉选项：获取顶级分类列表=====parentOptions===resp");
-            console.log(resp);
             const result = resp.data;
             if (result.code === 1 && Array.isArray(result.data)) {
               this.parentOptions = result.data;
-            console.log(this.parentOptions );
             } else {
               this.parentOptions = [];
             }
@@ -419,9 +413,11 @@
             const headers = this.getAuthHeaders();
             if (!headers) return;
             const payload = { name: this.form.name, parent_id: this.form.parent_id, description: this.form.description, sort_order: this.form.sort_order, is_public: this.form.is_public };
+            console.log('提交的数据:', payload);
+            console.log('请求头:', headers);
             let resp;
             if (this.dialogMode === 'create') {
-              resp = await axios.post(`${apiBaseUrl}/admin/categories`, payload, { headers });
+              resp = await axios.post(`${apiBaseUrl}/admin/categories/`, payload, { headers });
             } else {
               resp = await axios.put(`${apiBaseUrl}/admin/categories/${this.form.id}`, payload, { headers });
             }
@@ -435,7 +431,8 @@
             }
           } catch (e) {
             console.error('提交失败:', e);
-            this.$message.error('操作失败: ' + e.message);
+            const detail = e && e.response && e.response.data ? (e.response.data.msg || JSON.stringify(e.response.data)) : e.message;
+            this.$message.error('操作失败: ' + detail);
           } finally {
             this.submitting = false;
           }

@@ -728,8 +728,8 @@
                 </div>
               </div>
 
-              <!-- 分类管理视图 -->
-              <div v-show="currentView === 'categories'" class="iframe-container">
+              <!-- 分类管理视图（使用 v-if，避免 iframe 预加载导致 @load 事件在设置加载状态前触发） -->
+              <div v-if="currentView === 'categories'" class="iframe-container">
                 <div v-if="iframeLoading" class="iframe-loading">
                   <el-icon class="is-loading"><Loading /></el-icon>
                   <span>正在加载分类管理...</span>
@@ -762,6 +762,7 @@
           const currentView = ref('dashboard'); // 'dashboard' | 'categories'
           const iframeLoading = ref(false);
           const categoriesIframe = ref(null);
+          const iframeLoadTimer = ref(null);
 
           const keyword = ref('');
           const viewMode = ref('list'); // 'list' | 'tree'
@@ -838,10 +839,42 @@
             activeMenu.value = '/categories';
             breadcrumbs.value = ['首页', '分类管理'];
             iframeLoading.value = true;
+            // 若 iframe 的 onload 因外部 CDN 过慢未触发，增加兜底超时，避免一直显示加载中
+            if (iframeLoadTimer.value) {
+              clearTimeout(iframeLoadTimer.value);
+            }
+            iframeLoadTimer.value = setTimeout(() => {
+              if (iframeLoading.value) {
+                iframeLoading.value = false;
+                ElementPlus.ElMessage.warning('分类页加载较慢，已关闭加载指示。如内容未显示，请直接访问 categories.html 或检查网络/CDN。');
+              }
+            }, 8000);
+            // 兼容：如果 iframe 早已加载完成（readyState 已是 complete），立即关闭加载指示
+            setTimeout(() => {
+              try {
+                const iframeEl = categoriesIframe.value;
+                if (iframeEl) {
+                  const doc = iframeEl.contentDocument || (iframeEl.contentWindow && iframeEl.contentWindow.document);
+                  if (doc && doc.readyState === 'complete') {
+                    if (iframeLoadTimer.value) {
+                      clearTimeout(iframeLoadTimer.value);
+                      iframeLoadTimer.value = null;
+                    }
+                    iframeLoading.value = false;
+                  }
+                }
+              } catch (e) {
+                // 忽略跨域或访问异常
+              }
+            }, 0);
           }
           
           // iframe 加载完成事件
           function onIframeLoad() {
+            if (iframeLoadTimer.value) {
+              clearTimeout(iframeLoadTimer.value);
+              iframeLoadTimer.value = null;
+            }
             iframeLoading.value = false;
           }
           function toggleFullScreen() {
