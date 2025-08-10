@@ -13,6 +13,8 @@
     
     <!-- Element UI JavaScript -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
     <style>
       body, html { 
@@ -251,7 +253,7 @@
           dialogMode: 'create',
           list: [],
           parentOptions: [],
-          pagination: { page: 1, size: 20, total: 0 },
+          pagination: { page: 1, size: 10, total: 0 },
           filters: { keyword: '', level: null, is_public: null, sort: 'sort_order' },
           form: { id: null, name: '', parent_id: null, description: '', sort_order: 0, is_public: 1 },
           formRules: { name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }] }
@@ -303,14 +305,15 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            const params = new URLSearchParams({ page: this.pagination.page, size: this.pagination.size });
-            if (this.filters.level) params.append('level', this.filters.level);
-            if (this.filters.is_public !== null) params.append('is_public', this.filters.is_public);
-            if (this.filters.sort) params.append('sort', this.filters.sort);
-            if (this.filters.keyword) params.append('keyword', this.filters.keyword);
-            const resp = await fetch(`${apiBaseUrl}/admin/categories?${params}`, { headers });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const result = await resp.json();
+            const params = { page: this.pagination.page, size: this.pagination.size };
+            if (this.filters.level) params.level = this.filters.level;
+            if (this.filters.is_public !== null) params.is_public = this.filters.is_public;
+            if (this.filters.sort) params.sort = this.filters.sort;
+            if (this.filters.keyword) params.keyword = this.filters.keyword;
+            const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params });
+            console.log("======加载分类列表========resp");
+            console.log(resp);
+            const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
               const data = result.data[0];
               this.list = (data.list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
@@ -331,9 +334,10 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return resolve([]);
-            const resp = await fetch(`${apiBaseUrl}/admin/categories?parent_id=${tree.id}`, { headers });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const result = await resp.json();
+            const resp = await axios.get(`${apiBaseUrl}/admin/categories`, { headers, params: { parent_id: tree.id } });
+            console.log("========headers======resp");
+            console.log(resp);
+            const result = resp.data;
             if (result.code === 1 && result.data && result.data.length > 0) {
               const children = (result.data[0].list || []).map(it => ({ ...it, hasChildren: it.level < 3 }));
               resolve(children);
@@ -350,9 +354,10 @@
           try {
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            const resp = await fetch(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const result = await resp.json();
+            const resp = await axios.get(`${apiBaseUrl}/admin/categories/categoriesRoot`, { headers });
+            console.log("======加载父分类下拉选项：获取顶级分类列表========resp");
+            console.log(resp);
+            const result = resp.data;
             if (result.code === 1 && Array.isArray(result.data)) {
               this.parentOptions = result.data;
             } else {
@@ -415,12 +420,11 @@
             const payload = { name: this.form.name, parent_id: this.form.parent_id, description: this.form.description, sort_order: this.form.sort_order, is_public: this.form.is_public };
             let resp;
             if (this.dialogMode === 'create') {
-              resp = await fetch(`${apiBaseUrl}/admin/categories`, { method: 'POST', headers, body: JSON.stringify(payload) });
+              resp = await axios.post(`${apiBaseUrl}/admin/categories`, payload, { headers });
             } else {
-              resp = await fetch(`${apiBaseUrl}/admin/categories/${this.form.id}`, { method: 'PUT', headers, body: JSON.stringify(payload) });
+              resp = await axios.put(`${apiBaseUrl}/admin/categories/${this.form.id}`, payload, { headers });
             }
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const result = await resp.json();
+            const result = resp.data;
             if (result.code === 1) {
               this.$message.success(this.dialogMode === 'create' ? '创建成功' : '更新成功');
               this.dialogVisible = false;
@@ -441,9 +445,8 @@
             await this.$confirm(`确定要删除分类「${row.name}」吗？如果存在子分类将无法删除。`, '删除确认', { type: 'warning', confirmButtonText: '确定', cancelButtonText: '取消' });
             const headers = this.getAuthHeaders();
             if (!headers) return;
-            const resp = await fetch(`${apiBaseUrl}/admin/categories/${row.id}`, { method: 'DELETE', headers });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const result = await resp.json();
+            const resp = await axios.delete(`${apiBaseUrl}/admin/categories/${row.id}`, { headers });
+            const result = resp.data;
             if (result.code === 1) {
               this.$message.success('删除成功');
               this.reload();
@@ -458,7 +461,7 @@
           }
         }
       },
-      mounted() { this.loadList(); }
+      mounted() { this.loadList(); } // 组件挂载时加载列表
     });
   </script>
 </body>
