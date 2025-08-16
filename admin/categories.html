@@ -141,10 +141,10 @@
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
           >
             <el-table-column type="index" width="50"  label="序号" align="center"></el-table-column>
-            <el-table-column prop="id" label="ID" width="70" sortable  align="center" ></el-table-column>
-            <el-table-column label="名称" min-width="180">
-              <template slot-scope="scope">
-                <div class="name-cell">
+            <el-table-column prop="id" label="ID" width="100" sortable  align="center" ></el-table-column>
+            <el-table-column label="名称" min-width="180" >
+              <template slot-scope="scope" align="center" >
+                <div class="name-cell" >
                   <strong>{{ scope.row.name }}</strong>
                 </div>
               </template>

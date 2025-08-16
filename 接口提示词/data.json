@@ -110,6 +110,16 @@
         "url": "https://www.processon.com/",
         "description": "在线流程图制作",
         "icon": "https://files.codelife.cc/icons/www.processon.com.svg"
+      },
+      "FlowUs": {
+        "url": "https://flowus.cn/product?promotionChannel=GW_itab",
+        "description": "一站式团队协作平台",
+        "icon": "https://files.codelife.cc/website/flowus.svg"
+      },
+      "奶牛快传": {
+        "url": "https://www.gaoding.com/utms/9cc0e70b71bd42f3a8253e059433a48c",
+        "description": "文件传输工具",
+        "icon": "https://files.codelife.cc/website/cowtransfer.svg"
       }
     },
     "后端": {
@@ -202,6 +212,16 @@
         "url": "https://rocketmq.apache.org/",
         "description": "分布式消息中间件",
         "icon": "https://files.codelife.cc/website/rocketmq.svg"
+      },
+      "华为镜像仓库": {
+        "url": "https://mirrors.huaweicloud.com/home",
+        "description": "华为开源镜像站",
+        "icon": ""
+      },
+      "阿里镜像仓库": {
+        "url": "https://develop.aliyun.com/tools/sdk#/java",
+        "description": "阿里云开源镜像站",
+        "icon": ""
       }
     },
     "前端": {
@@ -259,339 +279,374 @@
     "RPA/自动化": {
       "ezRPA": {
         "url": "https://www.ezrpa.store/",
-        "description": "",
+        "description": "RPA自动化工具",
         "icon": "https://oss.ezrpa.store/2024/09/12/210204uKLFDk4QiUsNzXbF.png"
-         },
+      },
       "扣子": {
         "url": "https://www.coze.cn/",
-        "description": "",
+        "description": "字节跳动AI应用开发平台",
         "icon": "https://files.codelife.cc/icons/coze.cn.svg"
       },
       "Cursor": {
         "url": "https://www.cursor.com/cn",
-        "description": "",
+        "description": "AI编程助手",
         "icon": "https://www.cursor.com/favicon.svg"
+      },
+      "DeepSeek": {
+        "url": "https://www.deepseek.com/",
+        "description": "大语言模型与AI助手",
+        "icon": "https://files.codelife.cc/icons/deepseek.svg"
+      },
+      "豆包": {
+        "url": "https://www.doubao.com",
+        "description": "字节跳动出品的AI助手",
+        "icon": "https://files.codelife.cc/icons/doubao.com.webp"
+      },
+      "ChatGPT": {
+        "url": "https://chatgpt.com/",
+        "description": "OpenAI 的聊天助手",
+        "icon": "https://files.codelife.cc/user-website-icon/20241104/B5y1cDzP_QWUQPUGAfDeU9291.png"
+      },
+      "文心一言": {
+        "url": "https://yiyan.baidu.com/",
+        "description": "百度智能对话大模型",
+        "icon": "https://files.codelife.cc/icons/yige.baidu.png"
       }
     },
-    "第三方对接": {},
-    "学习资源": {},
+    "第三方对接": {
+      "Sakura Frp": {
+        "url": "https://www.natfrp.com",
+        "description": "内网穿透服务",
+        "icon": ""
+      },
+      "ngrok": {
+        "url": "https://www.ngrok.cc/",
+        "description": "内网穿透工具",
+        "icon": ""
+      },
+      "Cpolar": {
+        "url": "https://www.cpolar.com/?channel=0&invite=4Fqp",
+        "description": "内网穿透服务",
+        "icon": ""
+      },
+      "欢拓云直播": {
+        "url": "https://www.talk-fun.com/",
+        "description": "企业直播解决方案",
+        "icon": ""
+      }
+    },
     "论坛区域": {
       "CSDN": {
         "url": "http://www.csdn.net/",
-        "description": "",
+        "description": "中文IT技术社区",
         "icon": "https://files.codelife.cc/website/csdn.svg"
       },
       "博客园": {
         "url": "https://www.cnblogs.com/",
-        "description": "",
+        "description": "开发者博客社区",
         "icon": "https://files.codelife.cc/icons/www.cnblogs.com.svg"
+      },
+      "掘金": {
+        "url": "https://juejin.cn/",
+        "description": "开发者技术社区",
+        "icon": "https://files.codelife.cc/icons/juejin.cn.svg"
+      },
+      "SegmentFault": {
+        "url": "https://segmentfault.com/",
+        "description": "开发者技术问答社区",
+        "icon": "https://files.codelife.cc/icons/segmentfault.com.svg"
+      },
+      "V2EX": {
+        "url": "http://www.v2ex.com/",
+        "description": "程序员社区",
+        "icon": "https://files.codelife.cc/website/v2ex.svg"
+      }
+    },
+    "学习资源": {
+      "菜鸟教程": {
+        "url": "https://www.runoob.com/",
+        "description": "编程入门教程网站",
+        "icon": ""
+      },
+      "W3School": {
+        "url": "https://www.w3school.com.cn/",
+        "description": "领先的Web技术教程网站",
+        "icon": ""
+      },
+      "MDN Web Docs": {
+        "url": "https://developer.mozilla.org/zh-CN/",
+        "description": "Web开发技术文档",
+        "icon": ""
+      },
+       "前端笔记": {
+        "url": "https://www.yuque.com/cessstudy/kak11d",
+        "description": "前端学习笔记",
+        "icon": "https://files.codelife.cc/icons/www.yuque.com.svg"
+      },
+      "枫叶云": {
+        "url": "http://www.fynote.com/",
+        "description": "知识管理平台",
+        "icon": "https://fynotefile.oss-cn-zhangjiakou.aliyuncs.com/fynote/fyfile/392/1645843084068/8ab361105b584454bd5d0a2f29ad2c75.ico"
+      }
+    },
+    "邮箱服务": {
+      "QQ邮箱": {
+        "url": "https://mail.qq.com/",
+        "description": "腾讯邮箱服务",
+        "icon": "https://files.codelife.cc/icons/qq-mail.svg"
+      },
+      "163邮箱": {
+        "url": "http://mail.163.com/",
+        "description": "网易邮箱服务",
+        "icon": "https://files.codelife.cc/icons/mail-163.svg"
+      },
+      "腾讯企业邮箱": {
+        "url": "https://work.weixin.qq.com/",
+        "description": "企业邮箱服务",
+        "icon": "https://files.codelife.cc/icons/work.weixin.qq.com_mail_.svg"
+      },
+      "Proton邮箱": {
+        "url": "https://proton.me/mail",
+        "description": "加密邮箱服务",
+        "icon": ""
       }
     }
+  
+   
+
   },
   "工具网站": {
     "PDF转换": {
       "iLovePDF": {
         "url": "https://www.ilovepdf.com/",
-        "description": "完全免费的PDF文件在线管理工具",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/iLovePDF.png"
+        "description": "在线PDF处理工具",
+        "icon": "https://files.codelife.cc/icons/www.ilovepdf.com.svg"
       },
-      "PDF转换器": {
-        "url": "https://www.pdf2go.com/zh",
-        "description": "在线PDF转换器",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/pdf2go.png"
-      },
-      "PDF Eagle": {
-        "url": "https://cn.pdf eagle.com/",
-        "description": "专业PDF编辑器",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/PDFEagle.png"
+      "PDF24": {
+        "url": "https://tools.pdf24.org/zh/",
+        "description": "免费PDF工具",
+        "icon": "https://files.codelife.cc/icons/tools.pdf24.org.svg"
       },
       "Smallpdf": {
         "url": "https://smallpdf.com/cn",
-        "description": "在线PDF工具集合",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/smallpdf.png"
-      },
-      "PDF24 Tools": {
-        "url": "https://tools.pdf24.org/zh/",
-        "description": "免费且易于使用的在线PDF工具",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/pdf24.png"
-      },
-      "CleverPDF": {
-        "url": "https://www.cleverpdf.com/",
-        "description": "44个强大的PDF在线工具",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/cleverpdf.png"
-      },
-      "超级PDF": {
-        "url": "https://xpdf.net/",
-        "description": "强大易用的在线PDF处理工具",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/xpdf.png"
-      },
-      "PDF派": {
-        "url": "https://www.pdfpai.com/",
-        "description": "20个好用的PDF在线工具",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/pdfpai.png"
+        "description": "简单好用的PDF工具",
+        "icon": "https://files.codelife.cc/icons/smallpdf.com.svg"
       }
     },
-    "数码相关": {
-      "鲁大师天梯榜": {
-        "url": "https://www.ludashi.com/tianti",
-        "description": "手机、PC硬件性能排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/ludashi.png"
+    "图片处理": {
+      "在线PS": {
+        "url": "https://www.uupoop.com/",
+        "description": "在线图片编辑工具",
+        "icon": "https://files.codelife.cc/icons/www.uupoop.com.svg"
       },
-      "SiliconCat": {
-        "url": "https://www.siliconcat.com/",
-        "description": "CPU、GPU、手机SOC性能排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/siliconcat.png"
+      "在线抠图": {
+        "url": "https://www.remove.bg/zh",
+        "description": "自动抠图工具",
+        "icon": "https://files.codelife.cc/icons/www.remove.bg.svg"
       },
-      "显卡性能天梯图": {
-        "url": "https://www.mydrivers.com/zhuanti/tianti/gpu/",
-        "description": "显卡性能排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/mydrivers.png"
-      },
-      "手机性能排行榜": {
-        "url": "https://www.phonearena.com/phones/benchmarks",
-        "description": "手机性能跑分排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/phonearena.png"
-      },
-      "快科技天梯榜": {
-        "url": "https://www.mydrivers.com/zhuanti/tianti/",
-        "description": "CPU、显卡、手机性能排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2020/11/mydrivers.png"
-      },
-      "纳米AI搜索": {
-        "url": "https://bot.n.cn/",
-        "description": "360AI搜索，AI智能答案引擎",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2024/04/1744285564-n.cn.png"
-      },
-      "苹果产品参数中心": {
-        "url": "https://www.xiaozhongjishu.com/apple/",
-        "description": "Apple产品型号查询",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2022/08/9da9f-www.onlineit.cn.png"
-      },
-      "NotebookCheck": {
-        "url": "https://www.notebookcheck.net/Mobile-Processors-Benchmark-List.2436.0.html",
-        "description": "桌面及手机CPU排行榜",
-        "icon": "https://www.xiaozhongjishu.com/wp-content/uploads/2021/05/mobile-processos.png"
+      "TinyPNG": {
+        "url": "https://tinypng.com/",
+        "description": "图片压缩工具",
+        "icon": "https://files.codelife.cc/icons/tinypng.com.svg"
       }
     },
-    "搜索与起始页": {
-      "开发者搜索": {
-        "url": "https://kaifa.baidu.com/?from=itab.link",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/kaifa.baidu.svg"
+    "文件转换": {
+      "在线文件转换": {
+        "url": "https://convertio.co/zh/",
+        "description": "多格式文件转换工具",
+        "icon": "https://files.codelife.cc/icons/convertio.co.svg"
       },
-      "Bing搜索": {
-        "url": "https://www.bing.com/search?q=",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/60b9eb17ae5a9ba4024b3a37.png"
+      "在线OCR": {
+        "url": "https://web.baimiaoapp.com/",
+        "description": "图片文字识别工具",
+        "icon": "https://files.codelife.cc/icons/web.baimiaoapp.com.svg"
       },
-      "iTab新标签页": {
-        "url": "https://itab.link",
-        "description": "",
-        "icon": "https://files.codelife.cc/website/itab.svg"
+      "在线表格转换": {
+        "url": "https://tableconvert.com/zh-CN/",
+        "description": "表格格式转换工具",
+        "icon": "https://files.codelife.cc/icons/tableconvert.com.svg"
       }
     },
-    "网盘/云盘": {
-      "夸克网盘": {
-        "url": "https://pan.quark.cn",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/b20bacf68b2efe5b.png"
-      },
-      "123云盘": {
-        "url": "https://www.123pan.com/",
-        "description": "",
-        "icon": "https://statics.123957.com/static-by-custom/favicon.ico"
-      },
-      "迅雷云盘": {
-        "url": "https://pan.xunlei.com/",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/pan.xunlei.com.svg"
-      },
-      "阿里云盘": {
-        "url": "https://www.aliyundrive.com/drive",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/aliyundrive.svg"
-      },
-      "百度云": {
-        "url": "https://pan.baidu.com/",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/pan-baidu.svg"
-      },
-      "移动云": {
-        "url": "https://yun.139.com/w/#/index",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/5e9d53b77e261c1f0b4e6a6b.png"
-      },
-      "PikPak": {
-        "url": "https://mypikpak.com/",
-        "description": "",
-        "icon": "https://mypikpak.com/apple-touch-icon.png"
-      },
-      "蓝破云": {
-        "url": "http://vip.lanpoyun.cn/#/",
-        "description": "",
-        "icon": ""
-      }
-    },
-    "云服务厂商": {
-      "腾讯云": {
-        "url": "https://cloud.tencent.com/",
-        "description": "",
-        "icon": "https://files.codelife.cc/website/5aebfdf4fb674834c299ff9a.png"
-      },
-      "阿里云": {
-        "url": "https://www.aliyun.com/",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/aliyun.svg"
-      },
-      "华为云": {
-        "url": "https://www.huaweicloud.com/intl/zh-cn/",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/60b9eb9fae5a9ba4024b3bf2.png"
-      }
-    },
-    "临时邮箱": {
-      "Mail.cx": {
-        "url": "https://mail.cx/zh/",
-        "description": "",
-        "icon": ""
-      },
-      "风车邮箱": {
-        "url": "https://mail.xoxome.online/dashboard",
-        "description": "",
-        "icon": ""
-      },
-      "随用随弃": {
-        "url": "https://www.suiyongsuiqi.com/",
-        "description": "",
-        "icon": "https://www.suiyongsuiqi.com/favicon.ico"
-      },
-      "临时邮箱(linshiyou)": {
-        "url": "https://linshiyou.com/",
-        "description": "",
-        "icon": "https://linshiyou.com/favicon.ico"
-      },
-      "Mails.org": {
-        "url": "https://mails.org/cn/",
-        "description": "",
-        "icon": "https://mails.org/assets/img/favicon.png?v2"
-      },
-      "24Mail": {
-        "url": "http://24mail.chacuo.net/",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/77e7b065c4e166ad.png"
-      },
-      "EmailTick": {
-        "url": "https://www.emailtick.com/zh",
-        "description": "",
-        "icon": ""
-      },
-      "22.do 临时Gmail": {
-        "url": "https://22.do/zh/fake-gmail-generator",
-        "description": "",
-        "icon": ""
-      }
-    },
-    "视频社区": {
-      "哔哩哔哩": {
-        "url": "http://www.bilibili.com/",
-        "description": "",
-        "icon": "https://files.codelife.cc/website/bilibili2.svg"
-      }
-    },
-    "二维码工具": {
+    "在线工具": {
       "草料二维码生成器": {
         "url": "https://cli.im/",
-        "description": "",
+        "description": "在线二维码生成工具",
         "icon": "https://files.codelife.cc/website/5f4f3bb7aa121b0c2ac69f34.png"
-      }
-    },
-    "AI工具": {
-    
-      "即梦AI": {
-        "url": "https://jimeng.jianying.com/ai-tool/home",
-        "description": "",
-        "icon": "https://files.codelife.cc/icons/jimeng.jianying.png"
       },
-      "国际即梦Ai": {
-        "url": "https://dreamina.capcut.com/ai-tool/home",
-        "description": "",
-        "icon": "https://lf3-lv-buz.vlabstatic.com/obj/image-lvweb-buz/common/images/dreamina-v1.ico"
+      "幕布": {
+        "url": "https://mubu.com/",
+        "description": "大纲笔记工具",
+        "icon": "https://files.codelife.cc/icons/mubu.com.svg"
       },
-      "极影AI": {
-        "url": "https://www.flashwave.cn/workflows",
-        "description": "",
-        "icon": ""
+      "石墨文档": {
+        "url": "https://shimo.im/",
+        "description": "在线协作文档平台",
+        "icon": "https://files.codelife.cc/icons/shimo.im.svg"
       },
-      "CloseAI": {
-        "url": "https://www.closeai-asia.com/dashboard/",
-        "description": "",
-        "icon": "https://www.closeai-asia.com/favicon.ico?v=2"
+      "腾讯文档": {
+        "url": "https://docs.qq.com/",
+        "description": "腾讯在线协作文档",
+        "icon": "https://files.codelife.cc/icons/docs.qq.com.svg"
       },
-      "ChatGPT": {
-        "url": "https://app.notdiamond.ai/",
-        "description": "",
-        "icon": "https://app.notdiamond.ai/icon.png?16baa6821e2798ba"
+      "FlowUs": {
+        "url": "https://flowus.cn/product?promotionChannel=GW_itab",
+        "description": "知识管理/在线文档工具",
+        "icon": "https://files.codelife.cc/website/flowus.svg"
       },
-      "数字人.icu": {
-        "url": "https://huofhaw.28589.v32.shuziren.icu/",
-        "description": "",
-        "icon": "https://api.bingly.cn/favicon.png"
-      },
-      "国际-可灵AI": {
-        "url": "https://www.klingai.com/global/",
-        "description": "",
-        "icon": "https://p2-kling.kechuangai.com/kcdn/cdn-kcdn112452/kling-homepage-aio-prod_aio/favicon.ico"
-      },
-      "白日梦": {
-        "url": "https://aibrm.com/role-library",
-        "description": "",
-        "icon": "https://cdn.brmgo.cn/static/images/logo-icon.png"
-      }
-    },
-    "壁纸/图库": {
-      "手机壁纸大全": {
-        "url": "https://www.3gbizhi.com/",
-        "description": "",
-        "icon": "https://www.3gbizhi.com/assets/mobile/images/favicon.ico"
-      },
-      "好壁纸": {
-        "url": "https://haowallpaper.com/",
-        "description": "",
-        "icon": "https://haowallpaper.com/favicon.ico"
-      }
-    },
-    "临时手机号": {
-      "临时手机号": {
-        "url": "https://www.dengget.com/blog/domestic-free-mobile-phone-verification-code-receiving-platform.html",
-        "description": "",
-        "icon": "https://www.dengget.com/wp-content/uploads/2022/10/dengde_de_Gravatar.jpg"
-      }
-    },
-    "效率工具": {
       "灵创提词器2.0": {
         "url": "https://frozenland.cc/teleprompter.html",
-        "description": "",
-        "icon": ""
+        "description": "在线提词器工具",
+        "icon": "fa-solid fa-microphone"
       }
     }
-   },
-    "设计灵感": {
-      "LiblibAI": {
-        "url": "https://www.liblib.art/inspiration",
-        "description": "",
-        "icon": "https://liblibai-web-static.liblib.cloud/favicon_v2.png"
+  },
+  "免费观影": {
+    "影视网站": {
+      "低端影视": {
+        "url": "https://ddys.art/",
+        "description": "免费高清影视资源",
+        "icon": "fa-solid fa-film"
       },
-      "千鹿设计助手官网": {
-        "url": "https://qianlu.cc/index.html",
-        "description": "",
-        "icon": ""
+      "茶杯狐": {
+        "url": "https://cupfox.app/",
+        "description": "影视资源聚合搜索",
+        "icon": "fa-solid fa-mug-hot"
+      },
+      "555电影": {
+        "url": "https://www.555dy.com/",
+        "description": "免费在线影视网站",
+        "icon": "fa-solid fa-video"
+      },
+      "片库": {
+        "url": "https://www.pianku.li/",
+        "description": "高清影视资源库",
+        "icon": "fa-solid fa-photo-film"
+      },
+      "NO视频": {
+       "url": "https://www.novipnoad.com/",
+       "description": "免费高清影视平台",
+       "icon": "fa-solid fa-play"
+     },
+      "爱看影视": {
+        "url": "https://www.ikandy.fun/",
+        "description": "免费在线观影网站",
+        "icon": "fa-solid fa-heart"
+      },
+      "哔哩哔哩": {
+        "url": "http://www.bilibili.com/",
+        "description": "综合视频平台",
+        "icon": "fa-solid fa-film"
       }
     },
-    "网站诊断/安全": {
-      "UserCheck": {
-        "url": "https://www.usercheck.com/domain/portaltrendsarena.com",
-        "description": "",
-        "icon": ""
+    "动漫网站": {
+      "樱花动漫": {
+        "url": "https://www.yhdmp.cc/",
+        "description": "免费动漫视频网站",
+        "icon": "fa-solid fa-leaf"
+      },
+      "AGE动漫": {
+        "url": "https://www.agemys.com/",
+        "description": "在线动漫视频网站",
+        "icon": "fa-solid fa-dragon"
+      },
+      "ZzzFun": {
+        "url": "http://www.zzzfun.com/",
+        "description": "免费动漫视频网站",
+        "icon": "fa-solid fa-z"
+      }
+    },
+    "纪录片": {
+      "纪录片之家": {
+        "url": "https://www.jlpzj.net/",
+        "description": "高清纪录片资源网站",
+        "icon": "fa-solid fa-earth-americas"
+      },
+      "中国纪录片网": {
+        "url": "http://www.docuchina.cn/",
+        "description": "中国纪录片门户网站",
+        "icon": "fa-solid fa-flag"
+      }
+    }
+  },
+  "软件下载": {
+    "Windows软件": {
+      "果核剥壳": {
+        "url": "https://www.ghxi.com/",
+        "description": "优质精品软件下载",
+        "icon": "fa-brands fa-windows"
+      },
+      "423Down": {
+        "url": "https://www.423down.com/",
+        "description": "Windows软件下载站",
+        "icon": "fa-solid fa-download"
+      },
+      "小众软件": {
+        "url": "https://www.appinn.com/",
+        "description": "分享免费实用的小软件",
+        "icon": "fa-solid fa-laptop"
+      },
+      "异次元软件世界": {
+        "url": "https://www.iplaysoft.com/",
+        "description": "软件推荐与评测网站",
+        "icon": "fa-solid fa-cube"
+      }
+    },
+    "Mac软件": {
+      "MacWk": {
+        "url": "https://macwk.com/",
+        "description": "精品Mac应用下载",
+        "icon": "fa-brands fa-apple"
+      },
+      "Xclient": {
+        "url": "https://xclient.info/",
+        "description": "Mac软件下载平台",
+        "icon": "fa-brands fa-apple"
+      },
+      "MacBL": {
+        "url": "https://www.macbl.com/",
+        "description": "Mac软件下载网站",
+        "icon": "fa-brands fa-apple"
+      }
+    },
+    "安卓软件": {
+      "APKPure": {
+        "url": "https://apkpure.com/cn/",
+        "description": "安卓应用下载网站",
+        "icon": "fa-brands fa-android"
+      },
+      "F-Droid": {
+        "url": "https://f-droid.org/",
+        "description": "开源安卓应用商店",
+        "icon": "fa-brands fa-android"
+      },
+      "酷安": {
+        "url": "https://www.coolapk.com/",
+        "description": "国内安卓应用交流社区",
+        "icon": "fa-brands fa-android"
+      }
+    },
+    "开发工具": {
+      "Visual Studio Code": {
+        "url": "https://code.visualstudio.com/",
+        "description": "微软开发的轻量级代码编辑器",
+        "icon": "https://files.codelife.cc/website/visual-studio-code.svg"
+      },
+      "IntelliJ IDEA": {
+        "url": "https://www.jetbrains.com/idea/",
+        "description": "Java集成开发环境",
+        "icon": "fa-solid fa-code"
+      },
+      "PyCharm": {
+        "url": "https://www.jetbrains.com/pycharm/",
+        "description": "Python集成开发环境",
+        "icon": "fa-brands fa-python"
+      },
+      "WebStorm": {
+        "url": "https://www.jetbrains.com/webstorm/",
+        "description": "JavaScript IDE",
+        "icon": "fa-brands fa-js"
       }
     }
   }
+ 
+}

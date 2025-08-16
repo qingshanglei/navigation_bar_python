@@ -200,26 +200,6 @@
                     "view": 3
                 },
                 {
-                    "type": "icon",
-                    "id": "Pm5v3aVzI9Gs0dGGG28B97997",
-                    "url": "https://cli.im/",
-                    "name": "草料二维码生成器",
-                    "src": "https://files.codelife.cc/website/5f4f3bb7aa121b0c2ac69f34.png",
-                    "iconText": "草料二",
-                    "backgroundColor": "#e67e22",
-                    "view": 16
-                },
-                {
-                    "id": "Qv51vm51wSj0Z2pEvLxCl8198",
-                    "url": "https://www.coze.cn/",
-                    "name": "扣子",
-                    "src": "https://files.codelife.cc/icons/coze.cn.svg",
-                    "type": "icon",
-                    "iconText": "扣子",
-                    "backgroundColor": "#4d53e8",
-                    "view": 36
-                },
-                {
                     "id": "sAoUCItxySWz8y-Nl_v7o2943",
                     "url": "https://www.flashwave.cn/workflows",
                     "name": "极影ai",
@@ -228,16 +208,6 @@
                     "iconText": "极影ai",
                     "backgroundColor": "#1681ff",
                     "view": 1
-                },
-                {
-                    "id": "pHp8PSpbBn9b6tppr2J4h3997",
-                    "url": "https://www.cursor.com/cn",
-                    "name": "Cursor ",
-                    "src": "https://www.cursor.com/favicon.svg",
-                    "type": "text",
-                    "iconText": "Cur",
-                    "backgroundColor": "#276ce6",
-                    "view": 19
                 },
                 {
                     "id": "nlt63VYiBBegn6dtSKReG8137",
@@ -250,16 +220,6 @@
                     "view": 51
                 },
                 {
-                    "id": "3AzdfOwoz8PAMQXEbtMqK8526",
-                    "url": "https://www.deepseek.com/",
-                    "name": "DeepSeek",
-                    "src": "https://files.codelife.cc/icons/deepseek.svg",
-                    "type": "icon",
-                    "iconText": "Dee",
-                    "backgroundColor": "#fff",
-                    "view": 9
-                },
-                {
                     "id": "_8nEgDjKxE1JDK4gsnlcb2888",
                     "url": "https://manus.im/",
                     "name": "manus",
@@ -270,51 +230,12 @@
                     "view": 3
                 },
                 {
-                    "id": "HAhT2SHlAJSoB6DNdQDPB2733",
-                    "url": "https://www.doubao.com?channel=itab2&source=hw_db_itab&type=tab&theme=wangzjh",
-                    "name": "豆包",
-                    "src": "https://files.codelife.cc/icons/doubao.com.webp",
-                    "type": "icon",
-                    "iconText": "豆包-",
-                    "backgroundColor": "#ffffff",
-                    "view": 365
-                },
-                {
-                    "id": "iyu2oQD4FNhmvpvAtf1lw1393",
-                    "url": "https://mail.qq.com/",
-                    "name": "QQ邮箱",
-                    "src": "https://files.codelife.cc/icons/qq-mail.svg",
-                    "type": "icon",
-                    "iconText": "QQ邮",
-                    "backgroundColor": "#fff",
-                    "view": 216
-                },
-                {
                     "url": "https://www.google.com/",
                     "type": "icon",
                     "name": "Google",
                     "src": "https://files.codelife.cc/icons/google.svg",
                     "backgroundColor": "#fff",
                     "id": "ddtEBSZORNsPjXo8ajK6m4699",
-                    "view": 4
-                },
-                {
-                    "id": "YT-O0-AiLQ-PkCCmaLjY94647",
-                    "url": "https://proton.me/mail",
-                    "name": "proton邮箱",
-                    "src": "",
-                    "type": "text",
-                    "iconText": "proton",
-                    "backgroundColor": "#1681ff",
-                    "view": 4
-                },
-                {
-                    "url": "http://mail.163.com/",
-                    "type": "icon",
-                    "name": "163邮箱",
-                    "src": "https://files.codelife.cc/icons/mail-163.svg",
-                    "backgroundColor": "#e8011e",
-                    "id": "AR4RlQ1pxrYRTOFQkGLrc0715",
                     "view": 4
                 },
                 {
@@ -1804,32 +1725,7 @@
             "name": "程序员",
             "icon": "code",
             "children": [
-                {
-                    "id": "jkFkmkB2RP_qbyKaJ2kfS0182",
-                    "url": "https://www.marscode.cn/?utm_source=advertising&utm_medium=itablink_ug_cpa&utm_term=hw_marscode_itablink&utm_content=home",
-                    "name": "MarsCode",
-                    "src": "",
-                    "type": "text",
-                    "iconText": "MarsCo",
-                    "backgroundColor": "#1681ff",
-                    "view": 1
-                },
-                {
-                    "id": "yQv_IiTzL",
-                    "url": "https://gitee.com/",
-                    "type": "icon",
-                    "name": "码云Gitee",
-                    "src": "https://files.codelife.cc/website/gitee.svg",
-                    "view": 125
-                },
-                {
-                    "id": "CZHjnJIMB",
-                    "url": "https://github.com/",
-                    "type": "icon",
-                    "name": "GitHub",
-                    "src": "https://files.codelife.cc/website/github.svg",
-                    "view": 256
-                },
+        
                 {
                     "id": "WUMBlGW-tnoohfzsM3XhI1756",
                     "url": "https://vercel.com/",
@@ -1841,69 +1737,11 @@
                     "view": 8
                 },
                 {
-                    "id": "U4Xfd9xuVM0BWzs4OQ8Zi0716",
-                    "url": "https://gitcode.net/",
-                    "name": "gitcode",
-                    "src": "https://gitcode.net/uploads/-/system/appearance/favicon/1/icon.png",
-                    "type": "text",
-                    "iconText": "gi",
-                    "backgroundColor": "#FFFFFF",
-                    "view": 15
-                },
-                {
-                    "id": "9ivZt9a2i",
-                    "url": "http://www.w3school.com.cn",
-                    "type": "icon",
-                    "name": "w3school在线教程",
-                    "src": "https://files.codelife.cc/website/w3school.svg",
-                    "view": 7
-                },
-                {
                     "id": "o3X7DUdro",
                     "url": "https://www.bootcss.com/",
                     "type": "icon",
                     "name": "Bootstrap",
                     "src": "https://files.codelife.cc/website/bootstrap.svg",
-                    "view": 3
-                },
-                {
-                    "type": "text",
-                    "id": "7stYp-L3qg5aUE-sxCT8X7196",
-                    "url": "https://www.axios-http.cn/",
-                    "name": "Axios ",
-                    "src": "",
-                    "iconText": "Axi",
-                    "backgroundColor": "#f01313",
-                    "view": 2
-                },
-                {
-                    "type": "icon",
-                    "id": "qDEUwGVOluiIVbMLhM5d58204",
-                    "url": "https://mybatis.org/mybatis-3/",
-                    "name": " MyBatis",
-                    "src": "https://files.codelife.cc/user-website-icon/20220803/J_G1ipNrekOYJSmTCACZ99269.png",
-                    "iconText": " MyBat",
-                    "backgroundColor": "#1681ff",
-                    "view": 2
-                },
-                {
-                    "type": "icon",
-                    "id": "Ie4QHFYjghR4lTKN26PCK2132",
-                    "url": "https://baomidou.com/",
-                    "name": "MyBatis-Plus",
-                    "src": "https://files.codelife.cc/icons/20bacf68b2efe5b2.png",
-                    "iconText": "MyB",
-                    "backgroundColor": "#FFFFFF",
-                    "view": 3
-                },
-                {
-                    "type": "text",
-                    "id": "YSFXaAJ6Y0T08H37bNTHQ8373",
-                    "url": "https://www.layuiweb.com/",
-                    "name": "Layui",
-                    "src": "",
-                    "iconText": "Layui",
-                    "backgroundColor": "#1681ff",
                     "view": 3
                 },
                 {
@@ -5793,50 +5631,7 @@
                     "view": 12
                 }
             ]
-        },
-        {
-            "id": "nav_1zZvSvzhBR-IWLvbnDZp37959",
-            "name": "常用",
-            "icon": "xin",
-            "children": [
-                {
-                    "id": "pq1hNjsOJV-KeUhOu2niD5117",
-                    "url": "https://www.3gbizhi.com/",
-                    "name": "手机壁纸大全-高清好看的图片，明",
-                    "src": "https://www.3gbizhi.com/assets/mobile/images/favicon.ico",
-                    "type": "icon",
-                    "iconText": "手机壁",
-                    "backgroundColor": "#1681ff",
-                    "view": 4
-                },
-                {
-                    "id": "sO4sbHf4pAHTRQnGkShRD2588",
-                    "url": "https://haowallpaper.com/",
-                    "name": "4k日落壁纸-城市-晚霞背景-杨",
-                    "src": "https://haowallpaper.com/favicon.ico",
-                    "type": "icon",
-                    "iconText": "4k日",
-                    "backgroundColor": "#e74c3c",
-                    "view": 2
-                }
-            ]
-        },
-        {
-            "id": "nav_aXHYhalBPxi0fDrC12Scn3155",
-            "name": "通行",
-            "icon": "Telegram",
-            "children": [
-                {
-                    "id": "Oklka0IpMXKVWslKugr7x8676",
-                    "url": "https://www.ezrpa.store/",
-                    "name": "ezRPA",
-                    "src": "https://oss.ezrpa.store/2024/09/12/210204uKLFDk4QiUsNzXbF.png",
-                    "type": "icon",
-                    "iconText": "ezR",
-                    "backgroundColor": "#9326e9",
-                    "view": 2
-                }
-            ]
         }
+      
     ]
 }

@@ -1,205 +1,252 @@
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <script src="https://unpkg.com/vue@3"></script>
-    <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-    <!-- import JavaScript -->
-    <script src="https://unpkg.com/element-plus"></script>
-    <!-- Element Plus Icons -->
-    <script src="https://unpkg.com/@element-plus/icons-vue"></script>
-    <title>登录 - 导航系统</title>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试页面</title>
+   <!-- Vue 2 -->
+    <script src="https://unpkg.com/vue@2"></script>
+
+    <!-- Element UI CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <!-- Element UI JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
     <style>
-      body, html {
-        height: 100%;
-        margin: 0;
-      }
-      body {
-        background: linear-gradient(135deg, #1f2937 0%, #0ea5e9 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-          Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      }
-      .login-wrapper {
-        width: 100%;
-        max-width: 420px;
-        padding: 16px;
-      }
-      .brand {
-        text-align: center;
-        margin-bottom: 16px;
-        color: #fff;
-      }
-      .brand h1 {
-        margin: 8px 0 4px;
-        font-size: 24px;
-        font-weight: 700;
-      }
-      .brand p { margin: 0; opacity: .85; }
-      .footer-link { text-align: center; margin-top: 12px; }
-      .footer-link a { color: #409eff; text-decoration: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-container input {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
     </style>
-  </head>
-  <body>
-    <div id="app" class="login-wrapper">
-      <div class="brand">
-        <el-icon size="36" color="#fff"><Compass /></el-icon>
-        <h1>导航系统</h1>
-        <p>欢迎回来，请登录您的账户</p>
-      </div>
+</head>
+<body>
+    <div id="app">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🧭 导航系统</h1>
+                <p>欢迎回来，请登录您的账户</p>
+            </div>
+            
+            <el-form ref="loginForm" :model="loginForm" :rules="loginRules" @submit.native.prevent="handleLogin">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <el-input 
+                        v-model="loginForm.username" 
+                        id="username" 
+                        placeholder="请输入用户名"
+                        name="username">
+                    </el-input>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <el-input 
+                        v-model="loginForm.password" 
+                        id="password" 
+                        type="password" 
+                        placeholder="请输入密码"
+                        name="password">
+                    </el-input>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <el-checkbox v-model="loginForm.remember_me">记住我</el-checkbox>
+                    </label>
+                    <a href="#" class="forgot-password">忘记密码？</a>
+                </div>
+                
+                <button type="submit" class="login-btn" :disabled="loading">
+                    {{ loading ? '登录中...' : '登录' }}
+                </button>
 
-      <el-card shadow="hover" body-style="padding: 24px 20px;">
-        <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @keyup.enter="onSubmit">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model.trim="form.username" placeholder="请输入用户名" clearable>
-              <template #prefix>
-                <el-icon><User /></el-icon>
-              </template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" type="password" show-password placeholder="请输入密码">
-              <template #prefix>
-                <el-icon><Lock /></el-icon>
-              </template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-checkbox v-model="form.rememberMe">记住我</el-checkbox>
-            <div style="flex:1"></div>
-            <el-link type="primary" :underline="false" href="#">忘记密码？</el-link>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" style="width:100%" :loading="loading" @click="onSubmit">
-              登录
-            </el-button>
-          </el-form-item>
-
-          <el-alert v-if="errorMsg" :title="errorMsg" type="error" show-icon :closable="false" />
-          <el-alert v-if="successMsg" :title="successMsg" type="success" show-icon :closable="false" style="margin-top:8px;" />
-        </el-form>
-        <div class="footer-link">
-          <a href="./index.html">返回主页</a>
+                <button type="button" class="login-btn" @click="goToHome" style="margin-top: 10px; background: #6c757d;">
+                    返回主页
+                </button>
+                
+            </el-form>
         </div>
-      </el-card>
     </div>
 
     <script>
-      const { createApp, ref, reactive, onMounted } = Vue;
-      const { ElMessage } = ElementPlus;
-
-      const App = {
-        setup() {
-          const formRef = ref();
-          const loading = ref(false);
-          const errorMsg = ref('');
-          const successMsg = ref('');
-
-          const form = reactive({
-            username: '',
-            password: '',
-            rememberMe: false,
-          });
-
-          const rules = {
-            username: [
-              { required: true, message: '请输入用户名', trigger: 'blur' },
-              { min: 3, max: 20, message: '用户名长度必须在3-20位之间', trigger: 'blur' },
-              { validator: (_, v, cb) => { /^[a-zA-Z0-9_]+$/.test(v || '') ? cb() : cb(new Error('用户名只能包含字母、数字和下划线')); }, trigger: 'blur' },
-            ],
-            password: [
-              { required: true, message: '请输入密码', trigger: 'blur' },
-              { min: 6, max: 20, message: '密码长度必须在6-20位之间', trigger: 'blur' },
-            ],
-          };
-
-          const hideMessage = () => {
-            errorMsg.value = '';
-            successMsg.value = '';
-          };
-
-          const setLoading = (val) => { loading.value = val; };
-
-          const saveRemember = () => {
-            if (form.rememberMe && form.username) {
-              localStorage.setItem('saved_username', form.username);
-            } else {
-              localStorage.removeItem('saved_username');
-            }
-          };
-
-          const loadSaved = () => {
-            const saved = localStorage.getItem('saved_username');
-            if (saved) {
-              form.username = saved;
-              form.rememberMe = true;
-            }
-          };
-
-          const doLogin = async () => {
-            const resp = await fetch('http://localhost:5000/api/auth/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                username: form.username,
-                password: form.password,
-                remember_me: form.rememberMe,
-              }),
-            });
-            return await resp.json();
-          };
-
-          const handleLoginSuccess = (data) => {
-            localStorage.setItem('access_token', data.token.access_token);
-            localStorage.setItem('user_info', JSON.stringify(data.user));
-            saveRemember();
-            successMsg.value = '登录成功，正在跳转...';
-            ElMessage.success('登录成功');
-            setTimeout(() => { window.location.href = './index.html'; }, 1500);
-          };
-
-          const onSubmit = () => {
-            hideMessage();
-            formRef.value.validate(async (valid) => {
-              if (!valid) return;
-              try {
-                setLoading(true);
-                const res = await doLogin();
-                if (res && res.code === 1) {
-                  handleLoginSuccess(res.data);
-                } else {
-                  errorMsg.value = (res && res.msg) || '登录失败';
-                  ElMessage.error(errorMsg.value);
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    loginForm: {
+                        username: '',
+                        password: '',
+                        remember_me: false
+                    },
+                    loginRules: {
+                        username: [
+                            { required: true, message: '请输入用户名', trigger: 'blur' },
+                            { min: 3, max: 20, message: '用户名长度应为3-20个字符', trigger: 'blur' }
+                        ],
+                        password: [
+                            { required: true, message: '请输入密码', trigger: 'blur' },
+                            { min: 6, max: 20, message: '密码长度应为6-20个字符', trigger: 'blur' }
+                        ]
+                    },
+                    loading: false
+                };
+            },
+            methods: {
+                // 跳转到主页
+                goToHome() {
+                    window.location.href = 'index.html';
+                },
+                
+                handleLogin() {
+                    this.$refs.loginForm.validate(valid => {
+                        if (valid) {
+                            this.loading = true;
+                            
+                            // 调用登录API
+                            axios.post('/api/auth/login', {
+                                username: this.loginForm.username,
+                                password: this.loginForm.password,
+                                remember_me: this.loginForm.remember_me
+                            })
+                            .then(response => {
+                                const data = response.data;
+                                if (data.code === 1) {
+                                    // 登录成功
+                                    this.$message({
+                                        message: '登录成功',
+                                        type: 'success'
+                                    });
+                                    
+                                    // 保存令牌到本地存储
+                                    localStorage.setItem('access_token', data.data.token.access_token);
+                                    localStorage.setItem('token_expires_at', data.data.token.expires_at);
+                                    localStorage.setItem('user_info', JSON.stringify(data.data.user));
+                                    
+                                    // 跳转到首页
+                                    setTimeout(() => {
+                                        window.location.href = 'index.html';
+                                    }, 1000);
+                                } else {
+                                    // 登录失败
+                                    this.$message.error(data.msg || '登录失败');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('登录请求失败:', error);
+                                this.$message.error('登录请求失败，请稍后重试');
+                            })
+                            .finally(() => {
+                                this.loading = false;
+                            });
+                        } else {
+                            return false;
+                        }
+                    });
                 }
-              } catch (e) {
-                console.error('登录错误:', e);
-                errorMsg.value = '网络错误，请稍后重试';
-                ElMessage.error(errorMsg.value);
-              } finally {
-                setLoading(false);
-              }
-            });
-          };
-
-          onMounted(() => { loadSaved(); });
-
-          return { formRef, form, rules, loading, errorMsg, successMsg, onSubmit };
-        },
-      };
-
-      const app = createApp(App);
-      app.use(ElementPlus);
-      // register icons
-      for (const [key, comp] of Object.entries(ElementPlusIconsVue)) {
-        app.component(key, comp);
-      }
-      app.mount('#app');
+            }
+        });
     </script>
-  </body>
+</body>
 </html>
