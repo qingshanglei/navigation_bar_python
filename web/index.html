@@ -128,12 +128,21 @@
                 </div>
             </div>
 
-            <!-- 求职Tab内容 -->
+            <!-- 求职Tab点击按钮 -->
             <div class="tab-content" :class="{ active: activeCenterTab === 'job' }">
                 <div class="job-site-options">
-                    <a v-for="job in searchTob.jobSites" :key="job.name" :href="job.url" target="_blank"
+                    <a v-for="job in searchTob.btndata.jobSites" :key="job.name" :href="job.url" target="_blank"
                         class="job-site-option">
                         {{ job.name }}
+                    </a>
+                </div>
+            </div>
+            <!-- 购物Tab点击按钮 -->
+            <div class="tab-content" :class="{ active: activeCenterTab === 'shopping' }">
+                <div class="job-site-options">
+                    <a v-for="shopping in searchTob.btndata.shoppingSites" :key="shopping.name" :href="shopping.url" target="_blank"
+                        class="job-site-option">
+                        {{ shopping.name }}
                     </a>
                 </div>
             </div>
@@ -357,15 +366,34 @@
                         { name: 'Google', url: 'https://www.google.com/search?q=' },
                         { name: '百度', url: 'https://www.baidu.com/s?wd=' }
                     ],
-                    // 求职网站数据
-                    jobSites: [
-                        { name: 'BOSS直聘', url: 'https://www.zhipin.com/' },
-                        { name: '拉勾网', url: 'https://www.lagou.com/' },
-                        { name: '猎聘网', url: 'https://www.liepin.com/' },
-                        { name: '智联招聘', url: 'https://www.zhaopin.com/' },
-                        { name: '实习僧', url: 'https://www.shixiseng.com/' },
-                        { name: '前程无忧', url: 'https://www.51job.com/' }
-                    ],
+
+                    // 点击跳转按钮数据
+                    btndata: {
+                        // 求职网站数据
+                        jobSites: [
+                            { name: 'BOSS直聘', url: 'https://www.zhipin.com/' },
+                            { name: '拉勾网', url: 'https://www.lagou.com/' },
+                            { name: '猎聘网', url: 'https://www.liepin.com/' },
+                            { name: '智联招聘', url: 'https://www.zhaopin.com/' },
+                            { name: '实习僧', url: 'https://www.shixiseng.com/' },
+                            { name: '前程无忧', url: 'https://www.51job.com/' }
+                        ],
+                        // 电商平台数据
+                        shoppingSites: [
+                            { name: '淘宝', url: 'https://www.taobao.com' },
+                            { name: '拼多多', url: 'https://www.pinduoduo.com' },
+                            { name: '京东', url: 'https://www.jd.com' },
+                            { name: '阿里巴巴', url: 'https://www.1688.com' },
+                            { name: '苏宁易购', url: 'https://www.suning.com' },
+                            { name: '唯品会', url: 'https://www.vip.com' },
+                            { name: '亚马逊', url: 'https://www.amazon.cn' },
+                            { name: '当当网', url: 'https://www.dangdang.com' }
+                        ],
+                        videoSites: [],
+                        movieSites: [],
+                        musicSites: []
+                    }
+
                 },
             },
             computed: {
@@ -439,9 +467,7 @@
                         const totalItems = section.data[activeTab]?.length || 0; // 指定内容区域当前激活的tab下的总数
                         const totalPages = Math.ceil(totalItems / this.itemsPerPage); // 指定内容区域总页数
 
-                        // if (page >= 1 && page <= totalPages) {
-                        //     this.sectionStates[sectionKey].currentPage = page;
-                        // }
+
                         // 确保页码在有效范围内
                         const validPage = Math.max(1, Math.min(page, totalPages));
                         this.$set(this.sectionStates[sectionKey], 'currentPage', validPage);
