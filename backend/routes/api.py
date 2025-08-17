@@ -32,18 +32,7 @@ def get_home_data():
     判断是否有JWT Token：
     1. 没有JWT Token：获取所有分类及所有公开的导航项，按层级结构返回
     2. 有JWT Token：获取所有分类及其导航项，按层级结构返回
-    支持分页参数：page（页码）和size（每页条数）
     """
-    # 获取分页参数
-    page = request.args.get('page', 1, type=int)
-    size = request.args.get('size', 9, type=int)
-    
-    # 参数验证
-    if page < 1:
-        page = 1
-    if size < 1 or size > 50:  # 限制每页最大条数
-        size = 9
-    
     # 检查是否有有效的JWT Token
     has_token = False
     try:
@@ -58,8 +47,8 @@ def get_home_data():
         # 获取所有顶级分类（parent_id为NULL的分类）
         top_categories, _ = Category.get_all({'parent_id': None}, sort='sort_order')
         
-        # 按 sort_order 升序排序，相同 sort_order 按 id 升序
-        top_categories.sort(key=lambda x: (x.sort_order, x.id))
+        # 按 sort_order 升序排序，相同 sort_order 按 created_at 降序
+        top_categories.sort(key=lambda x: (x.sort_order, -int(x.created_at.timestamp()) if x.created_at else 0))
         
         result = []
         
@@ -80,8 +69,8 @@ def get_home_data():
             # 获取子分类（parent_id等于当前分类id的分类）
             sub_categories, _ = Category.get_all({'parent_id': top_category.id}, sort='sort_order')
             
-            # 按 sort_order 升序排序，相同 sort_order 按 id 升序
-            sub_categories.sort(key=lambda x: (x.sort_order, x.id))
+            # 按 sort_order 升序排序，相同 sort_order 按 created_at 降序
+            sub_categories.sort(key=lambda x: (x.sort_order, -int(x.created_at.timestamp()) if x.created_at else 0))
             
             for sub_category in sub_categories:
                 sub_category_data = {
@@ -96,41 +85,27 @@ def get_home_data():
                     'navs': []
                 }
                 
-                # 获取导航项
-                nav_filters = {'category_id': sub_category.id}
-                
-                # 如果没有Token，只获取公开的导航项
-                if not has_token:
-                    nav_filters['is_public'] = True
-                
                 # 如果没有Token且分类不公开，navs设为空数组
                 if not has_token and not sub_category.is_public:
                     sub_category_data['navs'] = []
-                    sub_category_data['pagination'] = {
-                        'page': page,
-                        'size': size,
-                        'total': 0,
-                        'pages': 0
-                    }
                 else:
-                    # 获取分页的导航项
-                    navs, total = Nav.search(nav_filters, page=page, size=size, sort='sort_order')
+                    # 获取导航项
+                    nav_filters = {'category_id': sub_category.id}
                     
-                    # 计算总页数
-                    pages = math.ceil(total / size) if total > 0 else 0
+                    # 如果没有Token，只获取公开的导航项
+                    if not has_token:
+                        nav_filters['is_public'] = True
+                    
+                    # 获取所有导航项（不分页）
+                    navs, _ = Nav.search(nav_filters, page=1, size=1000, sort='sort_order')
+                    
+                    # 按 sort_order 升序排序，相同 sort_order 按 created_at 降序
+                    navs.sort(key=lambda x: (x.sort_order, -int(x.created_at.timestamp()) if x.created_at else 0))
                     
                     # 添加导航项数据
                     for nav in navs:
                         nav_data = nav.to_dict()
                         sub_category_data['navs'].append(nav_data)
-                    
-                    # 添加分页信息
-                    sub_category_data['pagination'] = {
-                        'page': page,
-                        'size': size,
-                        'total': total,
-                        'pages': pages
-                    }
                 
                 category_data['children'].append(sub_category_data)
             

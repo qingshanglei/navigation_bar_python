@@ -20,7 +20,7 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- 引用外部CSS文件 -->
     <link rel="stylesheet" href="index.css">
 </head>
@@ -53,13 +53,13 @@
                         <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a v-for="email in emailServices" :key="email.name" :href="email.url" target="_blank"
+                        <a v-for="email in tobData.email" :key="email.name" :href="email.url" target="_blank"
                             class="dropdown-item">
                             <i :class="email.icon"></i> {{ email.name }}
                         </a>
                     </div>
                 </div>
-<!-- 缩小到 900左右的时候 （热门推荐、编程网站、工具网站）的网格布局都是4X2(行X列),目前是16X1行X列， -->
+                <!-- 缩小到 900左右的时候 （热门推荐、编程网站、工具网站）的网格布局都是4X2(行X列),目前是16X1行X列， -->
                 <!-- 网盘下拉菜单 -->
                 <div class="nav-dropdown">
                     <div class="dropdown-trigger">
@@ -67,7 +67,7 @@
                         <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a v-for="drive in driveServices" :key="drive.name" :href="drive.url" target="_blank"
+                        <a v-for="drive in tobData.drive" :key="drive.name" :href="drive.url" target="_blank"
                             class="dropdown-item">
                             <i :class="drive.icon"></i> {{ drive.name }}
                         </a>
@@ -81,7 +81,7 @@
                         <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a v-for="video in videoServices" :key="video.name" :href="video.url" target="_blank"
+                        <a v-for="video in tobData.video" :key="video.name" :href="video.url" target="_blank"
                             class="dropdown-item">
                             <i :class="video.icon"></i> {{ video.name }}
                         </a>
@@ -102,7 +102,7 @@
         <!-- 中心Tab导航区域 -->
         <div class="center-tab-area">
             <div class="center-tabs">
-                <div v-for="tab in centerTabs" :key="tab.key" class="center-tab-item"
+                <div v-for="tab in searchTob.centerTabs" :key="tab.key" class="center-tab-item"
                     :class="{ active: activeCenterTab === tab.key }" @click="setActiveCenterTab(tab.key)">
                     {{ tab.name }}
                 </div>
@@ -120,7 +120,7 @@
             <!-- 搜索引擎Tab内容 -->
             <div class="tab-content" :class="{ active: activeCenterTab === 'search' }">
                 <div class="search-engine-options">
-                    <div v-for="engine in searchEngines" :key="engine.name" class="search-engine-option"
+                    <div v-for="engine in searchTob.searchEngines" :key="engine.name" class="search-engine-option"
                         :class="{ active: activeSearchEngine === engine.name }"
                         @click="setActiveSearchEngine(engine.name)">
                         {{ engine.name }}
@@ -131,13 +131,14 @@
             <!-- 求职Tab内容 -->
             <div class="tab-content" :class="{ active: activeCenterTab === 'job' }">
                 <div class="job-site-options">
-                    <a v-for="job in jobSites" :key="job.name" :href="job.url" target="_blank" class="job-site-option">
+                    <a v-for="job in searchTob.jobSites" :key="job.name" :href="job.url" target="_blank"
+                        class="job-site-option">
                         {{ job.name }}
                     </a>
                 </div>
             </div>
         </div>
-       
+
 
         <!-- 主内容区域 -->
         <div class="main-content-area">
@@ -154,97 +155,119 @@
 
             <!-- 右侧内容区域 - 显示所有内容区域 -->
             <div class="right-content">
+                <!-- 加载状态 -->
+                <div v-if="isLoading" class="loading-container" style="text-align: center; padding: 40px;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: #1890ff;"></i>
+                    <p style="margin-top: 16px; color: #666;">正在加载数据...</p>
+                </div>
+
+                <!-- 错误状态 -->
+                <div v-else-if="apiError" class="error-container" style="text-align: center; padding: 40px;">
+                    <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; color: #ff4d4f;"></i>
+                    <p style="margin: 16px 0; color: #666;">{{ apiError }}</p>
+                    <button @click="retryLoadData"
+                        style="padding: 8px 16px; background: #1890ff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <i class="fa-solid fa-refresh"></i> 重试
+                    </button>
+                </div>
+
                 <!-- 显示所有内容区域，垂直排列 -->
-                <div v-for="(section, sectionKey) in contentSections" :key="sectionKey" :id="sectionKey" class="hot-recommend-container">
-                    <!-- 区域标题 -->
-                    <div class="section-header">
-                        <i :class="section.icon"></i>
-                        <h3>{{ section.title }}</h3>
-                        
-                        <!-- Tab切换 (仅对tabbed-grid类型显示) -->
-                        <div v-if="section.type === 'tabbed-grid'" class="section-tabs">
-                            <div v-for="tab in section.tabs" :key="tab.key" 
-                                 class="section-tab-item"
-                                 :class="{ active: getActiveTab(sectionKey) === tab.key }"
-                                 @click="setActiveTab(sectionKey, tab.key)">
-                                {{ tab.name }}
+                <template v-else>
+                    <div v-for="(section, sectionKey) in contentSections" :key="sectionKey" :id="sectionKey"
+                        class="hot-recommend-container">
+                        <!-- 区域标题 -->
+                        <div class="section-header">
+                            <i :class="section.icon"></i>
+                            <h3>{{ section.title }}</h3>
+
+                            <!-- Tab切换 (仅对tabbed-grid类型显示) -->
+                            <div v-if="section.type === 'tabbed-grid'" class="section-tabs">
+                                <div v-for="tab in section.tabs" :key="tab.key" class="section-tab-item"
+                                    :class="{ active: getActiveTab(sectionKey) === tab.key }"
+                                    @click="setActiveTab(sectionKey, tab.key)">
+                                    {{ tab.name }}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 内容区域 -->
-                    <!-- 卡片网格类型 -->
-                    <div v-if="section.type === 'card-grid'" class="card-grid">
-                        <a v-for="item in section.data" :key="item.title" :href="item.url" target="_blank" class="card">
-                            <img :src="item.icon" :alt="item.title" class="card-icon" style="width: 24px; height: 24px;">
-                            <div class="card-content">
-                                <h3>{{ item.title }}</h3>
-                                <p class="card-desc">{{ item.desc }}</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- 标签页网格类型 -->
-                    <div v-if="section.type === 'tabbed-grid'" class="recommend-grid">
-                        <a v-for="item in getCurrentSectionData(sectionKey)" :key="item.title" :href="item.url" target="_blank" class="recommend-card">
-                            <div class="search-card-icon" :style="{ backgroundColor: item.color }">
-                                <i :class="item.icon"></i>
-                            </div>
-                            <div class="search-card-content">
-                                <div class="search-card-title">{{ item.title }}</div>
-                                <div class="search-card-desc">{{ item.desc }}</div>
-                            </div>
-                            <div v-if="item.hot" class="hot-badge">热</div>
-                        </a>
-                    </div>
-
-                    <!-- 标签列表类型 -->
-                    <div v-if="section.type === 'tag-list'" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <div v-for="item in section.data" :key="item"
-                            style="background-color: #252525; border: 1px solid #333; border-radius: 4px; padding: 4px 8px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.3s ease;"
-                            @mouseover="$event.target.style.backgroundColor = '#1e88e5'; $event.target.style.color = 'white'"
-                            @mouseout="$event.target.style.backgroundColor = '#252525'; $event.target.style.color = '#ccc'">
-                            {{ item }}
+                        <!-- 内容区域 -->
+                        <!-- 青杉福利社-卡片网格类型 -->
+                        <div v-if="section.type === 'card-grid'" class="card-grid">
+                            <a v-for="item in section.data" :key="item.title" :href="item.url" target="_blank"
+                                class="card">
+                                <img :src="item.icon" :alt="item.title" class="card-icon"
+                                    style="width: 24px; height: 24px;">
+                                <div class="card-content">
+                                    <h3>{{ item.title }}</h3>
+                                    <p class="card-desc">{{ item.desc }}</p>
+                                </div>
+                            </a>
                         </div>
-                    </div>
 
-                    <!-- 分页控制 (仅对有分页的tabbed-grid类型显示) -->
-                    <div v-if="section.type === 'tabbed-grid' && section.pagination && getTotalPages(sectionKey) > 1" class="pagination-controls">
-                        <button class="pagination-btn" 
-                                :disabled="getCurrentPage(sectionKey) === 1"
+                        <!-- 热门区域-标签页网格类型 -->
+                        <div v-if="section.type === 'tabbed-grid'" class="recommend-grid">
+                            <a v-for="item in getCurrentSectionData(sectionKey)" :key="item.title" :href="item.url"
+                                target="_blank" class="recommend-card">
+                                <div class="search-card-icon" :style="{ backgroundColor: item.color }">
+                                    <i :class="item.icon"></i>
+                                </div>
+                                <div class="search-card-content">
+                                    <div class="search-card-title">{{ item.title }}</div>
+                                    <div class="search-card-desc">{{ item.desc }}</div>
+                                </div>
+                                <div v-if="item.hot" class="hot-badge">热</div>
+                            </a>
+                        </div>
+
+                        <!-- 友情链接区域-标签列表类型 -->
+                        <div v-if="section.type === 'tag-list'" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <div v-for="item in section.data" :key="item"
+                                style="background-color: #252525; border: 1px solid #333; border-radius: 4px; padding: 4px 8px; color: #ccc; font-size: 12px; cursor: pointer; transition: all 0.3s ease;"
+                                @mouseover="$event.target.style.backgroundColor = '#1e88e5'; $event.target.style.color = 'white'"
+                                @mouseout="$event.target.style.backgroundColor = '#252525'; $event.target.style.color = '#ccc'">
+                                {{ item }}
+                            </div>
+                        </div>
+
+                        <!-- 分页控制 (仅对有分页的tabbed-grid类型显示) -->
+                        <div v-if="section.type === 'tabbed-grid' && section.pagination && getTotalPages(sectionKey) > 1"
+                            class="pagination-controls">
+                            <button class="pagination-btn" :disabled="getCurrentPage(sectionKey) === 1"
                                 @click="setPage(sectionKey, getCurrentPage(sectionKey) - 1)">
-                            <i class="fa-solid fa-chevron-left"></i> 上一页
-                        </button>
-                        <span class="pagination-info">{{ getCurrentPage(sectionKey) }} / {{ getTotalPages(sectionKey) }}</span>
-                        <button class="pagination-btn" 
+                                <i class="fa-solid fa-chevron-left"></i> 上一页
+                            </button>
+                            <span class="pagination-info">{{ getCurrentPage(sectionKey) }} / {{
+                                getTotalPages(sectionKey) }}</span>
+                            <button class="pagination-btn"
                                 :disabled="getCurrentPage(sectionKey) === getTotalPages(sectionKey)"
                                 @click="setPage(sectionKey, getCurrentPage(sectionKey) + 1)">
-                            下一页 <i class="fa-solid fa-chevron-right"></i>
-                        </button>
+                                下一页 <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                </div>
+                </template>
             </div>
         </div>
+    </div>
 
-        <!-- 移动端侧边菜单 -->
-        <div class="mobile-sidebar-overlay" :class="{ active: showMobileSidebar }" @click="closeMobileSidebar"></div>
-        <div class="mobile-sidebar" :class="{ active: showMobileSidebar }">
-            <div class="mobile-sidebar-header">
-                <span class="mobile-sidebar-title">导航菜单</span>
-                <button class="mobile-sidebar-close" @click="closeMobileSidebar">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            </div>
-            <nav class="mobile-sidebar-nav">
-                <div v-for="item in sidebarItems" :key="'mobile-' + item.key" class="mobile-sidebar-item"
-                    :class="{ active: activeSidebarItem === item.key }"
-                    @click="setActiveSidebarItem(item.key); closeMobileSidebar()">
-                    <i :class="item.icon"></i>
-                    <span>{{ item.name }}</span>
-                </div>
-            </nav>
+    <!-- 移动端侧边菜单 -->
+    <div class="mobile-sidebar-overlay" :class="{ active: showMobileSidebar }" @click="closeMobileSidebar"></div>
+    <div class="mobile-sidebar" :class="{ active: showMobileSidebar }">
+        <div class="mobile-sidebar-header">
+            <span class="mobile-sidebar-title">导航菜单</span>
+            <button class="mobile-sidebar-close" @click="closeMobileSidebar">
+                <i class="fa-solid fa-times"></i>
+            </button>
         </div>
+        <nav class="mobile-sidebar-nav">
+            <div v-for="item in sidebarItems" :key="'mobile-' + item.key" class="mobile-sidebar-item"
+                :class="{ active: activeSidebarItem === item.key }"
+                @click="setActiveSidebarItem(item.key); closeMobileSidebar()">
+                <i :class="item.icon"></i>
+                <span>{{ item.name }}</span>
+            </div>
+        </nav>
+    </div>
     </div>
 
     <script>
@@ -252,330 +275,154 @@
             el: '#app',
             data: {
                 // 导航状态
-                activeNav: 'home',
-                activeCenterTab: 'search',
-                activeSidebarItem: 'welfare',
-                activeSearchEngine: 'Bing',
-                showMobileSidebar: false,
+                activeNav: 'home', // 当前激活的主页面Tab
+                activeCenterTab: 'search', // 当前激活的中心Tab
+                activeSidebarItem: 'welfare', // 当前激活的侧边栏Tab
+                activeSearchEngine: 'Bing', // 当前搜索使用的搜索引擎
+                showMobileSidebar: false, // 当前侧边栏是否打开
 
                 // 搜索相关
-                searchQuery: '',
-                itemsPerPage: 8, // 修改为8个项目每页，适配4行2列布局
+                searchQuery: '', // 搜索查询词
+                itemsPerPage: 9, // 每页显示条数，适配4行2列布局
 
-                // 中心Tab数据
-                centerTabs: [
-                    { key: 'search', name: '搜索引擎' },
-                    { key: 'video', name: '短视频' },
-                    { key: 'movie', name: '影视' },
-                    { key: 'music', name: '音乐' },
-                    { key: 'shopping', name: '购物' },
-                    { key: 'job', name: '求职' }
-                ],
+                // API数据状态
+                isLoading: false, // 数据加载状态
+                apiError: null, // API错误信息
+                apiData: null, // API返回的数据
+
 
                 // 统一的状态管理 - 初始化所有有tab的区域
                 sectionStates: {
-                    recommend: { activeTab: 'ai', currentPage: 1 },
-                    programming: { activeTab: 'platform', currentPage: 1 },
-                    tools: { activeTab: 'document', currentPage: 1 }
+                    // recommend: { activeTab: 'ai', currentPage: 1 }, // 热门推荐
+                    // programming: { activeTab: 'platform', currentPage: 1 }, // 编程开发
+                    // tools: { activeTab: 'document', currentPage: 1 } // 工具
                 },
 
                 // 统一的内容区域配置
-                contentSections: {
-                    welfare: {
-                        type: 'card-grid',
-                        icon: 'fa-solid fa-gift',
-                        title: '青杉福利社',
-                        data: [
-                            { title: '阿里云', desc: '云计算服务', url: 'https://www.aliyun.com/', icon: 'https://img.alicdn.com/tfs/TB1_ZXuNcfpK1RjSZFOXXa6nFXa-32-32.ico' },
-                            { title: '腾讯云', desc: '云服务器', url: 'https://cloud.tencent.com/', icon: 'https://cloudcache.tencent-cloud.com/open_proj/proj_qcloud_v2/gateway/shareicons/cloud-icon-32.png' },
-                            { title: '百度云', desc: '智能云服务', url: 'https://cloud.baidu.com/', icon: 'https://cloud.baidu.com/favicon.ico' },
-                            { title: '华为云', desc: '全栈云服务', url: 'https://www.huaweicloud.com/', icon: 'https://www.huaweicloud.com/favicon.ico' }
-                        ]
-                    },
-                    recommend: {
-                        type: 'tabbed-grid',
-                        icon: 'fa-solid fa-fire',
-                        title: '热门推荐',
-                        tabs: [
-                            { key: 'ai', name: 'AI工具' },
-                            { key: 'design', name: '设计工具' },
-                            { key: 'productivity', name: '效率工具' }
-                        ],
-                        data: {
-                            ai: [
-                                { title: '扣子', desc: '字节跳动AI智能助手平台', url: 'https://www.coze.cn/', icon: 'fa-solid fa-robot', color: '#1e88e5', hot: true },
-                                { title: '豆包', desc: '字节跳动AI对话助手', url: 'https://www.doubao.com/', icon: 'fa-solid fa-comments', color: '#ff4081', hot: true },
-                                { title: 'ChatGPT', desc: 'OpenAI开发的AI对话模型', url: 'https://chat.openai.com/', icon: 'fa-solid fa-brain', color: '#10a37f' },
-                                { title: '文心一言', desc: '百度推出的AI对话助手', url: 'https://yiyan.baidu.com/', icon: 'fa-solid fa-lightbulb', color: '#3385ff' },
-                                { title: 'Claude', desc: 'Anthropic开发的AI助手', url: 'https://claude.ai/', icon: 'fa-solid fa-user-robot', color: '#ff6b35' },
-                                { title: '通义千问', desc: '阿里云推出的AI助手', url: 'https://tongyi.aliyun.com/', icon: 'fa-solid fa-comment-dots', color: '#ff6a00' },
-                                { title: 'Midjourney', desc: 'AI图像生成工具', url: 'https://www.midjourney.com/', icon: 'fa-solid fa-image', color: '#7c3aed' },
-                                { title: 'Stable Diffusion', desc: '开源AI图像生成模型', url: 'https://stability.ai/', icon: 'fa-solid fa-paint-brush', color: '#8b5cf6' },
-                                { title: 'Runway', desc: 'AI视频生成和编辑工具', url: 'https://runwayml.com/', icon: 'fa-solid fa-video', color: '#00d4aa' },
-                                { title: 'Suno', desc: 'AI音乐生成平台', url: 'https://suno.ai/', icon: 'fa-solid fa-music', color: '#ff4757' },
-                                { title: 'Gamma', desc: 'AI演示文稿生成工具', url: 'https://gamma.app/', icon: 'fa-solid fa-presentation-screen', color: '#5f27cd' },
-                                { title: 'Notion AI', desc: 'Notion集成的AI写作助手', url: 'https://www.notion.so/product/ai', icon: 'fa-solid fa-file-alt', color: '#000000' },
-                                { title: 'Jasper', desc: 'AI内容创作平台', url: 'https://www.jasper.ai/', icon: 'fa-solid fa-pen-fancy', color: '#6c5ce7' },
-                                { title: 'Copy.ai', desc: 'AI文案生成工具', url: 'https://www.copy.ai/', icon: 'fa-solid fa-copy', color: '#00b894' }
-                            ],
-                            design: [
-                                { title: 'Canva可画', desc: '在线设计工具和模板平台', url: 'https://www.canva.cn/', icon: 'fa-solid fa-palette', color: '#9b59b6' },
-                                { title: 'Figma', desc: '协作式界面设计工具', url: 'https://www.figma.com/', icon: 'fa-solid fa-pen-nib', color: '#f24e1e' },
-                                { title: 'Adobe Creative Cloud', desc: 'Adobe创意软件套装', url: 'https://www.adobe.com/', icon: 'fa-solid fa-layer-group', color: '#ff0000' },
-                                { title: 'Sketch', desc: 'Mac平台UI设计工具', url: 'https://www.sketch.com/', icon: 'fa-solid fa-vector-square', color: '#fdad00' },
-                                { title: 'Dribbble', desc: '设计师作品展示平台', url: 'https://dribbble.com/', icon: 'fa-solid fa-basketball-ball', color: '#ea4c89' },
-                                { title: 'Behance', desc: 'Adobe旗下创意作品平台', url: 'https://www.behance.net/', icon: 'fa-brands fa-behance', color: '#1769ff' },
-                                { title: 'Unsplash', desc: '免费高质量图片素材', url: 'https://unsplash.com/', icon: 'fa-solid fa-camera', color: '#000000' },
-                                { title: 'Pexels', desc: '免费图片和视频素材', url: 'https://www.pexels.com/', icon: 'fa-solid fa-images', color: '#05a081' },
-                                { title: 'IconFinder', desc: '图标素材搜索平台', url: 'https://www.iconfinder.com/', icon: 'fa-solid fa-icons', color: '#1db584' },
-                                { title: 'Coolors', desc: '在线配色方案生成器', url: 'https://coolors.co/', icon: 'fa-solid fa-palette', color: '#667eea' },
-                                { title: 'Framer', desc: '交互式设计和原型工具', url: 'https://www.framer.com/', icon: 'fa-solid fa-cube', color: '#0055ff' },
-                                { title: 'Principle', desc: '动效设计工具', url: 'https://principleformac.com/', icon: 'fa-solid fa-play-circle', color: '#5c7cfa' }
-                            ],
-                            productivity: [
-                                { title: '飞书', desc: '先进企业协作与管理平台', url: 'https://www.feishu.cn/', icon: 'fa-solid fa-users', color: '#27ae60' },
-                                { title: 'Notion', desc: '全能工作空间和笔记工具', url: 'https://www.notion.so/', icon: 'fa-solid fa-sticky-note', color: '#000000' },
-                                { title: 'Trello', desc: '看板式项目管理工具', url: 'https://trello.com/', icon: 'fa-solid fa-columns', color: '#0079bf' },
-                                { title: 'Asana', desc: '团队协作和项目管理', url: 'https://asana.com/', icon: 'fa-solid fa-tasks', color: '#f06a6a' },
-                                { title: 'Slack', desc: '团队沟通协作平台', url: 'https://slack.com/', icon: 'fa-brands fa-slack', color: '#4a154b' },
-                                { title: 'Zoom', desc: '视频会议和远程协作', url: 'https://zoom.us/', icon: 'fa-solid fa-video', color: '#2d8cff' },
-                                { title: 'Microsoft Teams', desc: '微软团队协作平台', url: 'https://teams.microsoft.com/', icon: 'fa-brands fa-microsoft', color: '#6264a7' },
-                                { title: 'Google Workspace', desc: '谷歌办公套件', url: 'https://workspace.google.com/', icon: 'fa-brands fa-google', color: '#4285f4' },
-                                { title: 'Todoist', desc: '任务管理和待办清单', url: 'https://todoist.com/', icon: 'fa-solid fa-check-circle', color: '#e44332' },
-                                { title: 'Evernote', desc: '笔记和知识管理工具', url: 'https://evernote.com/', icon: 'fa-solid fa-elephant', color: '#00a82d' },
-                                { title: 'OneNote', desc: '微软数字笔记本', url: 'https://www.onenote.com/', icon: 'fa-solid fa-book', color: '#7719aa' },
-                                { title: 'Obsidian', desc: '知识图谱笔记工具', url: 'https://obsidian.md/', icon: 'fa-solid fa-project-diagram', color: '#483699' }
-                            ]
-                        },
-                        pagination: true
-                    },
-                    programming: {
-                        type: 'tabbed-grid',
-                        icon: 'fa-solid fa-code',
-                        title: '编程网站',
-                        tabs: [
-                            { key: 'platform', name: '开发平台' },
-                            { key: 'learning', name: '学习资源' },
-                            { key: 'tools', name: '开发工具' }
-                        ],
-                        data: {
-                            platform: [
-                                { title: 'MarsCode', desc: 'AI驱动的云开发平台', url: 'https://www.marscode.cn/', icon: 'fa-solid fa-code', color: '#1890ff' },
-                                { title: 'GitHub', desc: '全球最大的代码托管平台', url: 'https://github.com/', icon: 'fa-brands fa-github', color: '#24292e' },
-                                { title: '码云Gitee', desc: '国内领先的代码托管平台', url: 'https://gitee.com/', icon: 'fa-brands fa-git-alt', color: '#c71d23' },
-                                { title: 'GitLab', desc: '开源代码托管和CI/CD平台', url: 'https://gitlab.com/', icon: 'fa-brands fa-gitlab', color: '#fc6d26' },
-                                { title: 'Vercel', desc: '前端应用部署平台', url: 'https://vercel.com/', icon: 'fa-solid fa-rocket', color: '#000000' },
-                                { title: 'Netlify', desc: '现代Web项目部署平台', url: 'https://www.netlify.com/', icon: 'fa-solid fa-globe', color: '#00c7b7' },
-                                { title: 'Heroku', desc: '云应用平台', url: 'https://www.heroku.com/', icon: 'fa-solid fa-cloud', color: '#430098' },
-                                { title: 'AWS', desc: '亚马逊云服务', url: 'https://aws.amazon.com/', icon: 'fa-brands fa-aws', color: '#ff9900' },
-                                { title: 'Azure', desc: '微软云平台', url: 'https://azure.microsoft.com/', icon: 'fa-brands fa-microsoft', color: '#0078d4' },
-                                { title: 'Google Cloud', desc: '谷歌云平台', url: 'https://cloud.google.com/', icon: 'fa-brands fa-google', color: '#4285f4' },
-                                { title: 'DigitalOcean', desc: '简单的云计算平台', url: 'https://www.digitalocean.com/', icon: 'fa-solid fa-water', color: '#0080ff' },
-                                { title: 'Linode', desc: '高性能云计算服务', url: 'https://www.linode.com/', icon: 'fa-solid fa-server', color: '#00a95c' }
-                            ],
-                            learning: [
-                                { title: 'MDN Web Docs', desc: 'Web开发权威文档', url: 'https://developer.mozilla.org/', icon: 'fa-brands fa-firefox', color: '#ff7139' },
-                                { title: 'Stack Overflow', desc: '程序员问答社区', url: 'https://stackoverflow.com/', icon: 'fa-brands fa-stack-overflow', color: '#f48024' },
-                                { title: 'LeetCode', desc: '算法练习平台', url: 'https://leetcode.com/', icon: 'fa-solid fa-code', color: '#ffa116' },
-                                { title: '力扣', desc: 'LeetCode中文版', url: 'https://leetcode.cn/', icon: 'fa-solid fa-brain', color: '#00af9b' },
-                                { title: 'Coursera', desc: '在线课程平台', url: 'https://www.coursera.org/', icon: 'fa-solid fa-graduation-cap', color: '#0056d3' },
-                                { title: 'Udemy', desc: '在线学习平台', url: 'https://www.udemy.com/', icon: 'fa-solid fa-play-circle', color: '#a435f0' },
-                                { title: 'freeCodeCamp', desc: '免费编程学习平台', url: 'https://www.freecodecamp.org/', icon: 'fa-brands fa-free-code-camp', color: '#006400' },
-                                { title: 'Codecademy', desc: '交互式编程学习', url: 'https://www.codecademy.com/', icon: 'fa-solid fa-laptop-code', color: '#1f4056' },
-                                { title: 'Khan Academy', desc: '免费在线教育平台', url: 'https://www.khanacademy.org/', icon: 'fa-solid fa-book-open', color: '#14bf96' },
-                                { title: 'Pluralsight', desc: '技术技能学习平台', url: 'https://www.pluralsight.com/', icon: 'fa-solid fa-chart-line', color: '#f15b2a' },
-                                { title: 'edX', desc: '高质量在线课程', url: 'https://www.edx.org/', icon: 'fa-solid fa-university', color: '#02262b' },
-                                { title: 'YouTube', desc: '编程教程视频', url: 'https://www.youtube.com/', icon: 'fa-brands fa-youtube', color: '#ff0000' }
-                            ],
-                            tools: [
-                                { title: 'VS Code', desc: '微软开源代码编辑器', url: 'https://code.visualstudio.com/', icon: 'fa-solid fa-code', color: '#007acc' },
-                                { title: 'JetBrains', desc: '专业开发工具套件', url: 'https://www.jetbrains.com/', icon: 'fa-solid fa-tools', color: '#000000' },
-                                { title: 'Sublime Text', desc: '轻量级代码编辑器', url: 'https://www.sublimetext.com/', icon: 'fa-solid fa-edit', color: '#ff9800' },
-                                { title: 'Atom', desc: 'GitHub开源编辑器', url: 'https://atom.io/', icon: 'fa-solid fa-atom', color: '#66595c' },
-                                { title: 'Vim', desc: '经典文本编辑器', url: 'https://www.vim.org/', icon: 'fa-solid fa-terminal', color: '#019833' },
-                                { title: 'Emacs', desc: '可扩展文本编辑器', url: 'https://www.gnu.org/software/emacs/', icon: 'fa-solid fa-keyboard', color: '#7f5ab6' },
-                                { title: 'Docker', desc: '容器化平台', url: 'https://www.docker.com/', icon: 'fa-brands fa-docker', color: '#2496ed' },
-                                { title: 'Kubernetes', desc: '容器编排平台', url: 'https://kubernetes.io/', icon: 'fa-solid fa-dharmachakra', color: '#326ce5' },
-                                { title: 'Jenkins', desc: '持续集成工具', url: 'https://www.jenkins.io/', icon: 'fa-solid fa-cogs', color: '#d33833' },
-                                { title: 'Postman', desc: 'API开发测试工具', url: 'https://www.postman.com/', icon: 'fa-solid fa-paper-plane', color: '#ff6c37' },
-                                { title: 'Insomnia', desc: 'REST API客户端', url: 'https://insomnia.rest/', icon: 'fa-solid fa-moon', color: '#4000bf' },
-                                { title: 'Figma', desc: '协作式设计工具', url: 'https://www.figma.com/', icon: 'fa-solid fa-pen-nib', color: '#f24e1e' }
-                            ]
-                        },
-                        pagination: true
-                    },
-                    tools: {
-                        type: 'tabbed-grid',
-                        icon: 'fa-solid fa-toolbox',
-                        title: '工具网站',
-                        tabs: [
-                            { key: 'document', name: '文档工具' },
-                            { key: 'media', name: '媒体工具' },
-                            { key: 'utility', name: '实用工具' }
-                        ],
-                        data: {
-                            document: [
-                                { title: 'iLovePDF', desc: '完全免费的PDF工具', url: 'https://www.ilovepdf.com/zh-cn', icon: 'fa-solid fa-file-pdf', color: '#e74c3c' },
-                                { title: 'PDF转换器', desc: '一款免费的PDF转word工具', url: 'https://pdf2docx.cn', icon: 'fa-solid fa-exchange-alt', color: '#3498db' },
-                                { title: 'SmallPDF', desc: '在线PDF处理工具', url: 'https://smallpdf.com/', icon: 'fa-solid fa-file-alt', color: '#ff6b6b' },
-                                { title: 'PDF24', desc: '免费PDF工具集合', url: 'https://tools.pdf24.org/', icon: 'fa-solid fa-toolbox', color: '#4ecdc4' },
-                                { title: 'Sejda', desc: '在线PDF编辑器', url: 'https://www.sejda.com/', icon: 'fa-solid fa-edit', color: '#45b7d1' },
-                                { title: 'PDFCandy', desc: 'PDF在线工具', url: 'https://pdfcandy.com/', icon: 'fa-solid fa-candy-cane', color: '#f39c12' },
-                                { title: 'Google Docs', desc: '在线文档编辑', url: 'https://docs.google.com/', icon: 'fa-brands fa-google', color: '#4285f4' },
-                                { title: 'Microsoft Office', desc: '微软办公套件', url: 'https://www.office.com/', icon: 'fa-brands fa-microsoft', color: '#d83b01' },
-                                { title: 'WPS Office', desc: '金山办公软件', url: 'https://www.wps.com/', icon: 'fa-solid fa-file-word', color: '#1890ff' },
-                                { title: 'Notion', desc: '全能工作空间', url: 'https://www.notion.so/', icon: 'fa-solid fa-sticky-note', color: '#000000' },
-                                { title: 'Obsidian', desc: '知识图谱笔记', url: 'https://obsidian.md/', icon: 'fa-solid fa-project-diagram', color: '#483699' },
-                                { title: 'Typora', desc: 'Markdown编辑器', url: 'https://typora.io/', icon: 'fa-brands fa-markdown', color: '#333333' }
-                            ],
-                            media: [
-                                { title: 'Y2mate', desc: 'YouTube视频下载', url: 'https://www.y2mate.com', icon: 'fa-brands fa-youtube', color: '#ff4d4f' },
-                                { title: 'Canva', desc: '在线设计工具', url: 'https://www.canva.com/', icon: 'fa-solid fa-palette', color: '#00c4cc' },
-                                { title: 'Remove.bg', desc: 'AI背景移除工具', url: 'https://www.remove.bg/', icon: 'fa-solid fa-cut', color: '#fb7185' },
-                                { title: 'TinyPNG', desc: '图片压缩工具', url: 'https://tinypng.com/', icon: 'fa-solid fa-compress', color: '#4ade80' },
-                                { title: 'Photopea', desc: '在线图片编辑器', url: 'https://www.photopea.com/', icon: 'fa-solid fa-image', color: '#1976d2' },
-                                { title: 'GIMP', desc: '免费图像编辑软件', url: 'https://www.gimp.org/', icon: 'fa-solid fa-paint-brush', color: '#5c5c5c' },
-                                { title: 'Figma', desc: '界面设计工具', url: 'https://www.figma.com/', icon: 'fa-solid fa-pen-nib', color: '#f24e1e' },
-                                { title: 'Unsplash', desc: '免费高质量图片', url: 'https://unsplash.com/', icon: 'fa-solid fa-camera', color: '#000000' },
-                                { title: 'Pexels', desc: '免费图片和视频', url: 'https://www.pexels.com/', icon: 'fa-solid fa-images', color: '#05a081' },
-                                { title: 'Pixabay', desc: '免费图片素材库', url: 'https://pixabay.com/', icon: 'fa-solid fa-photo-video', color: '#02be6e' },
-                                { title: 'Adobe Creative Cloud', desc: 'Adobe创意软件', url: 'https://www.adobe.com/', icon: 'fa-solid fa-layer-group', color: '#ff0000' },
-                                { title: 'Sketch', desc: 'Mac平台设计工具', url: 'https://www.sketch.com/', icon: 'fa-solid fa-vector-square', color: '#fdad00' }
-                            ],
-                            utility: [
-                                { title: '文叔叔', desc: '最大传输5G', url: 'https://www.wenshushu.cn/', icon: 'fa-solid fa-share-alt', color: '#1890ff' },
-                                { title: 'WeTransfer', desc: '大文件传输服务', url: 'https://wetransfer.com/', icon: 'fa-solid fa-cloud-upload-alt', color: '#409eff' },
-                                { title: 'Send Anywhere', desc: '跨平台文件传输', url: 'https://send-anywhere.com/', icon: 'fa-solid fa-paper-plane', color: '#fa8c16' },
-                                { title: 'Firefox Send', desc: '安全文件分享', url: 'https://send.firefox.com/', icon: 'fa-brands fa-firefox', color: '#ff7139' },
-                                { title: '奶牛快传', desc: '简单快速文件传输', url: 'https://cowtransfer.com/', icon: 'fa-solid fa-shipping-fast', color: '#52c41a' },
-                                { title: 'Speedtest', desc: '网络速度测试', url: 'https://www.speedtest.net/', icon: 'fa-solid fa-tachometer-alt', color: '#141526' },
-                                { title: 'Fast.com', desc: 'Netflix网速测试', url: 'https://fast.com/', icon: 'fa-solid fa-bolt', color: '#e50914' },
-                                { title: 'Ping.pe', desc: '网络连通性测试', url: 'https://ping.pe/', icon: 'fa-solid fa-wifi', color: '#1890ff' },
-                                { title: 'Have I Been Pwned', desc: '数据泄露查询', url: 'https://haveibeenpwned.com/', icon: 'fa-solid fa-shield-alt', color: '#d73502' },
-                                { title: 'Temp Mail', desc: '临时邮箱服务', url: 'https://temp-mail.org/', icon: 'fa-solid fa-envelope', color: '#722ed1' },
-                                { title: '10 Minute Mail', desc: '10分钟临时邮箱', url: 'https://10minutemail.com/', icon: 'fa-solid fa-clock', color: '#fa541c' },
-                                { title: 'QR Code Generator', desc: '二维码生成器', url: 'https://www.qr-code-generator.com/', icon: 'fa-solid fa-qrcode', color: '#13c2c2' }
-                            ]
-                        },
-                        pagination: true
-                    },
-                    links: {
-                        type: 'tag-list',
-                        icon: 'fa-solid fa-link',
-                        title: '友情链接',
-                        data: [
-                            'Vue.js官网', 'React官网', 'Angular官网'
-                        ]
-                    }
-                },
-
-                // 搜索引擎数据
-                searchEngines: [
-                    { name: 'Bing', url: 'https://www.bing.com/search?q=' },
-                    { name: 'Google', url: 'https://www.google.com/search?q=' },
-                    { name: '百度', url: 'https://www.baidu.com/s?wd=' }
-                ],
-
-                // 求职网站数据
-                jobSites: [
-                    { name: 'BOSS直聘', url: 'https://www.zhipin.com/' },
-                    { name: '拉勾网', url: 'https://www.lagou.com/' },
-                    { name: '猎聘网', url: 'https://www.liepin.com/' },
-                    { name: '智联招聘', url: 'https://www.zhaopin.com/' },
-                    { name: '实习僧', url: 'https://www.shixiseng.com/' },
-                    { name: '前程无忧', url: 'https://www.51job.com/' }
-                ],
+                contentSections: {},
 
                 // 侧边栏导航数据
                 sidebarItems: [
-                    { key: 'welfare', name: '青杉福利社', icon: 'fa-solid fa-gift' },
-                    { key: 'recommend', name: '热门推荐', icon: 'fa-solid fa-fire' },
-                    { key: 'programming', name: '编程网站', icon: 'fa-solid fa-code' },
-                    { key: 'tools', name: '工具网站', icon: 'fa-solid fa-toolbox' },
-                    { key: 'links', name: '友情链接', icon: 'fa-solid fa-link' }
+                    // { key: 'welfare', name: '青杉福利社', icon: 'fa-solid fa-gift' },
                 ],
 
-                // 邮箱服务数据
-                emailServices: [
-                    { name: 'QQ邮箱', url: 'https://mail.qq.com', icon: 'fa-brands fa-qq' },
-                    { name: '163邮箱', url: 'https://mail.163.com', icon: 'fa-solid fa-envelope' },
-                    { name: '126邮箱', url: 'https://mail.126.com', icon: 'fa-solid fa-envelope' },
-                    { name: '新浪邮箱', url: 'https://mail.sina.com.cn', icon: 'fa-brands fa-weibo' },
-                    { name: 'Gmail邮箱', url: 'https://mail.google.com', icon: 'fa-brands fa-google' },
-                    { name: 'Outlook邮箱', url: 'https://outlook.live.com', icon: 'fa-brands fa-microsoft' }
-                ],
+                // 顶部导航栏数据：邮箱、网盘、视频
+                tobData: {
+                    // 邮箱服务数据
+                    email: [
+                        { name: 'QQ邮箱', url: 'https://mail.qq.com', icon: 'fa-brands fa-qq' },
+                        { name: '163邮箱', url: 'https://mail.163.com', icon: 'fa-solid fa-envelope' },
+                        { name: '126邮箱', url: 'https://mail.126.com', icon: 'fa-solid fa-envelope' },
+                        { name: '新浪邮箱', url: 'https://mail.sina.com.cn', icon: 'fa-brands fa-weibo' },
+                        { name: 'Gmail邮箱', url: 'https://mail.google.com', icon: 'fa-brands fa-google' },
+                        { name: 'Outlook邮箱', url: 'https://outlook.live.com', icon: 'fa-brands fa-microsoft' }
+                    ],
 
-                // 网盘服务数据
-                driveServices: [
-                    { name: '123网盘', url: 'https://www.123pan.com', icon: 'fa-solid fa-database' },
-                    { name: '百度网盘', url: 'https://pan.baidu.com', icon: 'fa-solid fa-paw' },
-                    { name: '阿里云盘', url: 'https://www.aliyundrive.com', icon: 'fa-brands fa-alipay' },
-                    { name: '夸克网盘', url: 'https://pan.quark.cn', icon: 'fa-solid fa-atom' },
-                    { name: '蓝奏云盘', url: 'https://www.lanzou.com', icon: 'fa-solid fa-cloud-arrow-up' }
-                ],
+                    // 网盘服务数据
+                    drive: [
+                        { name: '123网盘', url: 'https://www.123pan.com', icon: 'fa-solid fa-database' },
+                        { name: '百度网盘', url: 'https://pan.baidu.com', icon: 'fa-solid fa-paw' },
+                        { name: '阿里云盘', url: 'https://www.aliyundrive.com', icon: 'fa-brands fa-alipay' },
+                        { name: '夸克网盘', url: 'https://pan.quark.cn', icon: 'fa-solid fa-atom' },
+                        { name: '蓝奏云盘', url: 'https://www.lanzou.com', icon: 'fa-solid fa-cloud-arrow-up' }
+                    ],
 
-                // 视频服务数据
-                videoServices: [
-                    { name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'fa-brands fa-bilibili' },
-                    { name: '腾讯视频', url: 'https://v.qq.com', icon: 'fa-brands fa-qq' },
-                    { name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'fa-solid fa-eye' },
-                    { name: '优酷', url: 'https://www.youku.com', icon: 'fa-solid fa-circle-play' },
-                    { name: '抖音', url: 'https://www.douyin.com', icon: 'fa-solid fa-music' },
-                    { name: '小红书', url: 'https://www.xiaohongshu.com', icon: 'fa-solid fa-heart' },
-                    { name: '快手', url: 'https://www.kuaishou.com', icon: 'fa-solid fa-bolt' },
-                    { name: 'YouTube', url: 'https://www.youtube.com', icon: 'fa-brands fa-youtube' }
-                ]
+                    // 视频服务数据
+                    video: [
+                        { name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'fa-brands fa-bilibili' },
+                        { name: '腾讯视频', url: 'https://v.qq.com', icon: 'fa-brands fa-qq' },
+                        { name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'fa-solid fa-eye' },
+                        { name: '优酷', url: 'https://www.youku.com', icon: 'fa-solid fa-circle-play' },
+                        { name: '抖音', url: 'https://www.douyin.com', icon: 'fa-solid fa-music' },
+                        { name: '小红书', url: 'https://www.xiaohongshu.com', icon: 'fa-solid fa-heart' },
+                        { name: '快手', url: 'https://www.kuaishou.com', icon: 'fa-solid fa-bolt' },
+                        { name: 'YouTube', url: 'https://www.youtube.com', icon: 'fa-brands fa-youtube' }
+                    ]
+                },
+                // 搜索区数据
+                searchTob: {
+                    // 中心Tab数据
+                    centerTabs: [
+                        { key: 'search', name: '搜索引擎' },
+                        { key: 'video', name: '短视频' },
+                        { key: 'movie', name: '影视' },
+                        { key: 'music', name: '音乐' },
+                        { key: 'shopping', name: '购物' },
+                        { key: 'job', name: '求职' }
+                    ],
+
+                    // 搜索引擎数据
+                    searchEngines: [
+                        { name: 'Bing', url: 'https://www.bing.com/search?q=' },
+                        { name: 'Google', url: 'https://www.google.com/search?q=' },
+                        { name: '百度', url: 'https://www.baidu.com/s?wd=' }
+                    ],
+                    // 求职网站数据
+                    jobSites: [
+                        { name: 'BOSS直聘', url: 'https://www.zhipin.com/' },
+                        { name: '拉勾网', url: 'https://www.lagou.com/' },
+                        { name: '猎聘网', url: 'https://www.liepin.com/' },
+                        { name: '智联招聘', url: 'https://www.zhaopin.com/' },
+                        { name: '实习僧', url: 'https://www.shixiseng.com/' },
+                        { name: '前程无忧', url: 'https://www.51job.com/' }
+                    ],
+                },
             },
             computed: {
+                // 根据当前激活的搜索引擎动态生成搜索框的占位符文本
                 searchPlaceholder() {
                     return `${this.activeSearchEngine}全网搜索`;
                 }
             },
             methods: {
-                // 导航方法
+                // 导航方法 - 返回首页并激活福利社侧边栏
                 goHome() {
-                    this.setActiveNav('home');
-                    this.setActiveSidebarItem('welfare');
+                    this.setActiveNav('home'); // 设置主页面Tab
+                    this.setActiveSidebarItem('welfare'); // 设置侧边栏项
                 },
 
+                // 设置当前激活的导航栏项
                 setActiveNav(nav) {
-                    this.activeNav = nav;
+                    this.activeNav = nav; // 设置主页面Tab
                 },
 
+                // 设置当前激活的中心Tab
                 setActiveCenterTab(tab) {
                     this.activeCenterTab = tab;
                 },
 
+                // 设置当前激活的侧边栏项，并平滑滚动到对应内容区域
                 setActiveSidebarItem(item) {
                     this.activeSidebarItem = item;
                     // 平滑滚动到对应的内容区域
                     this.$nextTick(() => {
                         const element = document.getElementById(item);
                         if (element) {
-                            element.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start',
-                                inline: 'nearest'
+                            element.scrollIntoView({
+                                behavior: 'smooth', // 平滑滚动
+                                block: 'start', // 开始位置
+                                inline: 'nearest' // 最接近的元素
                             });
                         }
                     });
                 },
 
+                // 设置当前激活的搜索引擎
                 setActiveSearchEngine(engine) {
                     this.activeSearchEngine = engine;
                 },
 
-                // 获取当前激活的tab
+                // 获取指定内容区域当前激活的tab
                 getActiveTab(sectionKey) {
                     return this.sectionStates[sectionKey]?.activeTab || '';
                 },
 
-                // 获取当前页码
+                // 获取指定内容区域当前页码
                 getCurrentPage(sectionKey) {
                     return this.sectionStates[sectionKey]?.currentPage || 1;
                 },
 
-                // 设置激活的tab
+                // 设置指定内容区域激活的tab，并重置页码为第一页
                 setActiveTab(sectionKey, tabKey) {
                     if (this.sectionStates[sectionKey]) {
                         this.sectionStates[sectionKey].activeTab = tabKey;
@@ -583,21 +430,28 @@
                     }
                 },
 
-                // 设置页码
+                // 设置指定内容区域的页码
                 setPage(sectionKey, page) {
                     if (this.sectionStates[sectionKey]) {
-                        const section = this.contentSections[sectionKey];
-                        const activeTab = this.getActiveTab(sectionKey);
-                        const totalItems = section.data[activeTab]?.length || 0;
-                        const totalPages = Math.ceil(totalItems / this.itemsPerPage);
+                        const section = this.contentSections[sectionKey]; // 指定内容区域
+                        if (!section) return;
+                        const activeTab = this.getActiveTab(sectionKey); // 指定内容区域当前激活的tab
+                        const totalItems = section.data[activeTab]?.length || 0; // 指定内容区域当前激活的tab下的总数
+                        const totalPages = Math.ceil(totalItems / this.itemsPerPage); // 指定内容区域总页数
 
-                        if (page >= 1 && page <= totalPages) {
-                            this.sectionStates[sectionKey].currentPage = page;
-                        }
+                        // if (page >= 1 && page <= totalPages) {
+                        //     this.sectionStates[sectionKey].currentPage = page;
+                        // }
+                        // 确保页码在有效范围内
+                        const validPage = Math.max(1, Math.min(page, totalPages));
+                        this.$set(this.sectionStates[sectionKey], 'currentPage', validPage);
+
+                        // 强制更新视图
+                        this.$forceUpdate();
                     }
                 },
 
-                // 获取当前显示的数据
+                // 获取指定内容区域当前显示的数据（支持分页）
                 getCurrentSectionData(sectionKey) {
                     const section = this.contentSections[sectionKey];
                     if (!section) return [];
@@ -606,17 +460,20 @@
                         const activeTab = this.getActiveTab(sectionKey);
                         const currentPage = this.getCurrentPage(sectionKey);
                         const data = section.data[activeTab] || [];
-                        
+
                         // 分页处理
                         const startIndex = (currentPage - 1) * this.itemsPerPage;
                         const endIndex = startIndex + this.itemsPerPage;
-                        return data.slice(startIndex, endIndex);
+                        // return data.slice(startIndex, endIndex);
+                        // 确保不超出数组边界
+                        const slicedData = data.slice(startIndex, Math.min(endIndex, data.length));
+                        return slicedData;
                     } else {
                         return section.data || [];
                     }
                 },
 
-                // 获取总页数
+                // 获取指定内容区域的总页数
                 getTotalPages(sectionKey) {
                     const section = this.contentSections[sectionKey];
                     if (!section || section.type !== 'tabbed-grid') return 1;
@@ -626,26 +483,27 @@
                     return Math.ceil(totalItems / this.itemsPerPage);
                 },
 
-                // 移动端菜单方法
+                // 移动端菜单方法 - 切换侧边栏显示状态
                 toggleMobileSidebar() {
                     this.showMobileSidebar = !this.showMobileSidebar;
                 },
 
+                // 关闭移动端侧边栏
                 closeMobileSidebar() {
                     this.showMobileSidebar = false;
                 },
 
-                // 搜索方法
+                // 搜索框，使用当前激活的搜索引擎打开新窗口
                 performSearch() {
                     if (this.searchQuery.trim()) {
-                        const engine = this.searchEngines.find(e => e.name === this.activeSearchEngine);
+                        const engine = this.searchTob.searchEngines.find(e => e.name === this.activeSearchEngine);
                         if (engine) {
                             window.open(engine.url + encodeURIComponent(this.searchQuery), '_blank');
                         }
                     }
                 },
 
-                // 登录方法
+                // 处理登录事件，显示提示信息
                 handleLogin() {
                     this.$message({
                         message: '登录功能开发中...',
@@ -653,7 +511,166 @@
                     });
                 },
 
-                // 设置视口高度
+                // API相关方法 - 异步获取首页数据
+                async fetchHomeData() {
+                    this.isLoading = true; // 显示加载动画
+                    this.apiError = null; // 隐藏错误提示
+
+                    try {
+                        const response = await axios.get('/api/web/home');
+
+                        if (response.data.code === 1) {
+                            this.apiData = response.data.data;
+                            this.processApiData();
+                        } else {
+                            throw new Error(response.data.msg || 'API请求失败');
+                        }
+                    } catch (error) {
+                        console.error('获取首页数据失败:', error);
+                        this.apiError = error.message || '网络请求失败，请稍后重试';
+                        this.$message({
+                            message: this.apiError,
+                            type: 'error'
+                        });
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                // 处理API数据，转换为现有数据结构以适配页面显示
+                processApiData() {
+                    if (!this.apiData || !Array.isArray(this.apiData)) {
+                        return;
+                    }
+
+                    // 重置内容区域
+                    const newContentSections = {}; // 
+                    const newSidebarItems = [];
+
+                    // 处理API返回的分类数据
+                    this.apiData.forEach((category, index) => {
+                        if (category.level === 1 && category.children) {
+                            // 创建侧边栏项
+                            const sidebarKey = this.generateSidebarKey(category.name);
+                            newSidebarItems.push({
+                                key: sidebarKey,
+                                name: category.name,
+                                icon: this.getCategoryIcon(category.name)
+                            });
+
+                            // 处理子分类
+                            if (category.children.length > 0) {
+                                // 如果有多个子分类，创建tabbed-grid类型
+                                if (category.children.length > 1) {
+                                    const tabs = [];
+                                    const data = {};
+
+                                    category.children.forEach(subCategory => {
+                                        const tabKey = this.generateTabKey(subCategory.name);
+                                        tabs.push({
+                                            key: tabKey,
+                                            name: subCategory.name
+                                        });
+
+                                        // 转换导航项数据
+                                        data[tabKey] = subCategory.navs.map(nav => ({
+                                            title: nav.title,
+                                            desc: nav.description || '',
+                                            url: nav.url,
+                                            icon: this.getNavIcon(nav.title),
+                                            color: this.getRandomColor(),
+                                            hot: false
+                                        }));
+                                    });
+
+                                    newContentSections[sidebarKey] = {
+                                        type: 'tabbed-grid',
+                                        icon: this.getCategoryIcon(category.name),
+                                        title: category.name,
+                                        tabs: tabs,
+                                        data: data,
+                                        pagination: true
+                                    };
+                                } else {
+                                    // 单个子分类，创建card-grid类型
+                                    const subCategory = category.children[0];
+                                    newContentSections[sidebarKey] = {
+                                        type: 'card-grid',
+                                        icon: this.getCategoryIcon(category.name),
+                                        title: category.name,
+                                        data: subCategory.navs.map(nav => ({
+                                            title: nav.title,
+                                            desc: nav.description || '',
+                                            url: nav.url,
+                                            icon: nav.icon || '/placeholder.svg?height=24&width=24'
+                                        }))
+                                    };
+                                }
+                            }
+                        }
+                    });
+
+                    // 更新数据
+                    this.contentSections = { ...this.contentSections, ...newContentSections };
+                    this.sidebarItems = [...this.sidebarItems.filter(item => item.key === 'links'), ...newSidebarItems];
+
+                    // 初始化状态
+                    newSidebarItems.forEach(item => {
+                        if (newContentSections[item.key] && newContentSections[item.key].type === 'tabbed-grid') {
+                            this.$set(this.sectionStates, item.key, {
+                                activeTab: newContentSections[item.key].tabs[0].key,
+                                currentPage: 1
+                            });
+                        }
+                    });
+                },
+
+                //  根据分类名称生成侧边栏项的唯一标识
+                generateSidebarKey(name) {
+                    const keyMap = {
+                        // '编程网站': 'programming',
+                    };
+                    return keyMap[name] || name.toLowerCase().replace(/\s+/g, '_');
+                },
+
+                //  根据子分类名称生成Tab的唯一标识
+                generateTabKey(name) {
+                    const keyMap = {};
+                    return keyMap[name] || name.toLowerCase().replace(/\s+/g, '_');
+                },
+
+                // 根据分类名称获取对应的图标类
+                getCategoryIcon(name) {
+                    const iconMap = {
+                        '编程网站': 'fa-solid fa-code',
+                        '工具网站': 'fa-solid fa-toolbox',
+                        '设计资源': 'fa-solid fa-palette',
+                        '热门推荐': 'fa-solid fa-fire',
+                        '青杉福利社': 'fa-solid fa-gift'
+                    };
+                    return iconMap[name] || 'fa-solid fa-folder';
+                },
+
+                // 根据导航项标题获取对应的图标类
+                getNavIcon(title) {
+                    const iconMap = {
+                        'Vue.js': 'fa-brands fa-vuejs',
+                    };
+                    return iconMap[title] || 'fa-solid fa-link';
+                },
+
+                //  随机获取颜色
+                getRandomColor() {
+                    const colors = ['#1e88e5', '#ff4081', '#10a37f', '#3385ff', '#ff6b35', '#ff6a00', '#7c3aed', '#8b5cf6'];
+                    return colors[Math.floor(Math.random() * colors.length)];
+                },
+
+                // 重试加载数据方法
+                retryLoadData() {
+                    this.fetchHomeData();
+                },
+
+                // 设置视口高度CSS变量，用于移动端适配
                 setViewportHeight() {
                     document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
                 }
@@ -669,6 +686,9 @@
                 window.addEventListener('orientationchange', () => {
                     setTimeout(this.setViewportHeight, 500);
                 });
+
+                // 加载API数据
+                this.fetchHomeData();
             }
         });
     </script>

@@ -100,12 +100,13 @@
         "category_name": "前端开发"
       }
     ],
-    "pagination": {
-      "page": 1,
-      "size": 10,
-      "total": 1,
-      "pages": 1
-    }
+   // 分页信息对象
+      const pagination = { 
+      page: 1,   // 当前页码
+      size: 10,  // 每页显示条数
+      total: 1,  // 总数据条数
+      pages: 1   // 总页数
+  };
   }
 }
 ```
