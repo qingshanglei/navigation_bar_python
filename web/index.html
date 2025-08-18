@@ -88,8 +88,23 @@
                     </div>
                 </div>
 
-                <div class="login-btn" @click="handleLogin">
+                <!-- 未登录状态显示登录按钮，已登录状态显示用户信息 -->
+                <div v-if="!userInfo" class="login-btn" @click="handleLogin">
                     <i class="fa-solid fa-user"></i> 登录
+                </div>
+                <div v-else class="nav-dropdown">
+                    <div class="dropdown-trigger">
+                        <i class="fa-solid fa-user-circle"></i> {{ userInfo.username }}
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item">
+                            <i class="fa-solid fa-user"></i> 个人中心
+                        </div>
+                        <div class="dropdown-item" @click="handleLogout">
+                            <i class="fa-solid fa-sign-out-alt"></i> 退出登录
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 移动端菜单按钮 -->
@@ -283,6 +298,10 @@
         new Vue({
             el: '#app',
             data: {
+                // 用户信息
+                userInfo: null, // 存储用户信息
+                token: null, // 存储访问令牌
+                
                 // 导航状态
                 activeNav: 'home', // 当前激活的主页面Tab
                 activeCenterTab: 'search', // 当前激活的中心Tab
@@ -529,12 +548,54 @@
                     }
                 },
 
-                // 处理登录事件，显示提示信息
+                // 处理登录事件
                 handleLogin() {
+                    // 跳转到登录页面
+                    window.location.href = 'login.html';
+                },
+                
+                // 处理退出登录
+                handleLogout() {
+                    // 清除本地存储的用户信息和令牌
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('token_expires_at');
+                    localStorage.removeItem('user_info');
+                    
+                    // 重置用户信息
+                    this.userInfo = null;
+                    this.token = null;
+                    
+                    // 显示退出成功消息
                     this.$message({
-                        message: '登录功能开发中...',
-                        type: 'info'
+                        message: '已成功退出登录',
+                        type: 'success'
                     });
+                },
+                
+                // 检查用户登录状态
+                checkLoginStatus() {
+                    // 从本地存储获取用户信息和令牌
+                    const token = localStorage.getItem('access_token');
+                    const expiresAt = localStorage.getItem('token_expires_at');
+                    const userInfoStr = localStorage.getItem('user_info');
+                    
+                    if (token && expiresAt && userInfoStr) {
+                        // 检查令牌是否过期
+                        const now = new Date().getTime();
+                        const expiration = new Date(expiresAt).getTime();
+                        
+                        if (now < expiration) {
+                            // 令牌有效，设置用户信息
+                            this.token = token;
+                            this.userInfo = JSON.parse(userInfoStr);
+                            
+                            // 设置 axios 默认请求头，包含授权令牌
+                            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                        } else {
+                            // 令牌已过期，清除本地存储
+                            this.handleLogout();
+                        }
+                    }
                 },
 
                 // API相关方法 - 异步获取首页数据
@@ -712,6 +773,9 @@
                 window.addEventListener('orientationchange', () => {
                     setTimeout(this.setViewportHeight, 500);
                 });
+                
+                // 检查用户登录状态
+                this.checkLoginStatus();
 
                 // 加载API数据
                 this.fetchHomeData();
