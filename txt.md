@@ -39,10 +39,6 @@
 2. **admin/categories.html** - 优化修改
    - 表格布局优化
    
-   
-   
-   
-   
    - 字段：
      - id：主键，自增
      - category_id：所属分类 ID（外键，必填）
@@ -62,9 +58,6 @@
    | 开发工具 | GitHub  | [https://github.com](https://github.com/)   | 代码托管平台 | fa-github  | 1          | 是       | 2023-01-15T08:30:00Z |
    | 社交媒体 | Twitter | [https://twitter.com](https://twitter.com/) | 社交网络平台 | fa-twitter | 2          | 是       | 2023-02-20T10:15:00Z |
    | 搜索引擎 | Google  | [https://google.com](https://google.com/)   | 搜索引擎     | fa-google  | 3          | 是       | 2023-03-10T09:00:00Z |
-   
-   
-   
    
 
 ---

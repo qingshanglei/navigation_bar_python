@@ -1,0 +1,64 @@
+# Apache 伪静态规则
+
+# 启用重写引擎
+RewriteEngine On
+
+# 设置基础路径（如果网站在子目录中，请取消注释并修改）
+# RewriteBase /子目录/
+
+# 保护 .htaccess 文件
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# 保护敏感目录和文件
+<FilesMatch "^\.(?!well-known)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# 将 HTTP 请求重定向到 HTTPS（如需启用，请取消注释）
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 移除 URL 末尾的斜杠
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# 主页重写规则
+RewriteRule ^home/?$ index.html [L]
+
+# 用户相关页面
+RewriteRule ^login/?$ login.html [L]
+RewriteRule ^register/?$ register.html [L]
+RewriteRule ^profile/([0-9]+)/?$ user_profile.php?id=$1 [L]
+
+# 导航分类页面
+RewriteRule ^category/([0-9]+)/?$ category.php?id=$1 [L]
+RewriteRule ^category/([^/]+)/?$ category.php?slug=$1 [L]
+
+# 导航项目页面
+RewriteRule ^nav/([0-9]+)/?$ navigation.php?id=$1 [L]
+RewriteRule ^nav/([^/]+)/?$ navigation.php?slug=$1 [L]
+
+# API 路由
+RewriteRule ^api/v1/categories/?$ backend/routes/api.php?endpoint=categories [L]
+RewriteRule ^api/v1/categories/([0-9]+)/?$ backend/routes/api.php?endpoint=categories&id=$1 [L]
+RewriteRule ^api/v1/navs/?$ backend/routes/api.php?endpoint=navs [L]
+RewriteRule ^api/v1/navs/([0-9]+)/?$ backend/routes/api.php?endpoint=navs&id=$1 [L]
+RewriteRule ^api/v1/search/(.+)/?$ backend/routes/api.php?endpoint=search&query=$1 [L]
+
+# 管理后台
+RewriteRule ^admin/?$ admin/dashboard.html [L]
+RewriteRule ^admin/categories/?$ admin/categories.html [L]
+RewriteRule ^admin/navs/?$ admin/navs.html [L]
+RewriteRule ^admin/login/?$ admin/login.html [L]
+
+# 处理 404 错误
+ErrorDocument 404 /404.html
+
+# 如果请求的不是真实文件或目录，则重定向到 index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]

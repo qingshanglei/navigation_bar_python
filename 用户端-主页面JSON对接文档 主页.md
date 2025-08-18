@@ -293,5 +293,128 @@
 
 
 
+### 2.2 搜索导航项
+
+- 请求路径：`/api/navs/search`
+- 请求方式：GET
+- 认证要求：无（公开接口）
+- 描述：根据关键词搜索导航项
+
+#### 请求参数
+
+| 参数名      | 类型   | 必填 | 默认值 | 说明             |
+| :---------- | ------ | ---- | ------ | ---------------- |
+| q           | string | 是   | -      | 搜索关键词       |
+| category_id | int    | 否   | -      | 指定分类ID       |
+| limit       | int    | 否   | 20     | 返回结果数量限制 |
+
+#### 成功响应示例
+
+```json
+{
+  "code": 1,
+  "msg": "搜索成功",
+  "data": [
+    {
+      "id": 101,
+      "category_id": 2,
+      "category_name": "前端开发",
+      "title": "Vue.js",
+      "url": "https://vuejs.org/",
+      "description": "Vue 官方文档",
+      "icon": "https://vuejs.org/logo.png",
+      "sort_order": 1,
+      "is_public": 1,
+      "created_at": "2025-08-01 12:00:00"
+    },
+    {
+      "id": 102,
+      "category_id": 2,
+      "category_name": "前端开发",
+      "title": "Vue Router",
+      "url": "https://router.vuejs.org/",
+      "description": "Vue 官方路由库",
+      "icon": "https://router.vuejs.org/logo.png",
+      "sort_order": 3,
+      "is_public": 1,
+      "created_at": "2025-08-01 12:45:00"
+    }
+  ]
+}
+```
+
+### 2.3 获取热门导航
+
+- 请求路径：`/api/navs/popular`
+- 请求方式：GET
+- 认证要求：无（公开接口）
+- 描述：获取访问量最高的导航项
+
+#### 请求参数
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明             |
+| :----- | ---- | ---- | ------ | ---------------- |
+| limit  | int  | 否   | 10     | 返回结果数量限制 |
+
+#### 成功响应示例
+
+```json
+{
+  "code": 1,
+  "msg": "获取热门导航成功",
+  "data": [
+    {
+      "id": 101,
+      "category_id": 2,
+      "category_name": "前端开发",
+      "title": "Vue.js",
+      "url": "https://vuejs.org/",
+      "description": "Vue 官方文档",
+      "icon": "https://vuejs.org/logo.png",
+      "click_count": 1523,
+      "sort_order": 1,
+      "is_public": 1,
+      "created_at": "2025-08-01 12:00:00"
+    }
+  ]
+}
+```
+
+### 2.4 获取最新导航
+
+- 请求路径：`/api/navs/latest`
+- 请求方式：GET
+- 认证要求：无（公开接口）
+- 描述：获取最新添加的导航项
+
+#### 请求参数
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明             |
+| :----- | ---- | ---- | ------ | ---------------- |
+| limit  | int  | 否   | 10     | 返回结果数量限制 |
+
+#### 成功响应示例
+
+```json
+{
+  "code": 1,
+  "msg": "获取最新导航成功",
+  "data": [
+    {
+      "id": 401,
+      "category_id": 5,
+      "category_name": "图标库",
+      "title": "Heroicons",
+      "url": "https://heroicons.com/",
+      "description": "免费SVG图标库",
+      "icon": "https://heroicons.com/favicon.ico",
+      "sort_order": 2,
+      "is_public": 1,
+      "created_at": "2025-08-05 10:30:00"
+    }
+  ]
+}
+```
+
 
 

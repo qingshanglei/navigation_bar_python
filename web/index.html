@@ -440,6 +440,7 @@
 
                 // 设置当前激活的侧边栏项，并平滑滚动到对应内容区域
                 setActiveSidebarItem(item) {
+
                     this.activeSidebarItem = item;
                     // 平滑滚动到对应的内容区域
                     this.$nextTick(() => {
@@ -530,6 +531,8 @@
 
                 // 移动端菜单方法 - 切换侧边栏显示状态
                 toggleMobileSidebar() {
+                    console.log('设置当前激移动端菜单方法活的侧边栏项aaaa:', this.sidebarItems);
+
                     this.showMobileSidebar = !this.showMobileSidebar;
                 },
 
