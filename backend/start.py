@@ -50,6 +50,9 @@ def main():
     print("- 健康检查: http://localhost:5000/api/health")
     print("- 登录接口: http://localhost:5000/api/auth/login")
     print("- 用户信息: http://localhost:5000/api/auth/profile")
+  
+
+
     print("\n按 Ctrl+C 停止服务")
     print("=" * 50)
     

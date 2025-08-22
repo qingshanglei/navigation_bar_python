@@ -148,4 +148,8 @@ if __name__ == '__main__':
     print("导航系统后端服务启动中...")
     print("API地址: http://localhost:5000")
     print("健康检查: http://localhost:5000/api/health")
+    print("- 管理端登录页: http://localhost:5000/admin/login.html")
+    print("- 管理端首页: http://localhost:5000/admin/dashboard.html")
+    print("- 用户端登录页: http://localhost:5000/web/login.html")
+    print("- 用户端首页: http://localhost:5000/web/index.html")
     app.run(debug=False, host='0.0.0.0', port=5000)
