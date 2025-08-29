@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, send_file
+from flask import Flask, jsonify, send_from_directory,redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -58,21 +58,7 @@ def create_app(config_class=Config):
     # 添加根路径路由
     @app.route('/')
     def index():
-        return jsonify({
-            'code': 1,
-            'msg': '导航系统后端API服务',
-            'data': {
-                'service': 'navigation-backend',
-                'version': '1.0.0',
-                'endpoints': {
-                    'health': '/api/health',
-                    'login': '/api/auth/login',
-                    'logout': '/api/auth/logout',
-                    'profile': '/api/auth/profile',
-                    'verify': '/api/auth/verify'
-                }
-            }
-        }), 200
+          return redirect('/admin/login.html')
     
     # 添加健康检查接口
     @app.route('/api/health')
@@ -86,19 +72,7 @@ def create_app(config_class=Config):
             }
         }), 200
     
-    # 测试路由
-    @app.route('/test')
-    def test_route():
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        admin_dir = os.path.join(project_root, 'admin')
-        web_dir = os.path.join(project_root, 'web')
-        return jsonify({
-            'project_root': project_root,
-            'admin_dir': admin_dir,
-            'web_dir': web_dir,
-            'admin_login_exists': os.path.exists(os.path.join(admin_dir, 'login.html')),
-            'web_login_exists': os.path.exists(os.path.join(web_dir, 'login.html'))
-        })
+ 
     
     # 静态文件服务路由
     # 获取项目根目录

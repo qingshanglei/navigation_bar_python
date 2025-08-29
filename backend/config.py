@@ -17,8 +17,14 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'navigation-secret-key-2025'
     DEBUG = True
     
-    # CORS配置
-    CORS_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:8080']
+    # CORS配置 - 添加127.0.0.1相关域名
+    CORS_ORIGINS = [
+        'http://localhost:3000', 
+        'http://127.0.0.1:3000', 
+        'http://localhost:8080',
+        'http://localhost:5000',
+        'http://127.0.0.1:5000'
+    ]
     
     # 安全配置
     JSON_AS_ASCII = False  # 支持中文JSON响应
