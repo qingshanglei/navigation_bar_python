@@ -162,6 +162,22 @@
 
 ---
 
+### 添加兼容Vercel部署
+project_root/
+├── api/
+│   ├── app.py          # Flask应用主文件（从backend/app.py复制并调整）
+│   └── requirements.txt # 依赖文件（从backend/requirements.txt复制）
+├── admin/              # 管理端静态文件
+├── web/                # 用户端静态文件
+├── vercel.json         # Vercel配置文件
+└── ...                 # 其他项目文件
+1. 创建项目根目录创建vercel.json文件 
+2. 调整Flask应用
+  在项目根目录创建api文件夹
+  将backend/app.py复制到api/app.py （我这边不删除原来的app.py和requirements.txt文件，到是否不需要vercel部署的化，直接删除这两个文件即可）
+
+  将backend/requirements.txt复制到api/requirements.txt
+
 ## 三、代码规范
 
 ### 3.1 通用规则
